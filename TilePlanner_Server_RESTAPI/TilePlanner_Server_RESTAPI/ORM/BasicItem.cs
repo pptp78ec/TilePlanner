@@ -13,5 +13,15 @@
         public string ParentId { get; set; }
 
         public string CreatorId { get; set; }
+
+        public string Tag { get; set; }
+
+        public int SizeX { get; set; }
+
+        public int SizeY { get; set; }
+
+        public string BackgroundColor { get; set; }
+
+        public string BackgroundImage { get; set; }
     }
 }

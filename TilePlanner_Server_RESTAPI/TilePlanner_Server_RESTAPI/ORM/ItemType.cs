@@ -2,11 +2,16 @@
 {
     public enum Itemtype
     {
+        //MAIN
         SCREEN,
         TAB,
         TILE,
+        //RECORDS
         TEXT,
         URL,
-        IMAGE
+        IMAGE,
+        FILE,
+        TASK,
+        COORDINATE
     }
 }
