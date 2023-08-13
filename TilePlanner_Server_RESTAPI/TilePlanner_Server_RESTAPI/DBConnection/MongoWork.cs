@@ -101,12 +101,38 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return null;
             
         }
-        
+        /// <summary>
+        /// Upsert of list of items. First variant
+        /// </summary>
+        /// <param name="items"></param>
+        /// <returns></returns>
         public async Task addOrUpdateItems(List<BasicItem> items)
         {
+            var upsert = new UpdateOptions() { IsUpsert = true };
+
             foreach (var item in items)
             {
-                //await database.GetCollection<BasicItem>("Items").UpdateManyAsync(items,))
+                if (String.IsNullOrEmpty(item.Id))
+                    item.Id = ObjectId.GenerateNewId().ToString();
+
+                var filter = Builders<BasicItem>.Filter.Eq(_=>_.Id.ToString(), item.Id);
+                var update = Builders<BasicItem>.Update
+                    .Set(_ => _.Header, item.Header)
+                    .Set(_ => _.Description, item.Description)
+                    .Set(_ => _.Itemtype, item.Itemtype)
+                    .Set(_ => _.TileSizeX, item.TileSizeX)
+                    .Set(_ => _.TileSizeY, item.TileSizeY)
+                    .Set(_ => _.CreatorId, item.CreatorId)
+                    .Set(_ => _.ParentId, item.ParentId)
+                    .Set(_ => _.BackgroundColor, item.BackgroundColor)
+                    .Set(_ => _.BackgroundImageId, item.BackgroundImageId)
+                    .Set(_ => _.Coordinates, item.Coordinates)
+                    .Set(_ => _.Tags, item.Tags)
+                    .Set(_ => _.TaskSetDate, item.TaskSetDate)
+                    .Set(_ => _.File, item.File)
+                    .SetOnInsert(_ => _.Id, item.Id);
+
+                await database.GetCollection<BasicItem>("Items").UpdateOneAsync(filter, update, upsert);
             }
         }
 
