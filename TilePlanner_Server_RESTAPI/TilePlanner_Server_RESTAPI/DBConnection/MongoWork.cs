@@ -48,11 +48,13 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 var fileId = ObjectId.GenerateNewId();
                 var options = new GridFSUploadOptions
                 {
+                    
                     Metadata = new BsonDocument { { "originalFileName", file.FileName } }
                 };
 
+                await gridFSBucket.UploadFromStreamAsync(fileId, file.FileName, stream, options);
 
-                await gridFSBucket.UploadFromStreamAsync(fileId, stream);
+                return new FileInfoShort() { FileId = fileId.ToString(), FileName = file.FileName };
             }
         }
 

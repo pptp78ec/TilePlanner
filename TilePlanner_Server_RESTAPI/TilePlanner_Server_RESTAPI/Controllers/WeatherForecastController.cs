@@ -50,10 +50,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         public ICollection GetItems()
         {
             var result = MongoWork.Test();
-
-            
-            
-            
             return result;
         }
 
@@ -63,7 +59,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             var request = HttpContext.Request;
             var file = HttpContext.Request.Form.Files[0];
-
             return await MongoWork.SaveFileToGridFS(file);
         } 
     }
