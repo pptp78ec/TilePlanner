@@ -40,26 +40,5 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             .ToArray();
         }
 
-
-        /// <summary>
-        /// FOR TESTING PURPOSES
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("/GetCollection")]
-        [Produces("application/json")]
-        public ICollection GetItems()
-        {
-            var result = MongoWork.Test();
-            return result;
-        }
-
-        [HttpPost("/uploadFile")]
-        [Produces("application/json")]
-        public async Task<ActionResult<FileInfoShort>> UploadFile()
-        {
-            var request = HttpContext.Request;
-            var file = HttpContext.Request.Form.Files[0];
-            return await MongoWork.SaveFileToGridFS(file);
-        } 
     }
 }
