@@ -1,3 +1,5 @@
+using TilePlanner_Server_RESTAPI.DBConnection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +9,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+builder.Services.AddSingleton<MongoWork>();
+
 var app = builder.Build();
+
+//var mongoDBaccess = new MongoWork();
+
+//mongoDBaccess.Test();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

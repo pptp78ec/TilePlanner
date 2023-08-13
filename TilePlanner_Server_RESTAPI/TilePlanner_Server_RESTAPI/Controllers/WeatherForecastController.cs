@@ -1,4 +1,12 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Any;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using System.Collections;
+using System.Linq;
+using TilePlanner_Server_RESTAPI.DBConnection;
+using TilePlanner_Server_RESTAPI.ORM;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
 {
@@ -12,13 +20,15 @@ namespace TilePlanner_Server_RESTAPI.Controllers
     };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private MongoWork MongoWork;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, MongoWork mongoWork)
         {
             _logger = logger;
+            MongoWork = mongoWork;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
+        [HttpGet("/GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
@@ -29,5 +39,32 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             })
             .ToArray();
         }
+
+
+        /// <summary>
+        /// FOR TESTING PURPOSES
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("/GetCollection")]
+        [Produces("application/json")]
+        public ICollection GetItems()
+        {
+            var result = MongoWork.Test();
+
+            
+            
+            
+            return result;
+        }
+
+        [HttpPost("/uploadFile")]
+        [Produces("application/json")]
+        public async Task<ActionResult<FileInfoShort>> UploadFile()
+        {
+            var request = HttpContext.Request;
+            var file = HttpContext.Request.Form.Files[0];
+
+            return await MongoWork.SaveFileToGridFS(file);
+        } 
     }
 }
