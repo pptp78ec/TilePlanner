@@ -6,6 +6,7 @@ using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
 using MongoDB.Driver.GridFS;
+using System.ComponentModel;
 
 namespace TilePlanner_Server_RESTAPI.DBConnection
 {
@@ -156,6 +157,24 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return (await database.GetCollection<BasicItem>("Items").FindAsync(_ => _.CreatorId == userId && _.Itemtype == Itemtype.SCREEN)).ToList();
         }
 
+        public async Task<List<BasicItem>> getListOfScreenChildren(string parentId)
+        {
+            var collection = database.GetCollection<BasicItem>("Items");
+            return await recursiveChildrenSearch(parentId, collection);
+        }
 
+        public async Task<List<BasicItem>> recursiveChildrenSearch(string parentId, IMongoCollection<BasicItem> collection)
+        {
+            var results  = new List<BasicItem>();
+            var node = await (await collection.FindAsync(_ => _.Id == parentId)).FirstOrDefaultAsync();
+            if (node != null)
+            {
+                results.Add(node);
+                results.AddRange(await recursiveChildrenSearch(parentId, collection));
+            }
+            return results;
+        }
     }
+
+
 }
