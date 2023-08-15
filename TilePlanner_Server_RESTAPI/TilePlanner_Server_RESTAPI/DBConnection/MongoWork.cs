@@ -1,12 +1,8 @@
-﻿using MongoDB.Driver;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
-using TilePlanner_Server_RESTAPI.ORM;
-using MongoDB.Bson.Serialization.Serializers;
-using MongoDB.Bson.Serialization;
-using Newtonsoft.Json;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
-using System.ComponentModel;
+using Newtonsoft.Json;
+using TilePlanner_Server_RESTAPI.ORM;
 
 namespace TilePlanner_Server_RESTAPI.DBConnection
 {
@@ -165,7 +161,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
 
         public async Task<List<BasicItem>> recursiveChildrenSearch(string parentId, IMongoCollection<BasicItem> collection)
         {
-            var results  = new List<BasicItem>();
+            var results = new List<BasicItem>();
             var node = await (await collection.FindAsync(_ => _.Id == parentId)).FirstOrDefaultAsync();
             if (node != null)
             {
@@ -173,6 +169,31 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 results.AddRange(await recursiveChildrenSearch(parentId, collection));
             }
             return results;
+        }
+
+        public async Task deleteListOfChildren(string parentId)
+        {
+            var collection = database.GetCollection<BasicItem>("Items");
+            var firstnode = await (await collection.FindAsync(_ => _.Id == parentId)).FirstOrDefaultAsync();
+            if(firstnode != null)
+            {
+                await recursiveDelete(firstnode, collection);
+            }
+
+        }
+
+        public async Task recursiveDelete(BasicItem item, IMongoCollection<BasicItem> collection)
+        {
+            await collection.DeleteOneAsync(_ => _.Id == item.Id);
+            foreach( var child in await getChildren(item.Id, collection))
+            {
+                await recursiveDelete(child, collection);
+            }
+        }
+
+        private async Task<List<BasicItem>> getChildren(string parentId, IMongoCollection<BasicItem> collection)
+        {
+            return (await collection.FindAsync(_ => _.ParentId == parentId)).ToList();
         }
     }
 
