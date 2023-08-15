@@ -21,7 +21,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// FOR TESTING PURPOSES
         /// </summary>
         /// <returns></returns>
-        [HttpGet("/GetCollection")]
+        [HttpGet("/GetCollectionTest")]
         [Produces("application/json")]
         public ICollection GetItems()
         {
@@ -60,5 +60,65 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
             return await MongoWork.SaveToGridFS_Test(testfile);
         }
+
+
+        [HttpPost("/getuserscreens")]
+        [Produces("application/json")]
+        public async Task<ActionResult<List<BasicItem>>> GetScreens(string userId)
+        {
+            try
+            {
+                return Ok(await MongoWork.getListOfScreensForUser(userId));
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+
+        [HttpPost("/gettiles")]
+        [Produces("application/json")]
+        public async Task<ActionResult<List<BasicItem>>> getScreen(BasicItem item)
+        {
+            try
+            {
+                return Ok(await MongoWork.getListOfScreenChildren(item.Id));
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+
+        [HttpPost("/deleteitem")]
+        [Produces("application/json")]
+        public async Task<IActionResult> deleteItem(BasicItem item)
+        {
+            try
+            {
+                await MongoWork.deleteListOfChildren(item.Id);
+                return Ok(item);
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+
+        [HttpPost("/updateitems")]
+        [Produces("application/json")]
+        public async Task<IActionResult> updateItems(List<BasicItem> items)
+        {
+            try
+            {
+                await MongoWork.addOrUpdateItems(items);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+
     }
 }

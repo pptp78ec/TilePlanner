@@ -153,13 +153,18 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return await (await database.GetCollection<BasicItem>("Items").FindAsync(_ => _.CreatorId == userId && _.Itemtype == Itemtype.SCREEN)).ToListAsync();
         }
 
+        /// <summary>
+        /// Reuturns an Item and it's children
+        /// </summary>
+        /// <param name="parentId">Item's id</param>
+        /// <returns>List of items</returns>
         public async Task<List<BasicItem>> getListOfScreenChildren(string parentId)
         {
             var collection = database.GetCollection<BasicItem>("Items");
             return await recursiveChildrenSearch(parentId, collection);
         }
 
-        public async Task<List<BasicItem>> recursiveChildrenSearch(string parentId, IMongoCollection<BasicItem> collection)
+        private async Task<List<BasicItem>> recursiveChildrenSearch(string parentId, IMongoCollection<BasicItem> collection)
         {
             var results = new List<BasicItem>();
             var node = await (await collection.FindAsync(_ => _.Id == parentId)).FirstOrDefaultAsync();
@@ -170,22 +175,26 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             }
             return results;
         }
-
+        /// <summary>
+        /// Deletes item and all of it's childern
+        /// </summary>
+        /// <param name="parentId">Item's id</param>
+        /// <returns></returns>
         public async Task deleteListOfChildren(string parentId)
         {
             var collection = database.GetCollection<BasicItem>("Items");
             var firstnode = await (await collection.FindAsync(_ => _.Id == parentId)).FirstOrDefaultAsync();
-            if(firstnode != null)
+            if (firstnode != null)
             {
                 await recursiveDelete(firstnode, collection);
             }
 
         }
 
-        public async Task recursiveDelete(BasicItem item, IMongoCollection<BasicItem> collection)
+        private async Task recursiveDelete(BasicItem item, IMongoCollection<BasicItem> collection)
         {
             await collection.DeleteOneAsync(_ => _.Id == item.Id);
-            foreach( var child in await getChildren(item.Id, collection))
+            foreach (var child in await getChildren(item.Id, collection))
             {
                 await recursiveDelete(child, collection);
             }
