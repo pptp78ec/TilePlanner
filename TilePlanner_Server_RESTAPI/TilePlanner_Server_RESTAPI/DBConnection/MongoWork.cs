@@ -150,7 +150,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// <returns></returns>
         public async Task<List<BasicItem>> getListOfScreensForUser(string userId)
         {
-            return (await database.GetCollection<BasicItem>("Items").FindAsync(_ => _.CreatorId == userId && _.Itemtype == Itemtype.SCREEN)).ToList();
+            return await (await database.GetCollection<BasicItem>("Items").FindAsync(_ => _.CreatorId == userId && _.Itemtype == Itemtype.SCREEN)).ToListAsync();
         }
 
         public async Task<List<BasicItem>> getListOfScreenChildren(string parentId)
@@ -193,7 +193,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
 
         private async Task<List<BasicItem>> getChildren(string parentId, IMongoCollection<BasicItem> collection)
         {
-            return (await collection.FindAsync(_ => _.ParentId == parentId)).ToList();
+            return await (await collection.FindAsync(_ => _.ParentId == parentId)).ToListAsync();
         }
     }
 
