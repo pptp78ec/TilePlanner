@@ -19,7 +19,15 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             IConfiguration configuration = builder.Build();
             database = new MongoClient(configuration.GetConnectionString("MongoDBConnection")).GetDatabase(configuration.GetValue<string>("DataBaseName"));
             gridFSBucket = new GridFSBucket(database);
-
+            if (!database.ListCollectionNames().ToList().Contains("Users"))
+            {
+                database.CreateCollection("Users");
+                var indexOptions = new CreateIndexOptions() { Unique = true };
+                var indexModel = new CreateIndexModel<User>("{ Login: 1, Email: 1, Phone: 1 }", indexOptions);
+                database.GetCollection<User>("Users").Indexes.CreateOne(indexModel);
+            }
+            if (!database.ListCollectionNames().ToList().Contains("Users"))
+                database.CreateCollection("Items");
         }
 
         //
@@ -37,7 +45,6 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             var task = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), ParentId = tile.Id.ToString(), Header = "Task" };
             collection.InsertMany(new List<BasicItem>() { screen, tab, tile, text1, text2, task });
             var coll = collection.Find("{}").ToList();
-            var stringjs = JsonConvert.SerializeObject(coll);
             return coll;
         }
         //------------------------------------------------------------------------------------------
@@ -128,7 +135,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 if (String.IsNullOrEmpty(item.Id))
                     item.Id = ObjectId.GenerateNewId().ToString();
 
-                var filter = Builders<BasicItem>.Filter.Eq(_ => _.Id.ToString(), item.Id);
+                var filter = Builders<BasicItem>.Filter.Eq(_ => _.Id, item.Id);
                 var update = Builders<BasicItem>.Update
                     .Set(_ => _.Header, item.Header)
                     .Set(_ => _.Description, item.Description)
@@ -176,7 +183,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         public async Task<List<BasicItem>> getListOfScreenChildren(string parentId)
         {
             var collection = database.GetCollection<BasicItem>("Items");
-            return await recursiveChildrenSearch(parentId, collection);
+            return await childrenSearch(parentId, collection);
         }
 
         /// <summary>
@@ -213,16 +220,20 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return await (await collection.FindAsync(_ => _.ParentId == parentId)).ToListAsync();
         }
 
-        private async Task<List<BasicItem>> recursiveChildrenSearch(string parentId, IMongoCollection<BasicItem> collection)
+        private async Task<List<BasicItem>> childrenSearch(string parentId, IMongoCollection<BasicItem> collection)
         {
             var results = new List<BasicItem>();
-            var node = await (await collection.FindAsync(_ => _.Id == parentId)).FirstOrDefaultAsync();
-            if (node != null)
+            var nodes = await (await collection.FindAsync(_ => _.ParentId == parentId)).ToListAsync();
+            foreach (var node in nodes)
             {
-                results.Add(node);
-                results.AddRange(await recursiveChildrenSearch(parentId, collection));
+                if (node != null)
+                {
+
+                    results.Add(node);
+                    results.AddRange(await childrenSearch(node.Id, collection));
+                }
             }
-            return results;
+            return results;           
         }
 
         //------------------------------------------------------------------------------------------
