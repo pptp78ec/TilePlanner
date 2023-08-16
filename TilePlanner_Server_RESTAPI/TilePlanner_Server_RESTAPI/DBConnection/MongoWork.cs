@@ -22,6 +22,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
 
         }
 
+        //
+        // FOR TESTING PURPOSES
+        //------------------------------------------------------------------------------------------
         public List<BasicItem> Test()
         {
             var collection = database.GetCollection<BasicItem>("Items");
@@ -37,6 +40,11 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             var stringjs = JsonConvert.SerializeObject(coll);
             return coll;
         }
+        //------------------------------------------------------------------------------------------
+
+        //
+        //GRIDFS FILE SAVE/FILE LOAD
+        //------------------------------------------------------------------------------------------
 
         /// <summary>
         /// Saves file into the MongoDB database using GridFS
@@ -99,6 +107,12 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return null;
 
         }
+        //------------------------------------------------------------------------------------------
+
+        //
+        // ITEMS FUNCTIONALITY
+        //------------------------------------------------------------------------------------------
+
         /// <summary>
         /// Upsert of list of items. First variant
         /// </summary>
@@ -154,7 +168,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         }
 
         /// <summary>
-        /// Reuturns an Item and it's children
+        /// Returns an Item and it's children
         /// </summary>
         /// <param name="parentId">Item's id</param>
         /// <returns>List of items</returns>
@@ -164,17 +178,6 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return await recursiveChildrenSearch(parentId, collection);
         }
 
-        private async Task<List<BasicItem>> recursiveChildrenSearch(string parentId, IMongoCollection<BasicItem> collection)
-        {
-            var results = new List<BasicItem>();
-            var node = await (await collection.FindAsync(_ => _.Id == parentId)).FirstOrDefaultAsync();
-            if (node != null)
-            {
-                results.Add(node);
-                results.AddRange(await recursiveChildrenSearch(parentId, collection));
-            }
-            return results;
-        }
         /// <summary>
         /// Deletes item and all of it's childern
         /// </summary>
@@ -191,6 +194,10 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
 
         }
 
+        //
+        //Items subfunctionality
+        //------------------------------------------------------------------------------------------
+
         private async Task recursiveDelete(BasicItem item, IMongoCollection<BasicItem> collection)
         {
             await collection.DeleteOneAsync(_ => _.Id == item.Id);
@@ -204,6 +211,143 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         {
             return await (await collection.FindAsync(_ => _.ParentId == parentId)).ToListAsync();
         }
+
+        private async Task<List<BasicItem>> recursiveChildrenSearch(string parentId, IMongoCollection<BasicItem> collection)
+        {
+            var results = new List<BasicItem>();
+            var node = await (await collection.FindAsync(_ => _.Id == parentId)).FirstOrDefaultAsync();
+            if (node != null)
+            {
+                results.Add(node);
+                results.AddRange(await recursiveChildrenSearch(parentId, collection));
+            }
+            return results;
+        }
+
+        //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
+
+        //
+        //USER FUNCTIONALITY
+        //------------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Finds user by Id
+        /// </summary>
+        /// <param name="Id">Id of a user</param>
+        /// <returns>User</returns>
+        public async Task<User> findUserById(string Id)
+        {
+            return await (await database.GetCollection<User>("Users").FindAsync(_ => _.Id == Id && _.IsDeleted == false)).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Adds new user
+        /// </summary>
+        /// <param name="user">User instance</param>
+        /// <returns></returns>
+        public async Task addNewUser(User user)
+        {
+            user.RegisterDate = DateTime.Now;
+            await database.GetCollection<User>("Users").InsertOneAsync(user);
+        }
+
+        /// <summary>
+        /// Provides ability to find user by login/email/phone and checks if password matches and whether user is not deleted 
+        /// </summary>
+        /// <param name="loginparam">Login string. Could be login, email or phone number</param>
+        /// <param name="password">User's password</param>
+        /// <returns>User</returns>
+        public async Task<User> findUserBySearchParams(string loginparam, string password)
+        {
+           return await (await database.GetCollection<User>("Users").FindAsync(_=>(_.Login == loginparam || _.Email == loginparam || _.Phone == loginparam) && _.Password == password && _.IsDeleted == false)).FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Updates user's name
+        /// </summary>
+        /// <param name="user">User instance</param>
+        /// <returns></returns>
+        public async Task updateUserName(User user)
+        {
+            var update = Builders<User>.Update
+                .Set(_ => _.Name, user.Name);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_=>_.Id == user.Id, update);
+        }
+
+        /// <summary>
+        /// Updates user's password
+        /// </summary>
+        /// <param name="user">User instance</param>
+        /// <returns></returns>
+        public async Task updateUserPassword(User user)
+        {
+            var update = Builders<User>.Update
+                .Set(_ => _.Password, user.Password);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+        }
+
+        /// <summary>
+        /// Updates user's description
+        /// </summary>
+        /// <param name="user">User instance</param>
+        /// <returns></returns>
+        public async Task updateUserDescription(User user)
+        {
+            var update = Builders<User>.Update
+                .Set(_ => _.Description, user.Description);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+        }
+
+        /// <summary>
+        /// Updates user's email
+        /// </summary>
+        /// <param name="user">User instance</param>
+        /// <returns></returns>
+        public async Task updateUserEmail(User user)
+        {
+            var update = Builders<User>.Update
+                .Set(_ => _.Email, user.Email);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+        }
+
+        /// <summary>
+        /// Updates user's phone
+        /// </summary>
+        /// <param name="user">User instance</param>
+        /// <returns></returns>
+        public async Task updateUserPhone(User user)
+        {
+            var update = Builders<User>.Update
+                .Set(_ => _.Phone, user.Phone);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+        }
+
+        /// <summary>
+        /// Updates user's image's Id
+        /// </summary>
+        /// <param name="user">User's instance</param>
+        /// <returns></returns>
+        public async Task updateUserImageId(User user)
+        {
+            var update = Builders<User>.Update
+                .Set(_ => _.UserImageId, user.UserImageId);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+        }
+
+        /// <summary>
+        /// Deletes user. Note that it doesn't really delete it from database, but merely marks as deleted 
+        /// </summary>
+        /// <param name="userId">Id of a user</param>
+        /// <returns></returns>
+        public async Task deleteUserById(string userId)
+        {
+            var update = Builders<User>.Update.Set(_ => _.IsDeleted, true);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == userId, update);
+        }
+
+        //------------------------------------------------------------------------------------------
+
     }
 
 

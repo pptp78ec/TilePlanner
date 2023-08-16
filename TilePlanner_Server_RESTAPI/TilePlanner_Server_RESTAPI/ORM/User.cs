@@ -1,4 +1,6 @@
-﻿namespace TilePlanner_Server_RESTAPI.ORM
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+namespace TilePlanner_Server_RESTAPI.ORM
 {
     public class User
     {
@@ -17,6 +19,10 @@
 
         public string Phone { get; set; } = string.Empty;
 
-        public DateTime RegisterDate { get; set; } = DateTime.MinValue; 
+        public DateTime RegisterDate { get; set; } = DateTime.MinValue;
+
+        public string UserImageId { get; set; } = string.Empty;
+
+        public bool IsDeleted { get; set; } = false;
     }
 }
