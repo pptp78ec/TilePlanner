@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver.Core.Clusters.ServerSelectors;
+﻿using Microsoft.AspNetCore.StaticFiles;
 
 namespace TilePlanner_Server_RESTAPI.ORM
 {
@@ -12,5 +12,18 @@ namespace TilePlanner_Server_RESTAPI.ORM
     {
         public string FileId { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
+    }
+
+    public class DBFileRet
+    {
+        public string FileName { get; set; }
+        public Stream FileStream { get; set; }
+
+        public string getContentType()
+        {
+            string contentType;
+            new FileExtensionContentTypeProvider().TryGetContentType(FileName, out contentType);
+            return contentType ?? "application/octet-stream";
+        }
     }
 }

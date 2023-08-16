@@ -94,7 +94,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="fileId">Id of the file</param>
         /// <returns>Stream</returns>
-        public async Task<Stream?> LoadFromGridFs(string fileId)
+        public async Task<DBFileRet?> LoadFromGridFs(string fileId)
         {
             var file = await gridFSBucket.Find(Builders<GridFSFileInfo>.Filter.Eq(x => x.Id.ToString(), fileId)).FirstOrDefaultAsync();
 
@@ -102,7 +102,8 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             {
                 var stream = new MemoryStream();
                 await gridFSBucket.DownloadToStreamAsync(fileId, stream);
-                return stream;
+
+                return new DBFileRet() { FileName = file.Filename, FileStream = stream };
             }
             return null;
 
@@ -260,7 +261,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// <returns>User</returns>
         public async Task<User> findUserBySearchParams(string loginparam, string password)
         {
-           return await (await database.GetCollection<User>("Users").FindAsync(_=>(_.Login == loginparam || _.Email == loginparam || _.Phone == loginparam) && _.Password == password && _.IsDeleted == false)).FirstOrDefaultAsync();
+            return await (await database.GetCollection<User>("Users").FindAsync(_ => (_.Login == loginparam || _.Email == loginparam || _.Phone == loginparam) && _.Password == password && _.IsDeleted == false)).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -272,7 +273,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         {
             var update = Builders<User>.Update
                 .Set(_ => _.Name, user.Name);
-            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_=>_.Id == user.Id, update);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
         }
 
         /// <summary>

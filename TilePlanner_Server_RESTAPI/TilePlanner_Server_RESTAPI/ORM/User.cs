@@ -1,6 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-
-namespace TilePlanner_Server_RESTAPI.ORM
+﻿namespace TilePlanner_Server_RESTAPI.ORM
 {
     public class User
     {

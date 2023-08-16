@@ -21,7 +21,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// FOR TESTING PURPOSES
         /// </summary>
         /// <returns></returns>
-        [HttpGet("/GetCollectionTest")]
+        [HttpGet("/getcollectiontest")]
         [Produces("application/json")]
         public ICollection GetItems()
         {
@@ -36,7 +36,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// </summary>
         /// <param name="item">Item</param>
         /// <returns>Item with fileinfo</returns>
-        [HttpPost("/uploadFile")]
+        [HttpPost("/uploadfile")]
         [Produces("application/json")]
         public async Task<ActionResult<BasicItem>> UploadFile(BasicItem item)
         {
@@ -52,7 +52,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// TEST for file save in DB
         /// </summary>
         /// <returns></returns>
-        [HttpGet("/uploadFile2")]
+        [HttpGet("/uploadfile2")]
         [Produces("application/json")]
         public async Task<ActionResult<FileInfoShort>> UploadFile2()
         {
@@ -62,6 +62,35 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         }
 
 
+        /// <summary>
+        /// Gets file from DB and returns it
+        /// </summary>
+        /// <param name="fileId">Id of a file</param>
+        /// <returns></returns>
+        [HttpPost("/getfile")]
+        public async Task<IActionResult> getFile(string fileId)
+        {
+            try
+            {
+                var retFile = await MongoWork.LoadFromGridFs(fileId);
+                if (retFile != null)
+                {
+                    return Ok(File(retFile.FileStream, retFile.getContentType(), retFile.FileName));
+                }
+                return BadRequest();
+
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// Gets all screens for a specific user
+        /// </summary>
+        /// <param name="userId">User id</param>
+        /// <returns></returns>
         [HttpPost("/getuserscreens")]
         [Produces("application/json")]
         public async Task<ActionResult<List<BasicItem>>> GetScreens(string userId)
@@ -76,6 +105,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Returns screen with it's children (tabs, tiles, tile items)
+        /// </summary>
+        /// <param name="item">BasicItem item</param>
+        /// <returns></returns>
         [HttpPost("/gettiles")]
         [Produces("application/json")]
         public async Task<ActionResult<List<BasicItem>>> getScreen(BasicItem item)
@@ -90,6 +124,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes item from DB 
+        /// </summary>
+        /// <param name="item">BasicItem item</param>
+        /// <returns></returns>
         [HttpPost("/deleteitem")]
         [Produces("application/json")]
         public async Task<IActionResult> deleteItem(BasicItem item)
@@ -105,6 +144,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates items in DB
+        /// </summary>
+        /// <param name="items">List of items currently shown on screen</param>
+        /// <returns></returns>
         [HttpPost("/updateitems")]
         [Produces("application/json")]
         public async Task<IActionResult> updateItems(List<BasicItem> items)

@@ -4,7 +4,7 @@ using Newtonsoft.Json.Converters;
 
 namespace TilePlanner_Server_RESTAPI.ORM
 {
-    
+
     public class BasicItem
     {
         [BsonId]
@@ -41,7 +41,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public List<Coordinate>? Coordinates { get; set; }
 
         [BsonIgnoreIfNull]
-        public FileInfoShort? File { get; set; } 
+        public FileInfoShort? File { get; set; }
 
 
     }
