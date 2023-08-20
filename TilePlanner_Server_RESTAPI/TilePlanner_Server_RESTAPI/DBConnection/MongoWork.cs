@@ -37,12 +37,12 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         {
             var collection = database.GetCollection<BasicItem>("Items");
             // var itemtest = collection.Find("{}").ToList<IBasicItem>();
-            var screen = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), Header = "Screen" };
-            var tab = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), ParentId = screen.Id.ToString(), Header = "Tab" };
-            var tile = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), ParentId = tab.Id.ToString(), Header = "Tile" };
-            var text1 = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), ParentId = tile.Id.ToString(), Header = "Text1" };
-            var text2 = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), ParentId = tile.Id.ToString(), Header = "Text2" };
-            var task = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), ParentId = tile.Id.ToString(), Header = "Task" };
+            var screen = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), Itemtype = Itemtype.SCREEN, Header = "Screen" };
+            var tab = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), Itemtype = Itemtype.TAB, ParentId = screen.Id.ToString(), Header = "Tab" };
+            var tile = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), Itemtype = Itemtype.TILE, ParentId = tab.Id.ToString(), Header = "Tile" };
+            var text1 = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), Itemtype = Itemtype.TEXT, ParentId = tile.Id.ToString(), Header = "Text1" };
+            var text2 = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), Itemtype = Itemtype.TEXT, ParentId = tile.Id.ToString(), Header = "Text2" };
+            var task = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(),Itemtype = Itemtype.TASK, ParentId = tile.Id.ToString(), Header = "Task" };
             collection.InsertMany(new List<BasicItem>() { screen, tab, tile, text1, text2, task });
             var coll = collection.Find("{}").ToList();
             return coll;
