@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './Footer.module.css'
-function FooterItem() {
+function FooterItemDesktop() {
   return (
    <div className={styles.footer}>
         <div className={styles.sub_menu}>
@@ -16,4 +16,4 @@ function FooterItem() {
   )
 }
 
-export default FooterItem
+export default FooterItemDesktop

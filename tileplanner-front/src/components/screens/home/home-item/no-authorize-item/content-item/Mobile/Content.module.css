@@ -74,8 +74,43 @@
     padding-bottom: 7px;
     padding-left: 35px;
     padding-right: 35px;
+    text-align: center;
 }
 
 .button:hover {
     text-shadow: none;
+}
+
+.content_element_2{
+    margin-top: 88px;
+
+}
+.abilities_wrap{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.ability_item {
+    width: 158px;
+    height: 144px;
+    border-radius: 21px;
+    background-color: #E7E7E7;
+    box-shadow:
+       -5px -5px 10px 0px #FFFFFF inset,
+       5px 5px 10px 0px #161B1D3B inset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 10px;
+ }
+ .ability_info {
+    font-weight: 700;
+    font-size: 16px;
+    color: #474747;
+    text-align: center;
+ }
+.ability_icon>img{
+    height: 38px;
 }

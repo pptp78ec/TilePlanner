@@ -4,8 +4,10 @@ import NoAuthorize from './components/screens/home/home-item/no-authorize-item/N
 NoAuthorize
 import styles from './global.css'
 import styles1 from './animate.css'
+import Authorize from './components/screens/home/home-item/authorize-item/Authorize'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-   <NoAuthorize/>
+   {/* <NoAuthorize/> */}
+   <Authorize/>
   </React.StrictMode>,
 )

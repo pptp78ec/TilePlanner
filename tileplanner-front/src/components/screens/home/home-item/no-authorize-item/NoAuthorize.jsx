@@ -2,10 +2,14 @@ import React from 'react'
 import { useMediaQuery } from "react-responsive";
 
 import MenuItemDesktop from './menu-item/Desktop/MenuItemDesktop'
+import MenuItemMobile from './menu-item/Mobile/MenuItemMobile'
+
 import ContentItemDesktop from './content-item/Desktop/ContentItemDesktop'
-import FooterItem from './footer-item/FooterItem'
-import MenuItemMobile from './menu-item/Mobile/MenuItemMobile';
-import ContentItemMobile from './content-item/Mobile/ContentItemMobile';
+import ContentItemMobile from './content-item/Mobile/ContentItemMobile'
+
+import FooterItemDesktop from './footer-item/Desktop/FooterItemDesktop'
+import FooterItemMobile from './footer-item/Mobile/FooterItemMobile';
+
 
 
 
@@ -19,10 +23,11 @@ function NoAuthorize() {
     <>
       { isDesktop ? <MenuItemDesktop/> : <MenuItemMobile/> }
       { isDesktop ?  <ContentItemDesktop/> : <ContentItemMobile/> }
+      { isDesktop ?   <FooterItemDesktop/> : <FooterItemMobile/> }
       
      
     
-    <FooterItem/>
+   
     </>
     
   )
