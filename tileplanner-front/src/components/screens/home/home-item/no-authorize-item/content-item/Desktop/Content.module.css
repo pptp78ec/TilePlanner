@@ -1,0 +1,135 @@
+ .content {
+    min-height: 100%;
+ }
+
+ .content_element_1 {
+    height: 110vh;
+    display: flex;
+    justify-content: right;
+    background-image: url('./macUp_1.svg');
+    background-size: cover;
+ }
+
+ .sub_element {
+    width: 60%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-right: 91px;
+ }
+
+ .header {
+    font-weight: 900;
+    font-size: 38px;
+    text-align: right;
+    margin-bottom: 50px;
+ }
+
+ .text {
+    font-weight: 500;
+    font-size: 32px;
+    text-align: right;
+    width: 100%;
+ }
+
+ .button_wrap {
+    display: flex;
+    justify-content: right;
+    height: 61px;
+ }
+
+ .button {
+    display: flex;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(to right, #BED961, #57B551);
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    min-width: 418px;
+    font-size: 32px;
+    color: white;
+    text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3);
+    /* Горизонтальное смещение, вертикальное смещение, размытие, цвет */
+    transition: 0.25s;
+    cursor: pointer;
+    box-shadow:    5px 5px 10px 0px #161B1D3B;
+ }
+
+ .button:hover {
+    text-shadow: none;
+ }
+
+ .content_element_2 {
+    margin-top: 29px;
+    background-color: #EBEBEB;
+ }
+
+ .wrapper {
+    border: 2px solid #F8ED6A;
+    border-radius: 21px;
+    margin-left: 50px;
+    margin-right: 50px;
+    box-shadow:
+       -5px -5px 10px 0px #FAFBFF,
+       5px 5px 10px 0px #161B1D3B;
+    background-color: #E7E7E7;
+
+ }
+
+ .abilities_wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+    margin-bottom: 34px;
+    margin-top: 50px;
+ }
+
+ .ability_item {
+    width: 257px;
+    height: 234px;
+    border-radius: 21px;
+    background-color: #E7E7E7;
+    box-shadow:
+       -5px -5px 10px 0px #FFFFFF inset,
+       5px 5px 10px 0px #161B1D3B inset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 15px;
+ }
+
+ .ability_info {
+    font-weight: 700;
+    font-size: 24px;
+    color: #474747;
+    text-align: center;
+ }
+
+ .content_element_3 {
+    margin-top: 130px;
+    width: 100%;
+    margin-bottom: 140px;
+ }
+
+ .example {
+    /* background-image: url('./example.svg');
+    background-size: cover; */
+    height: 100%;
+    width: 100%;
+    /* box-shadow: 5px 5px 10px 0px #161B1D3B,
+       -5px -5px 10px 0px #FAFBFF;
+    border-radius: 20px;
+    overflow: hidden; */
+    padding-left: 50px;
+    padding-right: 50px;
+ }
+ .example>img{
+  width: 100%;
+   height: auto;
+ }
