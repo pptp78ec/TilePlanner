@@ -258,10 +258,11 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="user">User instance</param>
         /// <returns></returns>
-        public async Task addNewUser(User user)
+        public async Task<User> addNewUser(User user)
         {
             user.RegisterDate = DateTime.Now;
             await database.GetCollection<User>("Users").InsertOneAsync(user);
+            return user;
         }
 
         /// <summary>
