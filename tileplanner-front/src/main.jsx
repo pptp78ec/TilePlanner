@@ -7,7 +7,7 @@ import styles1 from './animate.css'
 import Authorize from './components/screens/home/home-item/authorize-item/Authorize'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-   {/* <NoAuthorize/> */}
-   <Authorize/>
+    {/* <NoAuthorize/> */}
+    <Authorize />
   </React.StrictMode>,
 )
