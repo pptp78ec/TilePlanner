@@ -26,4 +26,12 @@ namespace TilePlanner_Server_RESTAPI.ORM
             return contentType ?? "application/octet-stream";
         }
     }
+
+    public class LoginData
+    {
+        public string Login { get; set; }
+        public string Password { get; set; }
+    }
+
+
 }
