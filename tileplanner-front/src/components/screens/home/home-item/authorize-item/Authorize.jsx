@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react';
 import { useMediaQuery } from "react-responsive";
 import MenuItemDesktop from './menu-item/Desktop/MenuItemDesktop';
 import ContentItemDesktop from './content-item/Desktop/ContentItemDesktop';
@@ -9,12 +9,12 @@ function Authorize() {
     const isDesktop = useMediaQuery({
         query: "(min-width: 1050px)"
       });
-
+      const [showForm, setShowForm] = useState(false);
 
   return (
     <>
-     { isDesktop ? <MenuItemDesktop/> :<MenuItemMobile/> }
-     { isDesktop ? <ContentItemDesktop/> :<ContentItemMobile/> }
+     { isDesktop ? <MenuItemDesktop setShowForm={setShowForm} /> :<MenuItemMobile setShowForm={setShowForm}/> }
+     { isDesktop ? <ContentItemDesktop showForm={showForm} setShowForm={setShowForm} /> :<ContentItemMobile showForm={showForm} setShowForm={setShowForm}/> }
     </>
    
   )

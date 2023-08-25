@@ -31,13 +31,13 @@
     border-radius: 20px;
     box-shadow: 5px 5px 10px 0px #161B1D3B,
         -5px -5px 10px 0px #FAFBFF;
-    transition: box-shadow 0.25s ease;
+    transition:  0.25s ease;
     cursor: pointer;
 }
 
 .project_preview:hover {
     box-shadow: 0px 0px 15px 5px #FFFFFF;
-
+    transform: translateY(-10px);
 }
 
 .project_name {

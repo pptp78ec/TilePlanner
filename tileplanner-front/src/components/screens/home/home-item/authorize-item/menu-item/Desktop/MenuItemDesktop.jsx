@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './Menu.module.css';
-function MenuItemDesktop() {
+function MenuItemDesktop({setShowForm}) {
     return (
         <div className={styles.menu}>
 
@@ -17,7 +17,8 @@ function MenuItemDesktop() {
                     </div>
                 </div>
                 <div className={styles.sub_element}>
-                    <div className={styles.profile}>
+                    <div className={styles.profile}
+                     onClick={()=>{setShowForm(true);}}>
                         <img src="./default_profile_icon.svg" alt="" />
                     </div>
                 </div>
