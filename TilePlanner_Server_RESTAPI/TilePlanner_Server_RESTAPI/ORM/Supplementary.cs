@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.StaticFiles;
+using TilePlanner_Server_RESTAPI.ORM.Roles;
 
 namespace TilePlanner_Server_RESTAPI.ORM
 {
@@ -25,5 +26,12 @@ namespace TilePlanner_Server_RESTAPI.ORM
             new FileExtensionContentTypeProvider().TryGetContentType(FileName, out contentType);
             return contentType ?? "application/octet-stream";
         }
+    }
+
+    public class RoleUpdateFields
+    {
+        public string UserId { get; set; }
+        public double DaysToAdd { get; set; }
+        public AccessLevel AccessLevel { get; set; }
     }
 }

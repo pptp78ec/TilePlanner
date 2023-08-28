@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
-using Newtonsoft.Json;
 using TilePlanner_Server_RESTAPI.ORM;
+using TilePlanner_Server_RESTAPI.ORM.Roles;
 
 namespace TilePlanner_Server_RESTAPI.DBConnection
 {
@@ -26,8 +26,15 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 var indexModel = new CreateIndexModel<User>("{ Login: 1, Email: 1, Phone: 1 }", indexOptions);
                 database.GetCollection<User>("Users").Indexes.CreateOne(indexModel);
             }
-            if (!database.ListCollectionNames().ToList().Contains("Users"))
+            if (!database.ListCollectionNames().ToList().Contains("Items"))
                 database.CreateCollection("Items");
+            if (!database.ListCollectionNames().ToList().Contains("Roles"))
+            {
+                database.CreateCollection("Roles");
+                var indexOptions = new CreateIndexOptions() { Unique = true };
+                var indexModel = new CreateIndexModel<Role>("{ UserId: 1 }", indexOptions);
+                database.GetCollection<Role>("Roles").Indexes.CreateOne(indexModel);
+            }
         }
 
         //
@@ -233,10 +240,50 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                     results.AddRange(await childrenSearch(node.Id, collection));
                 }
             }
-            return results;           
+            return results;
         }
 
         //------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
+
+        //
+        //ROLE FUNCTIONALITY
+        //------------------------------------------------------------------------------------------
+
+
+        public async Task<Role> AddNewRole(string userId)
+        {
+            var role = new Role() { Id = ObjectId.GenerateNewId().ToString(), EndTime = null, UserId = userId, AccessLevel = AccessLevel.BASIC };
+            await database.GetCollection<Role>("Roles").InsertOneAsync(role);
+            return role;
+        }
+
+        public async Task<Role?> UpdateRole(string userId, AccessLevel accesslevel, double daystoadd)
+        {
+            var role = await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.UserId == userId)).FirstAsync();
+            if (role != default(Role))
+            {
+                role.AccessLevel = accesslevel;
+                role.EndTime = role.EndTime != null ? role.EndTime?.AddDays(daystoadd) : DateTime.Now.AddDays(daystoadd);
+                var update = Builders<Role>.Update
+                    .Set(_ => _.AccessLevel, role.AccessLevel)
+                    .Set(_ => _.EndTime, role.EndTime);
+                await database.GetCollection<Role>("Roles").UpdateOneAsync<Role>(_ => _.Id == role.Id, update);
+                return role;
+            }
+            else return null;
+        }
+
+        public async Task<Role> FindRoleByUserId(string userId)
+        {
+            return await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.UserId == userId)).FirstAsync();
+        }
+
+        public async Task<Role> FindRoleById(string roleId)
+        {
+            return await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.Id == roleId)).FirstAsync();
+        }
+
         //------------------------------------------------------------------------------------------
 
         //
@@ -262,6 +309,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         {
             user.RegisterDate = DateTime.Now;
             await database.GetCollection<User>("Users").InsertOneAsync(user);
+            await AddNewRole(user.Id);
         }
 
         /// <summary>
