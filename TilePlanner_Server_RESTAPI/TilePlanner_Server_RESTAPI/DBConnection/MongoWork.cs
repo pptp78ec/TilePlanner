@@ -274,6 +274,16 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             else return null;
         }
 
+        public async Task<Role> FindRoleByUserId(string userId)
+        {
+            return await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.UserId == userId)).FirstAsync();
+        }
+
+        public async Task<Role> FindRoleById(string roleId)
+        {
+            return await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.Id == roleId)).FirstAsync();
+        }
+
         //------------------------------------------------------------------------------------------
 
         //
