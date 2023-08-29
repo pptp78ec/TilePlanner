@@ -1,3 +1,4 @@
+using TilePlanner_Server_RESTAPI.BrainTreePayPalPayment;
 using TilePlanner_Server_RESTAPI.DBConnection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddSingleton<MongoWork>();
+builder.Services.AddTransient<IBrainTreeService, BrainTreeService>();
 
 var app = builder.Build();
 
