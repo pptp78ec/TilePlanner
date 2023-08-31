@@ -4,11 +4,11 @@
     left: 0;
     width: 100%;
     min-height: 100%;
-    background-color: rgba(0, 0, 0, 0.444);
+    background: #00000026;
     display: flex;
     justify-content: center;
-    padding-top: 30px;
-    padding-bottom: 100px;
+    padding-top: 45px;
+    padding-bottom: 67px;
 }
 
 .zoomOut {
@@ -19,51 +19,54 @@
     position: absolute;
     transform: rotate(45deg);
     top: 0;
-    left: 93%;
+    left: 90%;
     font-size: 3em;
     color: #989898;
     cursor: pointer;
 }
 
 .profile_form {
-    width: 70%;
+    width: 85%;
     height: auto;
     background-color: #E7E7E7;
     box-shadow: 5px 5px 10px 0px #161B1D3B,
         -5px -5px 10px 0px #D4D4D4;
-
     border-radius: 20px;
-    padding-left: 55px;
-    padding-top: 50px;
+    padding-left: 28px;
+    /* padding-right: 30px; */
+    padding-top: 26px;
     position: relative;
+    /* display: flex;
+    justify-content: center;
+    align-items:start; */
 }
 
 .profile_content {
     display: flex;
+    flex-direction: column;
+    margin-right: 31px;
 }
 
-.content_element:first-child {
+.content_element:nth-child(2) {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    margin-top: 80px;
 }
 
 .avatar>img {
-    height: 100px;
+    height: 80px;
 }
 
 .avatar_change_button {
     background: linear-gradient(to right, #BED961, #57B551);
-    width: 162px;
-    height: 30px;
+    width: 145px;
+    height: 25px;
     text-shadow: 3px 3px 4px 0px #00000059;
     border-radius: 21px;
     text-align: center;
-    margin-top: 21px;
     color: white;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,16 +74,17 @@
     box-shadow: -5px -5px 10px 0px #FAFBFF,
         5px 5px 10px 0px #161B1D3B;
     transition: box-shadow 0.25s ease;
+    margin-left: 24px;
 }
 
 .avatar_change_button:hover {
     box-shadow: none;
 }
 
-.content_element:nth-child(2) {
+.content_element:nth-child(3) {
     display: flex;
     flex-direction: column;
-    margin-left: 51px;
+    margin-top: 25px;
 }
 
 .sub_element {
@@ -95,7 +99,7 @@
 
 .sub_element:nth-last-child(1),
 .sub_element:nth-last-child(2) {
-    border: none;
+    border-bottom: 1px solid #929292;
 }
 
 .sub_element:last-child {
@@ -106,7 +110,7 @@
 
 .sub_header {
     font-weight: 700;
-    font-size: 26px;
+    font-size: 24px;
     margin-bottom: 28px;
 }
 
@@ -116,7 +120,7 @@
 
 .input_header {
     font-weight: 400;
-    font-size: 18px;
+    font-size: 14px;
     margin-bottom: 5px;
     color: #0000004D;
     margin-left: 20px;
@@ -124,16 +128,18 @@
 
 .input_info {
     position: relative;
+    width: 100%;
 }
 
 .input_info>input {
-    width: 400px;
-    height: 40px;
+    min-width: 200px;
+    width: 95%;
+    height: 35px;
     border-radius: 21px;
     background-color: #E7E7E7;
     box-shadow: -5px -5px 10px 0px #FAFBFF,
         5px 5px 10px 0px #161B1D3B;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 400;
     color: black;
     outline: none;
@@ -144,13 +150,13 @@
 
 .save_changes_button {
     background: linear-gradient(to right, #BED961, #57B551);
-    width: 342px;
-    height: 45px;
+    width: 201px;
+    height: 30px;
     border-radius: 21px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 26px;
+    font-size: 18px;
     font-weight: 700;
     text-shadow: 3px 3px 4px 0px #00000059;
     box-shadow: -5px -5px 10px 0px #FAFBFF,
@@ -166,21 +172,21 @@
 
 .input_hidder {
     position: absolute;
-    top: 22%;
-    left: 90%;
+    top: 26%;
+    right: 7%;
     display: block;
     cursor: pointer;
 }
 
 .input_hidden {
-    background-image: url('./input_hidden_icon.svg');
-    height: 20px;
-    width: 22px;
+    background-image: url('./input_hidden_icon_mobile.svg');
+    height: 15px;
+    width: 17px;
 }
 
 .input_visible {
-    background-image: url('./input_visible_icon.svg');
-    height: 17px;
-    width: 24px;
-    top: 25%;
+    background-image: url('./input_visible_icon_mobile.svg');
+    height: 13px;
+    width: 18px;
+    top: 30%;
 }

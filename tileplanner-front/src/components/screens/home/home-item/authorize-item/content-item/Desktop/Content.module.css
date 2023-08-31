@@ -31,7 +31,7 @@
     border-radius: 20px;
     box-shadow: 5px 5px 10px 0px #161B1D3B,
         -5px -5px 10px 0px #FAFBFF;
-    transition:  0.25s ease;
+    transition: 0.25s ease;
     cursor: pointer;
 }
 

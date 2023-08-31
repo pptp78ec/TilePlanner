@@ -1,14 +1,14 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './ProfileChangeForm.module.css'
 import styless from './ProfileChangeForm.module.css';
-function ProfileChangeFormDesktop({ showForm, setShowForm }) {
+function ProfileChangeFormMobile({ showForm, setShowForm }) {
   const [currentPassword, setCurrentPassword] = useState(false);
   const [newPassword, setNewPassword] = useState(false);
   const [changedPassword, setChangedPassword] = useState(false);
-  const overlay=React.createRef();
+  const overlay = React.createRef();
   const handleTogglePasswordVisibility = (event) => {
     const id = event.currentTarget.id;
-   
+
     switch (id) {
       case "current_password": setCurrentPassword(!currentPassword); break;
       case "new_password": setNewPassword(!newPassword); break;
@@ -17,12 +17,12 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
   };
   useEffect(() => {
     const timer = setTimeout(() => {
-      if(showForm==false){
-        overlay.current.style.display='none';
-      }else{
-        overlay.current.style.display='flex';
+      if (showForm == false) {
+        overlay.current.style.display = 'none';
+      } else {
+        overlay.current.style.display = 'flex';
       }
-   
+
       console.log("Таймер завершен!");
     }, 1000); // 3000 миллисекунд (3 секунды)
 
@@ -33,7 +33,7 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
   }, [showForm]);
   const handleToggleCloseForm = () => {
     setShowForm(false);
-    
+
   };
   return (
     <>
@@ -47,6 +47,11 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
           </div>
           <div className={styles.profile_content}>
             <div className={styles.content_element}>
+              <div className={styles.sub_header}>
+                Акаунт
+              </div>
+            </div>
+            <div className={styles.content_element}>
               <div className={styles.avatar}>
                 <img src="./default_profile_icon.svg" alt="" />
               </div>
@@ -56,9 +61,6 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
             </div>
             <div className={styles.content_element}>
               <div className={styles.sub_element}>
-                <div className={styles.sub_header}>
-                  Акаунт
-                </div>
                 <div className={styles.user_input}>
                   <div className={styles.input_header}>
                     Ім’я
@@ -119,6 +121,7 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                     Повторіть пароль
                   </div>
                   <div className={styles.input_info}>
+        
                     <input type={changedPassword ? 'text' : 'password'} />
                     <a id='changed_password'
                       className={`${styles.input_hidder} 
@@ -152,4 +155,4 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
   )
 }
 
-export default ProfileChangeFormDesktop
+export default ProfileChangeFormMobile

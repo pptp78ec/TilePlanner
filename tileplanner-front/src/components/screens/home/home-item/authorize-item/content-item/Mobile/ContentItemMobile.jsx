@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './Content.module.css'
-function ContentItemMobile() {
+import ProfileChangeFormMobile from '../../UI/profile-change-form-item/Mobile/ProfileChangeFormMobile'
+function ContentItemMobile({showForm,setShowForm}) {
   return (
     <div className={styles.content}>
     <div className={styles.header}>
@@ -31,7 +32,7 @@ function ContentItemMobile() {
                 Проект 3
             </div>
         </div>
-       
+        <ProfileChangeFormMobile showForm={showForm} setShowForm={setShowForm}/>
     </div>
 </div>
   )
