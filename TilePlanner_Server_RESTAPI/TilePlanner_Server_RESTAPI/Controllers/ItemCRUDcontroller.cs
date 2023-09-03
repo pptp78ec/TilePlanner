@@ -70,12 +70,13 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [HttpPost("/getfile")]
         public async Task<IActionResult> getFile(string fileId)
         {
+
             try
             {
-                var retFile = await MongoWork.LoadFromGridFs(fileId);
+                var retFile = await MongoWork.LoadFromGridFs(ObjectId.Parse(fileId));
                 if (retFile != null)
                 {
-                    return Ok(File(retFile.FileStream, retFile.getContentType(), retFile.FileName));
+                    return Ok(File(retFile.FileContents, retFile.getContentType(), retFile.FileName));
                 }
                 return BadRequest();
 
