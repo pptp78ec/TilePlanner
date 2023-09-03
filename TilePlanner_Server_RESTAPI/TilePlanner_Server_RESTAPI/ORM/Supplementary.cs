@@ -18,7 +18,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
     public class DBFileRet
     {
         public string FileName { get; set; } = string.Empty;
-        public Stream? FileStream { get; set; } = default;
+        public byte[]? FileContents { get; set; } = default;
 
         public string getContentType()
         {
@@ -38,9 +38,10 @@ namespace TilePlanner_Server_RESTAPI.ORM
 
     public class CheckoutModel
     {
+        public string AccessLevel { get; set; } = string.Empty;
         public decimal MoneyAmount { get; set; } = default;
-
         public string PaymentMethodNonce { get; set; } = string.Empty;
+        public string UserID { get; set; } = string.Empty;
 
     }
 }

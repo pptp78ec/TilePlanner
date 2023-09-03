@@ -4,17 +4,20 @@ using Microsoft.AspNetCore.Mvc;
 using TilePlanner_Server_RESTAPI.BrainTreePayPalPayment;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
+using TilePlanner_Server_RESTAPI.ORM.Roles;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/brpayment")]
     [ApiController]
     public class BrainTreePayment : ControllerBase
     {
         private readonly IBrainTreeService brainTreeService;
-        public BrainTreePayment(IBrainTreeService brainTreeService)
+        private readonly MongoWork mongoWork;
+        public BrainTreePayment(IBrainTreeService brainTreeService, MongoWork mongoWork)
         {
             this.brainTreeService = brainTreeService;
+            this.mongoWork = mongoWork;
         }
 
         [HttpGet("/generatetoken")]
@@ -31,7 +34,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
         [HttpPost("/checkout")]
-        public async Task<IActionResult> Checkout(CheckoutModel checkout)
+        public async Task<IActionResult> Checkout([FromForm]CheckoutModel checkout)
         {
             try
             {
@@ -47,10 +50,14 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                         SubmitForSettlement = true,
                     }
                 };
+                var transactionData = new TransactionData() { MoneyAmount = checkout.MoneyAmount, UserId = checkout.UserID, AccessLevel = Enum.Parse<AccessLevel>(checkout.AccessLevel)};
                 Result<Transaction> result = await gateway.Transaction.SaleAsync(request);
+
                 if (result.IsSuccess())
                 {
                     paymentStatus = "Your payment is Successful!";
+                    transactionData.IsSuccessful = true;
+                    await mongoWork.addTransactionData(transactionData);
                 }
                 else
                 {
@@ -59,6 +66,9 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
                         errorMsg += "Error: " + (int)error.Code + " - " + error.Message + "\n";
                     }
+                    transactionData.IsSuccessful = false;
+                    transactionData.ErrorMSG = errorMsg;
+                    await mongoWork.addTransactionData(transactionData);
                     return Problem(errorMsg, null, 424);
                 }
 
