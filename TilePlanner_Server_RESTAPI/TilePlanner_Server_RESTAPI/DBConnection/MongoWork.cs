@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
+using System.Net.Sockets;
 using TilePlanner_Server_RESTAPI.ORM;
 using TilePlanner_Server_RESTAPI.ORM.Roles;
 
@@ -35,6 +36,8 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 var indexModel = new CreateIndexModel<Role>("{ UserId: 1 }", indexOptions);
                 database.GetCollection<Role>("Roles").Indexes.CreateOne(indexModel);
             }
+            if (!database.ListCollectionNames().ToList().Contains("Transactions"))
+                database.CreateCollection("Transactions");
         }
 
         //
@@ -108,16 +111,17 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="fileId">Id of the file</param>
         /// <returns>Stream</returns>
-        public async Task<DBFileRet?> LoadFromGridFs(string fileId)
+        public async Task<DBFileRet?> LoadFromGridFs(ObjectId fileId)
         {
-            var file = await gridFSBucket.Find(Builders<GridFSFileInfo>.Filter.Eq(x => x.Id.ToString(), fileId)).FirstOrDefaultAsync();
+            var filter = Builders<GridFSFileInfo>.Filter.Eq("_id", fileId);
+            var result = await gridFSBucket.FindAsync(filter);
+            var file = await result.FirstOrDefaultAsync();
 
             if (file != null)
             {
                 var stream = new MemoryStream();
                 await gridFSBucket.DownloadToStreamAsync(fileId, stream);
-
-                return new DBFileRet() { FileName = file.Filename, FileStream = stream };
+                return new DBFileRet() { FileName = file.Filename, FileContents = stream.ToArray() };
             }
             return null;
 
@@ -244,6 +248,23 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         }
 
         //------------------------------------------------------------------------------------------
+
+        //
+        //ROLE FUNCTIONALITY
+        //------------------------------------------------------------------------------------------
+
+        public async Task<TransactionData> addTransactionData(TransactionData transactionData) 
+        {
+            if(string.IsNullOrEmpty(transactionData.Id))
+            {
+                transactionData.Id = ObjectId.GenerateNewId().ToString();
+            }
+            await database.GetCollection<TransactionData>("Transactions").InsertOneAsync(transactionData);
+            return transactionData;
+        }
+
+        //------------------------------------------------------------------------------------------
+
         //------------------------------------------------------------------------------------------
 
         //

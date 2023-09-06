@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://js.braintreegateway.com/web/dropin/1.40.2/js/dropin.js" type="text/javascript"></script>
+
+</head>
+<body>
+    <div class="fields">
+        <input type="text" id="moneyamountinput" />
+        <select id="level">
+            <option>ADVANCED</option>
+            <option>FULL</option>
+        </select>
+        <button type="button" id="buttonset">Set</button>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div id="dropin"></div>
+            <button type="submit" id="checkout" class="btn btn-sm  btn-success button">
+                Checkout <i class="fa fa-shopping-cart"></i>
+            </button>
+        </div>
+    </div>
+
+    
+
+    <script>
+        let paymentModel;
+        let money;
+        let levelSelect = document.getElementById("level");
+        function PaymentGateway() {
+        money = Number(document.getElementById("moneyamountinput").value)
+        let level = levelSelect.options[levelSelect.selectedIndex].text
+        paymentModel = {
+            MoneyAmount: money,
+            AccessLevel: level,
+            UserID: "testUserId"
+        }
+        console.log(paymentModel)
+        console.log(money)
+        console.log(level)
+        let client_token;
+            $.ajax({
+                method: 'GET',
+                url: 'https://localhost:7029/generatetoken',              
+                success: function(data, status){
+                    client_token = data;
+
+                    braintree.dropin.create({
+                    authorization: client_token,
+                    container: '#dropin',
+                    card: {
+                        overrides: {
+                            styles: {
+                                input: {
+                                    color: 'blue',
+                                    'font-size': '18px'
+                                },
+                                '.number': {
+                                    'font-family': 'monospace'
+                                },
+                                '.invalid': {
+                                    color: 'red'
+                                }
+                            },
+                            fields: {
+                                number: {
+                                    //placeholder: 'Card Number',  
+                                    formatInput: true // Turn off automatic formatting  
+                                }
+                            }
+                        }
+                    }
+
+                }, function (createErr, instance) {
+                    //Checkout Submit  
+                    document.getElementById("checkout").addEventListener('click', function () {
+                        //event.preventDefault();  
+                        instance.requestPaymentMethod(function (err, payload) {
+                            if (err) {
+                                console.log('Error', err);
+                                return;
+                            }
+                            //Token Braintree  
+                            paymentModel.PaymentMethodNonce = payload.nonce;
+                            checkOut();
+                        });
+                    });
+                }); 
+
+                }
+        });
+            
+        };
+
+        let checkOut = function () {
+            console.log(paymentModel);
+            $.ajax({
+                method: 'POST',
+                url: 'https://localhost:7029/checkout',
+                data: paymentModel,
+                success: function successCallback(response) {
+                console.log(response.data);
+                //$scope.paymentresult = response.data;
+            }});
+        };
+
+        document.getElementById("buttonset").addEventListener("click", PaymentGateway)
+        //PaymentGateway();
+    </script>
+
+</body>
+</html>
