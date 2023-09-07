@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
 
@@ -17,6 +18,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
         [HttpGet("/geturole")]
         [Produces("application/json")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize]
+#endif
+#endif
         public async Task<IActionResult> GetRoleUser(string userId)
         {
             try
@@ -30,6 +36,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         }
         [HttpGet("/getrolebyid")]
         [Produces("application/json")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize]
+#endif
+#endif
         public async Task<IActionResult> GetRoleById(string roleID)
         {
             try
@@ -44,6 +55,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
         [HttpPost("/updateRole")]
         [Produces("application/json")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize]
+#endif
+#endif
         public async Task<IActionResult> UpdateRole(RoleUpdateFields roleUpdateFields)
         {
             try

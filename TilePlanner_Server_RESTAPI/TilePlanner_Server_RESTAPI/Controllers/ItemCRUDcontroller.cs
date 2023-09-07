@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Braintree;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using System.Collections;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
+using TilePlanner_Server_RESTAPI.ORM.Roles;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
 {
@@ -21,6 +24,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// FOR TESTING PURPOSES
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("/getcollectiontest")]
         [Produces("application/json")]
         public ICollection GetItems()
@@ -36,8 +40,14 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// </summary>
         /// <param name="item">Item</param>
         /// <returns>Item with fileinfo</returns>
+        
         [HttpPost("/uploadfile")]
         [Produces("application/json")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize(Roles = "ADVANCED,FULL")]
+#endif
+#endif
         public async Task<ActionResult<BasicItem>> UploadFile(BasicItem item)
         {
             var request = HttpContext.Request;
@@ -54,6 +64,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpGet("/uploadfile2")]
         [Produces("application/json")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize(Roles = "ADVANCED,FULL")]
+#endif
+#endif
         public async Task<ActionResult<FileInfoShort>> UploadFile2()
         {
             var testfile = new FileInfo("E:\\TEMP\\TEMP.rar");
@@ -68,6 +83,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <param name="fileId">Id of a file</param>
         /// <returns></returns>
         [HttpPost("/getfile")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize(Roles = "ADVANCED,FULL")]
+#endif
+#endif
         public async Task<IActionResult> getFile(string fileId)
         {
 
@@ -94,6 +114,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/getuserscreens")]
         [Produces("application/json")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize]
+#endif
+#endif
         public async Task<ActionResult<List<BasicItem>>> GetScreens(string userId)
         {
             try
@@ -113,6 +138,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/gettiles")]
         [Produces("application/json")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize]
+#endif
+#endif
         public async Task<ActionResult<List<BasicItem>>> getScreen(BasicItem item)
         {
             try
@@ -132,6 +162,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/deleteitem")]
         [Produces("application/json")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize]
+#endif
+#endif
         public async Task<IActionResult> deleteItem(BasicItem item)
         {
             try
@@ -152,11 +187,31 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/updateitems")]
         [Produces("application/json")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize]
+#endif
+#endif
         public async Task<IActionResult> updateItems(List<BasicItem> items)
         {
             try
             {
-                await MongoWork.addOrUpdateItems(items);
+#if AUTHALT
+#if AUTHALT_ENABLED
+                //check if limit of 500 is exceeded
+                if(items.Count > 0)
+                {
+                    var currentItemCount = await MongoWork.CountAllItemsForUserId(items[0].ParentId);
+                    var role = await MongoWork.FindRoleByUserId(items[0].ParentId);
+                    if ((currentItemCount + items.Count) > 500 && role.AccessLevel == AccessLevel.BASIC)
+                    {
+                        return BadRequest("Exceeded number of items at this access level");
+                    }
+#endif
+#endif
+                    await MongoWork.addOrUpdateItems(items);
+                }
+
                 return Ok();
             }
             catch (Exception e)
