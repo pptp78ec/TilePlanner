@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
 using System.Net.Sockets;
@@ -263,6 +264,10 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return transactionData;
         }
 
+        public async Task<List<TransactionData>> GetTransactionsForUserAsync(string userId)
+        {
+            return await (await database.GetCollection<TransactionData>("Transactions").FindAsync(_=>_.UserId == userId)).ToListAsync();
+        }
                 
         //------------------------------------------------------------------------------------------
 
