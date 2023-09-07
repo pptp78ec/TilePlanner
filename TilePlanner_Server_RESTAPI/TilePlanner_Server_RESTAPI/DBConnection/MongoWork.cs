@@ -250,7 +250,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         //------------------------------------------------------------------------------------------
 
         //
-        //ROLE FUNCTIONALITY
+        //TRANSACTION FUNCTIONALITY
         //------------------------------------------------------------------------------------------
 
         public async Task<TransactionData> addTransactionData(TransactionData transactionData) 
@@ -263,6 +263,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return transactionData;
         }
 
+                
         //------------------------------------------------------------------------------------------
 
         //------------------------------------------------------------------------------------------

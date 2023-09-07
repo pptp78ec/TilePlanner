@@ -44,4 +44,10 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public string UserID { get; set; } = string.Empty;
 
     }
+
+    public class ReturnTokenData
+    {
+        public string Token { get; set; } = string.Empty;
+        public string UserID { get; set; } = string.Empty;
+    }
 }
