@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TilePlanner_Server_RESTAPI.Auth;
 using TilePlanner_Server_RESTAPI.BrainTreePayPalPayment;
 using TilePlanner_Server_RESTAPI.DBConnection;
 
@@ -38,6 +39,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 });
 
+builder.Services.AddSingleton<Authenticate>();
+
 #endif
 
 
@@ -57,6 +60,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+#if AUTHALT
+#if AUTHALT_ENABLED
+    app.UseAuthorization();
+    app.UseAuthentication();
+#endif
+#endif
 
 app.UseCors(cors =>
 {

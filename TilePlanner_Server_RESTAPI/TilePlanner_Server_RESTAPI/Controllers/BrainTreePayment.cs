@@ -1,4 +1,5 @@
 ﻿using Braintree;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TilePlanner_Server_RESTAPI.BrainTreePayPalPayment;
@@ -10,6 +11,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 {
     [Route("api/brpayment")]
     [ApiController]
+#if AUTHALT
+#if AUTHALT_ENABLED
+    [Authorize]
+#endif
+#endif
     public class BrainTreePayment : ControllerBase
     {
         private readonly IBrainTreeService brainTreeService;
