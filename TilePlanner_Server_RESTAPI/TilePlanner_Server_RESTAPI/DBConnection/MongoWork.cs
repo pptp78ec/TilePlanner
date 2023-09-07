@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
 using System.Net.Sockets;
@@ -250,7 +251,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         //------------------------------------------------------------------------------------------
 
         //
-        //ROLE FUNCTIONALITY
+        //TRANSACTION FUNCTIONALITY
         //------------------------------------------------------------------------------------------
 
         public async Task<TransactionData> addTransactionData(TransactionData transactionData) 
@@ -263,12 +264,17 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return transactionData;
         }
 
+        public async Task<List<TransactionData>> GetTransactionsForUserAsync(string userId)
+        {
+            return await (await database.GetCollection<TransactionData>("Transactions").FindAsync(_=>_.UserId == userId)).ToListAsync();
+        }
+                
         //------------------------------------------------------------------------------------------
 
         //------------------------------------------------------------------------------------------
 
         //
-        //ROLE FUNCTIONALITY
+        //ROLE & CLAIM FUNCTIONALITY
         //------------------------------------------------------------------------------------------
 
 
@@ -305,6 +311,13 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.Id == roleId)).FirstAsync();
         }
 
+        public async Task<long> CountAllItemsForUserId(string userId)
+        {
+            var count = 0L;
+            count = await database.GetCollection<BasicItem>("Itmes").CountDocumentsAsync(_ => _.CreatorId == userId);
+            return count;
+        }
+
         //------------------------------------------------------------------------------------------
 
         //
@@ -328,11 +341,14 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// <returns></returns>
         public async Task<User> addNewUser(User user)
         {
+            if (String.IsNullOrEmpty(user.Id))
+            {
+                user.Id = ObjectId.GenerateNewId().ToString();
+            }
             user.RegisterDate = DateTime.Now;
             await database.GetCollection<User>("Users").InsertOneAsync(user);
             await AddNewRole(user.Id);
             return user;
-            
         }
 
         /// <summary>

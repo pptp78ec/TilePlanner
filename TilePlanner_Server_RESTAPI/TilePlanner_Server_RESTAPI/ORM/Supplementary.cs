@@ -30,8 +30,8 @@ namespace TilePlanner_Server_RESTAPI.ORM
 
     public class LoginData
     {
-        public string Login { get; set; }
-        public string Password { get; set; }
+        public string Login { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 
 
@@ -50,5 +50,11 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public string PaymentMethodNonce { get; set; } = string.Empty;
         public string UserID { get; set; } = string.Empty;
 
+    }
+
+    public class ReturnTokenData
+    {
+        public string Token { get; set; } = string.Empty;
+        public string UserID { get; set; } = string.Empty;
     }
 }
