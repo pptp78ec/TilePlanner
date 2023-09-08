@@ -6,17 +6,28 @@ import MenuItemMobile from './menu-item/Mobile/MenuItemMobile';
 import ContentItemMobile from './content-item/Mobile/ContentItemMobile';
 
 function Authorize() {
-    const isDesktop = useMediaQuery({
-        query: "(min-width: 1050px)"
-      });
-      const [showForm, setShowForm] = useState(false);
+  const isDesktop = useMediaQuery({
+    query: "(min-width: 1050px)"
+  });
+  const [showForm, setShowForm] = useState(false);
+  const [showNtfiForm, setShowNtfiForm] = useState(false);
 
   return (
     <>
-     { isDesktop ? <MenuItemDesktop setShowForm={setShowForm} /> :<MenuItemMobile setShowForm={setShowForm}/> }
-     { isDesktop ? <ContentItemDesktop showForm={showForm} setShowForm={setShowForm} /> :<ContentItemMobile showForm={showForm} setShowForm={setShowForm}/> }
+      {isDesktop ? <MenuItemDesktop
+        setShowNtfiForm={setShowNtfiForm}
+        showNtfiForm={showNtfiForm}
+        setShowForm={setShowForm} /> :
+        <MenuItemMobile
+          setShowForm={setShowForm} />}
+      {isDesktop ? <ContentItemDesktop
+        showForm={showForm}
+        setShowForm={setShowForm} /> :
+        <ContentItemMobile
+          showForm={showForm}
+          setShowForm={setShowForm} />}
     </>
-   
+
   )
 }
 

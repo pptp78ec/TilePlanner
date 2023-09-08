@@ -1,14 +1,15 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './ProfileChangeForm.module.css'
 import styless from './ProfileChangeForm.module.css';
+import Prices from './prices-item/Prices';
 function ProfileChangeFormDesktop({ showForm, setShowForm }) {
   const [currentPassword, setCurrentPassword] = useState(false);
   const [newPassword, setNewPassword] = useState(false);
   const [changedPassword, setChangedPassword] = useState(false);
-  const overlay=React.createRef();
+  const overlay = React.createRef();
   const handleTogglePasswordVisibility = (event) => {
     const id = event.currentTarget.id;
-   
+
     switch (id) {
       case "current_password": setCurrentPassword(!currentPassword); break;
       case "new_password": setNewPassword(!newPassword); break;
@@ -17,12 +18,12 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
   };
   useEffect(() => {
     const timer = setTimeout(() => {
-      if(showForm==false){
-        overlay.current.style.display='none';
-      }else{
-        overlay.current.style.display='flex';
+      if (showForm == false) {
+        overlay.current.style.display = 'none';
+      } else {
+        overlay.current.style.display = 'flex';
       }
-   
+
       console.log("Таймер завершен!");
     }, 1000); // 3000 миллисекунд (3 секунды)
 
@@ -33,7 +34,7 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
   }, [showForm]);
   const handleToggleCloseForm = () => {
     setShowForm(false);
-    
+
   };
   return (
     <>
@@ -137,13 +138,23 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                 </div>
               </div>
               <div className={styles.sub_element}>
-                <div className={styles.save_changes_button}>
-                  Зберегти зміни
+                <div className={styles.sub_header}>
+                  Змінити план
                 </div>
               </div>
-            </div>
 
+              <div className={styles.sub_element}>
+
+              </div>
+            </div>
           </div>
+          <Prices />
+          <div className={styles.button}>
+            <div className={styles.save_changes_button}>
+              Зберегти зміни
+            </div>
+          </div>
+
         </form>
       </div>
 

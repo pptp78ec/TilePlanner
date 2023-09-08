@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './Menu.module.css'
+import { Link } from 'react-router-dom'
 
 function MenuItem() {
   return (
@@ -14,10 +15,11 @@ function MenuItem() {
       </div>
       <div className={styles.authorize_sub_menu}>
         <div className={styles.sign_in}>
-          Увійти
+       <Link to={"/login"}> Увійти</Link> 
         </div>
         <div className={styles.sign_up}>
-          Зареєструватися
+        <Link to={"/registration"}>  Зареєструватися</Link> 
+         
         </div>
       </div>
     </div>

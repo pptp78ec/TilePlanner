@@ -44,6 +44,10 @@
 .sign_in {
     color: #52B350;
 }
+.sign_in>a{
+    text-decoration: none;
+    color: #52B350;
+}
 
 .authorize_sub_menu {
     display: flex;
@@ -67,7 +71,10 @@
     width: 136px;
     font-size: 14px;
 }
-
+.sign_up>a{
+    text-decoration: none;
+    color: #FFFFFF;
+}
 .sign_up:hover {
     text-shadow: none;
 }

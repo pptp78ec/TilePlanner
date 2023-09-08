@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './Content.module.css'
+import Prices from '../../../authorize-item/UI/profile-change-form-item/Desktop/prices-item/Prices'
 
 //Футер, розделить на компоненты, и подумать о адаптации
 
@@ -93,6 +94,9 @@ function ContentItem() {
         <div className={styles.example}>
           <img src="./example.svg" alt="" />
         </div>
+      </div>
+      <div className={styles.content_element_4}>
+        <Prices/>
       </div>
     </div>
   )

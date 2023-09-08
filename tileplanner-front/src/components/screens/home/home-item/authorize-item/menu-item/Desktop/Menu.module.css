@@ -49,6 +49,7 @@
 .notification{
     cursor: pointer;
     margin-right: 37px;
+    position: relative;
 }
 .profile{
     cursor: pointer;

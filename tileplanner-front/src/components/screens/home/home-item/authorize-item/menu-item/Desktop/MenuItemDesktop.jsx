@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './Menu.module.css';
-function MenuItemDesktop({setShowForm}) {
+import NotificationsDesktop from '../../UI/notifications-item/Desktop/NotificationsDesktop';
+function MenuItemDesktop({ setShowForm, setShowNtfiForm, showNtfiForm }) {
     return (
         <div className={styles.menu}>
 
@@ -12,13 +13,16 @@ function MenuItemDesktop({setShowForm}) {
                     </div>
                 </div>
                 <div className={styles.sub_element}>
-                    <div className={styles.notification}>
+                    <div className={styles.notification}
+                        onClick={() => { setShowNtfiForm(!showNtfiForm); }}>
                         <img src="./notification_icon.svg" alt="" />
+                        <NotificationsDesktop showNtfiForm={showNtfiForm} />
                     </div>
+
                 </div>
                 <div className={styles.sub_element}>
                     <div className={styles.profile}
-                     onClick={()=>{setShowForm(true);}}>
+                        onClick={() => { setShowForm(true); }}>
                         <img src="./default_profile_icon.svg" alt="" />
                     </div>
                 </div>
