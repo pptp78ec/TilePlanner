@@ -40,7 +40,8 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// </summary>
         /// <param name="item">Item</param>
         /// <returns>Item with fileinfo</returns>
-        
+
+#if GRIDFS      
         [HttpPost("/uploadfile")]
         [Produces("application/json")]
 #if AUTHALT
@@ -106,7 +107,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
-
+ #endif
         /// <summary>
         /// Gets all screens for a specific user
         /// </summary>
