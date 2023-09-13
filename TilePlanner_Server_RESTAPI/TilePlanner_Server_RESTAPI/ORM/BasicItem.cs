@@ -24,7 +24,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public string CreatorId { get; set; } = string.Empty;
 
         [BsonIgnoreIfNull]
-        public List<string>? Tags { get; set; }
+        public List<string>? Tags { get; set; } = null;
 
         public int TileSizeX { get; set; } = 0;
 
@@ -35,10 +35,10 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public string BackgroundImageId { get; set; } = string.Empty;
 
         [BsonIgnoreIfNull]
-        public DateTime TaskSetDate { get; set; }
+        public DateTime? TaskSetDate { get; set; } = null;
 
         [BsonIgnoreIfNull]
-        public List<Coordinate>? Coordinates { get; set; }
+        public List<Coordinate>? Coordinates { get; set; } = null;
 
         [BsonIgnoreIfNull]
         public FileInfoShort? File { get; set; }

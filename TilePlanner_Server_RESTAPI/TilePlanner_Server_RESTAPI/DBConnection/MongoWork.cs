@@ -39,6 +39,8 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             }
             if (!database.ListCollectionNames().ToList().Contains("Transactions"))
                 database.CreateCollection("Transactions");
+            if (!database.ListCollectionNames().ToList().Contains("Notifications"))
+                database.CreateCollection("Notifications");
         }
 
         //
@@ -254,9 +256,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         //TRANSACTION FUNCTIONALITY
         //------------------------------------------------------------------------------------------
 
-        public async Task<TransactionData> addTransactionData(TransactionData transactionData) 
+        public async Task<TransactionData> addTransactionData(TransactionData transactionData)
         {
-            if(string.IsNullOrEmpty(transactionData.Id))
+            if (string.IsNullOrEmpty(transactionData.Id))
             {
                 transactionData.Id = ObjectId.GenerateNewId().ToString();
             }
@@ -266,9 +268,49 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
 
         public async Task<List<TransactionData>> GetTransactionsForUserAsync(string userId)
         {
-            return await (await database.GetCollection<TransactionData>("Transactions").FindAsync(_=>_.UserId == userId)).ToListAsync();
+            return await (await database.GetCollection<TransactionData>("Transactions").FindAsync(_ => _.UserId == userId)).ToListAsync();
         }
-                
+
+        //------------------------------------------------------------------------------------------
+
+        //
+        //NOTIFICATIONS FUNCTIONALITY
+        //------------------------------------------------------------------------------------------
+
+        public async Task<Notification> CreateUpdateNotification(Notification notification)
+        {
+            if (String.IsNullOrEmpty(notification.Id))
+            {
+                notification.Id = ObjectId.GenerateNewId().ToString();
+            }
+            var upsert = new UpdateOptions() { IsUpsert = true };
+
+            var update = Builders<Notification>.Update
+                .Set(_ => _.Header, notification.Header)
+                .Set(_ => _.NotificationTime, notification.NotificationTime)
+                .Set(_ => _.IsDone, notification.IsDone)
+                .Set(_=>_.UserId, notification.UserId)
+                .SetOnInsert(_ => _.Id, notification.Id); ;
+
+            await database.GetCollection<Notification>("Notifications").UpdateOneAsync(_ => _.Id == notification.Id, update, upsert);
+            return notification;
+        }
+
+        public async Task<List<Notification>> GetNotificationsForUser(string userId)
+        {
+            return await (await database.GetCollection<Notification>("Notifications").FindAsync(_=>_.UserId == userId)).ToListAsync();
+        }
+
+        public async Task DeleteNotification(Notification notification)
+        {
+            await database.GetCollection<Notification>("Notifications").DeleteOneAsync(_=>_.Id == notification.Id);
+        }
+
+        public async Task DeleteAllNotificationsForUser(string userId)
+        {
+            await database.GetCollection<Notification>("Notifications").DeleteManyAsync(_=>_.UserId == userId);
+        }
+
         //------------------------------------------------------------------------------------------
 
         //------------------------------------------------------------------------------------------
@@ -294,7 +336,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 role.EndTime = role.EndTime != null ? role.EndTime?.AddDays(daystoadd) : DateTime.Now.AddDays(daystoadd);
                 var update = Builders<Role>.Update
                     .Set(_ => _.AccessLevel, role.AccessLevel)
-                    .Set(_ => _.EndTime, role.EndTime);
+                    .Set(_ => _.EndTime, role.EndTime)
+                    .Set(_=>_.UserId, role.UserId);
+
                 await database.GetCollection<Role>("Roles").UpdateOneAsync<Role>(_ => _.Id == role.Id, update);
                 return role;
             }
