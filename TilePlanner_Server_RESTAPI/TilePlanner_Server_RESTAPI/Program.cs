@@ -20,13 +20,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-    var builder = new ConfigurationBuilder();
-    builder.AddJsonFile("appsettings.json");
-    IConfiguration configuration = builder.Build();
-    var issuer = configuration.GetValue<string>("JWT:Issuer") ?? "Issuer";
-    var audience = configuration.GetValue<string>("JWT:Audience") ?? "Audience";
-    var key = configuration.GetValue<string>("JWT:Key") ?? "This is the key for this app";
-    var lifetime = configuration.GetValue<int>("JWT:Lifetime");
+    var issuer = builder.Configuration.GetValue<string>("JWT:Issuer") ?? "Issuer";
+    var audience = builder.Configuration.GetValue<string>("JWT:Audience") ?? "Audience";
+    var key = builder.Configuration.GetValue<string>("JWT:Key") ?? "This is the key for this app";
+    var lifetime = builder.Configuration.GetValue<int>("JWT:Lifetime");
 
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -40,7 +37,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 
 });
-
+builder.Services.AddAuthorization();
 builder.Services.AddSingleton<Authenticate>();
 
 #endif
@@ -72,8 +69,8 @@ if (app.Environment.IsDevelopment())
 
 #if AUTHALT
 #if AUTHALT_ENABLED
-    app.UseAuthorization();
     app.UseAuthentication();
+    app.UseAuthorization();
 #endif
 #endif
 
@@ -84,8 +81,6 @@ app.UseCors(cors =>
     cors.AllowAnyMethod();
 });
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

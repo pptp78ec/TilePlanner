@@ -208,12 +208,13 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     {
                         return BadRequest("Exceeded number of items at this access level");
                     }
-#endif
-#endif
-                    await MongoWork.addOrUpdateItems(items);
-                }
 
-                return Ok();
+                    
+                }
+#endif
+#endif
+                await MongoWork.addOrUpdateItems(items);
+            return Ok();
             }
             catch (Exception e)
             {
