@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TilePlanner_Server_RESTAPI.Auth;
 using TilePlanner_Server_RESTAPI.BrainTreePayPalPayment;
 using TilePlanner_Server_RESTAPI.DBConnection;
+using TilePlanner_Server_RESTAPI.ORM;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,10 +46,18 @@ builder.Services.AddSingleton<Authenticate>();
 #endif
 
 
+
+
+
+
 builder.Services.AddSingleton<MongoWork>();
 builder.Services.AddTransient<IBrainTreeService, BrainTreeService>();
+builder.Services.AddControllers(opts => opts.Filters.Add(new CorsFilter()));
+
 
 var app = builder.Build();
+
+
 
 //var mongoDBaccess = new MongoWork();
 

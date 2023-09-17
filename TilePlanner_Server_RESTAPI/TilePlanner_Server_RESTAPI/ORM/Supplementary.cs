@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.StaticFiles;
 using TilePlanner_Server_RESTAPI.ORM.Roles;
 
@@ -56,5 +57,14 @@ namespace TilePlanner_Server_RESTAPI.ORM
     {
         public string Token { get; set; } = string.Empty;
         public string UserID { get; set; } = string.Empty;
+    }
+
+    class CorsFilter : ActionFilterAttribute
+    {
+
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            context.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+        }
     }
 }
