@@ -15,22 +15,6 @@ function ContentItemDesktop({showForm,setShowForm}) {
                             <img src="" alt="" />
                         </div>
                         <div className={styles.project_name}>
-                            Проект 1
-                        </div>
-                    </div>
-                    <div className={styles.project}>
-                        <div className={styles.project_preview}>
-                            <img src="" alt="" />
-                        </div>
-                        <div className={styles.project_name}>
-                            Проект 2
-                        </div>
-                    </div>
-                    <div className={styles.project}>
-                        <div className={styles.project_preview}>
-                            <img src="" alt="" />
-                        </div>
-                        <div className={styles.project_name}>
                             Проект 3
                         </div>
                     </div>

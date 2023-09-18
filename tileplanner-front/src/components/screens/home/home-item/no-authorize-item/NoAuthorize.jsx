@@ -17,7 +17,7 @@ function NoAuthorize() {
   const isDesktop = useMediaQuery({
     query: "(min-width: 1050px)"
   });
-
+  
 
   return (
     <>

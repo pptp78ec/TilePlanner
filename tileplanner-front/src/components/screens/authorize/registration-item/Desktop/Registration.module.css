@@ -127,8 +127,8 @@
     color: white;
     cursor: pointer;
     transition: box-shadow 0.25s ease;
+    border: none;
 }
-
 .button:hover {
     box-shadow: none;
 }
@@ -173,7 +173,14 @@
 
 }
 
-
+.error{
+    padding-left: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(255, 0, 0);
+    text-wrap: wrap;
+    width: 400px;
+}
 
 
 

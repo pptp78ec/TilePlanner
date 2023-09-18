@@ -129,7 +129,17 @@
 .any_methods{
     width: 100%;
 }
-
+.button{
+    border: none;
+}
+.error{
+    padding-left: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(255, 0, 0);
+    text-wrap: wrap;
+    width: 270px;
+}
 
 
 

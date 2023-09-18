@@ -1,10 +1,12 @@
 import React from 'react'
 import styles from './Content.module.css'
-import Prices from '../../../authorize-item/UI/profile-change-form-item/Desktop/prices-item/Prices'
+import Prices from '../../UI/prices-item/Prices';
 
 //Футер, розделить на компоненты, и подумать о адаптации
 
 function ContentItem() {
+  
+  const mainPage=true;
   return (
     <div className={styles.content}>
       <div className={styles.content_element_1}>

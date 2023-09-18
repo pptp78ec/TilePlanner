@@ -143,7 +143,14 @@
     color: black;
 }
 
-
+.error{
+    padding-left: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(255, 0, 0);
+    text-wrap: wrap;
+    width: 400px;
+}
 
 
 
