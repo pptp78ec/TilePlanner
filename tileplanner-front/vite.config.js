@@ -10,7 +10,7 @@ export default defineConfig({
       '/api': {
         target: 'https://localhost:7029', // Замените на реальный адрес вашего сервера
         changeOrigin: true,
-        cors: true, // Включите CORS
+        cors: false, // Включите CORS
       },
     },
   },

@@ -6,10 +6,10 @@ const token=Cookies.get('token');
 const userID=Cookies.get('userID');
 const apiGetProjects = 'https://localhost:7029/getuserscreens?userId='+userID
 const config = {
-    headers: {
+    headers:{
       Authorization: `Bearer ${token}`, // Добавляем токен в заголовок
       'Content-Type': 'application/json', // Указываем тип контента, если это JSON
-    },
+    }
   };
 export const ItemService = {
     async create_project(data) {
@@ -24,7 +24,8 @@ export const ItemService = {
     },
     async get_projects(){
         try {
-            const response = await axios.post(apiGetProjects, config);
+            const response = await axios.post(apiGetProjects, null, config);
+            
             console.log('Get projects:', response.data);
             return response.data;
           
