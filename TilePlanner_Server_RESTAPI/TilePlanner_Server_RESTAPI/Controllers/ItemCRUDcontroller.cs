@@ -132,6 +132,35 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        [HttpPost("/createproject")]
+        [Produces("application/json")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize]
+#endif
+#endif
+        public async Task<IActionResult> CreateProjectScreen(CreateScreenDTO screenDTO) 
+        {
+            try
+            {
+                var screen = new BasicItem() {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    Itemtype = Itemtype.SCREEN,
+                    CreatorId = screenDTO.UserId,
+                    Header = screenDTO.ScreenName
+                };
+
+                await MongoWork.addOrUpdateItems((new BasicItem[] { screen }).ToList());
+
+                return Ok(screen);
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+
+
         /// <summary>
         /// Returns screen with it's children (tabs, tiles, tile items)
         /// </summary>

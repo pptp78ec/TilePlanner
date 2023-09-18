@@ -13,6 +13,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
 
         [JsonConverter(typeof(StringEnumConverter))]
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        
         public Itemtype Itemtype { get; set; } = Itemtype.DEFAULT;
 
         public string Header { get; set; } = string.Empty;

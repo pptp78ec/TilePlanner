@@ -67,4 +67,10 @@ namespace TilePlanner_Server_RESTAPI.ORM
             context.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
         }
     }
+
+    public class CreateScreenDTO
+    {
+        public string ScreenName { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
+    }
 }
