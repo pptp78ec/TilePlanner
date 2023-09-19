@@ -12,7 +12,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
     [ApiController]
 #if AUTHALT
 #if AUTHALT_ENABLED
-    [Authorize(Roles = "ADVANCED,FULL")]
+    [Authorize]
 #endif
 #endif
 
@@ -59,6 +59,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 {
                     return BadRequest("Invalid file");
                 }
+
                 var path = configuration.GetValue<string>("StorageFolder");
 
                 path = Path.Combine(path, userId, isImage?"images":"files");

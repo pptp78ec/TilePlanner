@@ -233,7 +233,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 {
                     var currentItemCount = await MongoWork.CountAllItemsForUserId(items[0].ParentId);
                     var role = await MongoWork.FindRoleByUserId(items[0].ParentId);
-                    if ((currentItemCount + items.Count) > 500 && role.AccessLevel == AccessLevel.BASIC)
+                    if ((currentItemCount + items.Count) > 1000 && role.AccessLevel == AccessLevel.BASIC)
                     {
                         return BadRequest("Exceeded number of items at this access level");
                     }
