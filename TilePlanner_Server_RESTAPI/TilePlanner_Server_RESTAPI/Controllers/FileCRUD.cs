@@ -30,8 +30,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             return await DownloadFile(userId, filename);
         }
-
-        [HttpGet("/getimage/{userId}/{filename}")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [AllowAnonymous]
+#endif
+#endif
+        [HttpGet("/avatar/{userId}/{filename}")]
         public async Task<IActionResult> GetImage(string userId, string filename)
         {
             return await DownloadFile(userId, filename, true);
