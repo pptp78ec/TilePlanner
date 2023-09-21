@@ -61,6 +61,8 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 if (!String.IsNullOrEmpty(user.Description))
                     await mongoWork.UpdateUserDescription(user);
 
+                await mongoWork.SetGoogleUser(user);
+
                 return Ok(user);
             }
             catch (Exception e)

@@ -483,6 +483,13 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             var result = await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
         }
 
+        public async Task SetGoogleUser(User user)
+        {
+            var update = Builders<User>.Update
+                .Set(_ => _.IsGoogle, user.IsGoogle);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+        }
+
         /// <summary>
         /// Deletes user. Note that it doesn't really delete it from database, but merely marks as deleted 
         /// </summary>
@@ -493,6 +500,8 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             var update = Builders<User>.Update.Set(_ => _.IsDeleted, true);
             await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == userId, update);
         }
+
+        
 
         //------------------------------------------------------------------------------------------
 
