@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
@@ -29,13 +28,13 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                var user = await mongoWork.findUserById(id);
-                if(user != default)
+                var user = await mongoWork.FindUserById(id);
+                if (user != default)
                 {
                     return Ok(user);
                 }
                 return BadRequest("No user found!");
-                
+
             }
             catch (Exception e)
             {
@@ -45,16 +44,22 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
         [HttpPost("/updateUserAllFields")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserAllFields(User user)
+        public async Task<IActionResult> updateUserAllFields([FromBody] User user)
         {
             try
             {
-                await mongoWork.updateUserPassword(user);
-                await mongoWork.updateUserName(user);
-                await mongoWork.updateUserPhone(user);
-                await mongoWork.updateUserImageId(user);
-                await mongoWork.updateUserEmail(user);
-                await mongoWork.updateUserDescription(user);
+                if (!String.IsNullOrEmpty(user.Password))
+                    await mongoWork.UpdateUserPassword(user);
+                if (!String.IsNullOrEmpty(user.Name))
+                    await mongoWork.UpdateUserName(user);
+                if (!String.IsNullOrEmpty(user.Phone))
+                    await mongoWork.UpdateUserPhone(user);
+                if (!String.IsNullOrEmpty(user.UserImageId))
+                    await mongoWork.UpdateUserImageId(user);
+                if (!String.IsNullOrEmpty(user.Email))
+                    await mongoWork.UpdateUserEmail(user);
+                if (!String.IsNullOrEmpty(user.Description))
+                    await mongoWork.UpdateUserDescription(user);
 
                 return Ok(user);
             }
@@ -67,11 +72,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
         [HttpPost("/updateUserName")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserName(User user)
+        public async Task<IActionResult> updateUserName([FromBody] User user)
         {
             try
             {
-                await mongoWork.updateUserName(user);
+                await mongoWork.UpdateUserName(user);
                 return Ok(user);
             }
             catch (Exception e)
@@ -83,11 +88,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
         [HttpPost("/updateUserPassword")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserPassword(User user)
+        public async Task<IActionResult> updateUserPassword([FromBody] User user)
         {
             try
             {
-                await mongoWork.updateUserPassword(user);
+                await mongoWork.UpdateUserPassword(user);
                 return Ok(user);
             }
             catch (Exception e)
@@ -98,12 +103,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
         [HttpPost("/updateUserImage")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserImage(User user)
+        public async Task<IActionResult> updateUserImage([FromBody] User user)
         {
             try
             {
- 
-                await mongoWork.updateUserImageId(user);
+
+                await mongoWork.UpdateUserImageId(user);
 
                 return Ok(user);
             }
@@ -115,11 +120,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
         [HttpPost("/updateUserEmail")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserEmail(User user)
+        public async Task<IActionResult> updateUserEmail([FromBody] User user)
         {
             try
             {
-                await mongoWork.updateUserEmail(user);
+                await mongoWork.UpdateUserEmail(user);
 
                 return Ok(user);
             }
@@ -131,11 +136,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
         [HttpPost("/updateUserPhone")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserPhone(User user)
+        public async Task<IActionResult> updateUserPhone([FromBody] User user)
         {
             try
             {
-                await mongoWork.updateUserPhone(user);
+                await mongoWork.UpdateUserPhone(user);
 
                 return Ok(user);
             }
@@ -146,11 +151,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         }
         [HttpPost("/updateUserDescription")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserDescription(User user)
+        public async Task<IActionResult> updateUserDescription([FromBody] User user)
         {
             try
             {
-                await mongoWork.updateUserDescription(user);
+                await mongoWork.UpdateUserDescription(user);
 
                 return Ok(user);
             }

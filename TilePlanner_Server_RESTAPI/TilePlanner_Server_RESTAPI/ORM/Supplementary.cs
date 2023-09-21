@@ -4,19 +4,19 @@ using TilePlanner_Server_RESTAPI.ORM.Roles;
 
 namespace TilePlanner_Server_RESTAPI.ORM
 {
-    public class Coordinate
+    public class CoordinateDTO
     {
         public string Lat { get; set; } = string.Empty;
         public string Long { get; set; } = string.Empty;
     }
 
-    public class FileInfoShort
+    public class FileInfoShortDTO
     {
         public string FileId { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
     }
 
-    public class DBFileRet
+    public class DBFileRetDTO
     {
         public string FileName { get; set; } = string.Empty;
         public byte[]? FileContents { get; set; } = default;
@@ -29,14 +29,14 @@ namespace TilePlanner_Server_RESTAPI.ORM
         }
     }
 
-    public class LoginData
+    public class LoginDataDTO
     {
         public string Login { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
 
 
-    public class RoleUpdateFields
+    public class RoleUpdateFieldsDTO
     {
         public string UserId { get; set; } = string.Empty;
         public double DaysToAdd { get; set; } = default;
@@ -44,7 +44,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
     }
 
 
-    public class CheckoutModel
+    public class CheckoutModelDTO
     {
         public string AccessLevel { get; set; } = string.Empty;
         public decimal MoneyAmount { get; set; } = default;
@@ -53,7 +53,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
 
     }
 
-    public class ReturnTokenData
+    public class ReturnTokenDataDTO
     {
         public string Token { get; set; } = string.Empty;
         public string UserID { get; set; } = string.Empty;
@@ -72,5 +72,12 @@ namespace TilePlanner_Server_RESTAPI.ORM
     {
         public string ScreenName { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty;
+    }
+
+    public class BadRequestErrorDTO
+    {
+        public string ErrorClass { set; get; } = string.Empty;
+        public string ErrorMsg { set; get; } = string.Empty;
+
     }
 }

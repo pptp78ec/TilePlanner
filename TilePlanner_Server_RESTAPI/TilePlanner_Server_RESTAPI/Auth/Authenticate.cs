@@ -19,7 +19,7 @@ namespace TilePlanner_Server_RESTAPI.Auth
             this.mongoWork = mongoWork;
         }
 
-        public async Task<ReturnTokenData> AuthenticateThis(User user)
+        public async Task<ReturnTokenDataDTO> AuthenticateThis(User user)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace TilePlanner_Server_RESTAPI.Auth
                     signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetValue<string>("JWT:Key") ?? "This is the key for this app")), SecurityAlgorithms.HmacSha256));
                 var jwtstring = new JwtSecurityTokenHandler().WriteToken(token);
 
-                return new ReturnTokenData { Token = jwtstring, UserID = user.Id };
+                return new ReturnTokenDataDTO { Token = jwtstring, UserID = user.Id };
             }
             catch (Exception)
             {

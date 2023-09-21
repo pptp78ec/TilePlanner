@@ -49,7 +49,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [Authorize(Roles = "ADVANCED,FULL")]
 #endif
 #endif
-        public async Task<ActionResult<BasicItem>> UploadFile(BasicItem item)
+        public async Task<ActionResult<BasicItem>> UploadFile([FromBody] BasicItem item)
         {
             var request = HttpContext.Request;
             var file = HttpContext.Request.Form.Files[0];
@@ -124,7 +124,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                return Ok(await MongoWork.getListOfScreensForUser(userId));
+                return Ok(await MongoWork.GetListOfScreensForUser(userId));
             }
             catch (Exception e)
             {
@@ -139,7 +139,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [Authorize]
 #endif
 #endif
-        public async Task<IActionResult> CreateProjectScreen(CreateScreenDTO screenDTO) 
+        public async Task<IActionResult> CreateProjectScreen([FromBody] CreateScreenDTO screenDTO) 
         {
             try
             {
@@ -150,7 +150,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     Header = screenDTO.ScreenName
                 };
 
-                await MongoWork.addOrUpdateItems((new BasicItem[] { screen }).ToList());
+                await MongoWork.AddOrUpdateItems((new BasicItem[] { screen }).ToList());
 
                 return Ok(screen);
             }
@@ -173,11 +173,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [Authorize]
 #endif
 #endif
-        public async Task<ActionResult<List<BasicItem>>> getScreen(BasicItem item)
+        public async Task<ActionResult<List<BasicItem>>> getScreen([FromBody] BasicItem item)
         {
             try
             {
-                return Ok(await MongoWork.getListOfScreenChildren(item.Id));
+                return Ok(await MongoWork.GetListOfScreenChildren(item.Id));
             }
             catch (Exception e)
             {
@@ -197,11 +197,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [Authorize]
 #endif
 #endif
-        public async Task<IActionResult> deleteItem(BasicItem item)
+        public async Task<IActionResult> deleteItem([FromBody] BasicItem item)
         {
             try
             {
-                await MongoWork.deleteListOfChildren(item.Id);
+                await MongoWork.DeleteListOfChildren(item.Id);
                 return Ok(item);
             }
             catch (Exception e)
@@ -222,7 +222,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [Authorize]
 #endif
 #endif
-        public async Task<IActionResult> updateItems(List<BasicItem> items)
+        public async Task<IActionResult> updateItems([FromBody] List<BasicItem> items)
         {
             try
             {
@@ -242,7 +242,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 }
 #endif
 #endif
-                await MongoWork.addOrUpdateItems(items);
+                await MongoWork.AddOrUpdateItems(items);
             return Ok();
             }
             catch (Exception e)

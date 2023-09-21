@@ -39,7 +39,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
         [HttpPost("/addOrUpdateNotification")]
         [Produces("application/json")]
-        public async Task<IActionResult> AddOrUpdateNotification(Notification notification)
+        public async Task<IActionResult> AddOrUpdateNotification([FromBody] Notification notification)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         }
 
         [HttpDelete("/deleteNotification")]
-        public async Task<IActionResult> DeleteNotification(Notification notification)
+        public async Task<IActionResult> DeleteNotification([FromBody] Notification notification)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
         [HttpDelete("/clearAllNotifications")]
 
-        public async Task<IActionResult> ClearAllNotifications(User user)
+        public async Task<IActionResult> ClearAllNotifications([FromBody] User user)
         {
             try
             {

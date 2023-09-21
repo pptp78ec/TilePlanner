@@ -24,11 +24,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [HttpPost("/login")]
         [Produces("application/json")]
         [AllowAnonymous]
-        public async Task<IActionResult> LoginTest(LoginData logindata)
+        public async Task<IActionResult> LoginTest([FromBody] LoginDataDTO logindata)
         {
             try
             {
-                var user = await MongoWork.findUserBySearchParams(logindata.Login, logindata.Password);
+                var user = await MongoWork.FindUserBySearchParams(logindata.Login, logindata.Password);
                 return user == default(User) ? BadRequest("No items found") : Ok(await authenticate.AuthenticateThis(user));
             }
             catch (Exception e)
@@ -40,11 +40,24 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [HttpPost("/register")]
         [Produces("application/json")]
         [AllowAnonymous]
-        public async Task<IActionResult> RegisterTest(User user)
+        public async Task<IActionResult> RegisterTest([FromBody] User user)
         {
             try
             {
-                var newUser = await MongoWork.addNewUser(user);
+                if(await MongoWork.FindUserBySearchParams(user.Login, user.Password) != default)
+                {
+                    return BadRequest(new BadRequestErrorDTO() { ErrorClass = "Login", ErrorMsg = "User with such login already exists!" });
+                }
+                if (await MongoWork.FindUserBySearchParams(user.Email, user.Password) != default)
+                {
+                    return BadRequest(new BadRequestErrorDTO() { ErrorClass = "Email", ErrorMsg = "User with such email already exists!" });
+                }
+                if (await MongoWork.FindUserBySearchParams(user.Phone, user.Password) != default)
+                {
+                    return BadRequest(new BadRequestErrorDTO() { ErrorClass = "Phone", ErrorMsg = "User with such phone already exists!" });
+                }
+
+                var newUser = await MongoWork.AddNewUser(user);
 
                 return Ok(await authenticate.AuthenticateThis(newUser));
             }
@@ -64,7 +77,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [HttpPost("/login")]
         [Produces("application/json")]
         [AllowAnonymous]
-        public async Task<IActionResult> LoginTest(LoginData logindata)
+        public async Task<IActionResult> LoginTest([FromBody] LoginData logindata)
         {
             try
             {
@@ -83,7 +96,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [HttpPost("/register")]
         [Produces("application/json")]
         [AllowAnonymous]
-        public async Task<IActionResult> RegisterTest(User user)
+        public async Task<IActionResult> RegisterTest([FromBody] User user)
         {
             try
             {
