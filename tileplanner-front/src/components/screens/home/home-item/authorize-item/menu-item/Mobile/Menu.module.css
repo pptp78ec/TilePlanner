@@ -1,0 +1,57 @@
+.menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 20px;
+    padding-right: 25px;
+    height: 100px;
+    border-bottom: 1px solid #929292;
+    width: 100%;
+    align-items: center;
+    position: relative;
+}
+.logo>img{
+    height: 26px;
+}
+.menu>div {
+    width: 50%;
+}
+
+.sub_menu {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: right;
+}
+
+.create_project_button {
+    background: linear-gradient(to right, #BED961, #57B551);
+    font-weight: 700;
+    font-size: 30px;
+    color: #FFFFFF;
+    text-shadow: 3px 3px 4px 0px #00000059;
+    box-shadow: -5px -5px 10px 0px #FAFBFF,
+        5px 5px 10px 0px #161B1D3B;
+    border-radius: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    transition: box-shadow 0.25s ease;
+    position: fixed;
+    top:calc(90vh - 40px);
+    left: calc(100% - 80px);
+    width: 51px;
+    height: 51px;
+}
+.create_project_button:hover{
+    box-shadow: none;
+}
+.notification{
+    cursor: pointer;
+    margin-right: 25px;
+}
+.profile{
+    cursor: pointer;
+}

@@ -1,0 +1,41 @@
+.notifications {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 381px;
+    height: 164px;
+    border-radius: 20px;
+    top: 20 px;
+    left: -350px;
+    background-color: #E7E7E7;
+    box-shadow: 5px 5px 10px 0px #161B1D3B,
+        -5px -5px 10px 0px #FAFBFF;
+       padding-left: 30px;
+       padding-top: 24px;
+       padding-right: 25px;
+       padding-bottom: 25px;
+       display: flex;
+       justify-content: space-between;
+       flex-direction: column;
+}
+.notification {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 12px;
+    padding-top: 12px;
+}
+.notification:first-child{
+    padding-top: 0;
+}
+.notification:last-child{
+    border: none;
+}
+.aditional{
+    display: flex;
+    justify-content: space-between;
+}
+.task_name{
+    font-size: 16px;
+    font-weight: 700;
+}

@@ -12,7 +12,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
     [ApiController]
 #if AUTHALT
 #if AUTHALT_ENABLED
-    [Authorize(Roles = "ADVANCED,FULL")]
+    [Authorize]
 #endif
 #endif
 
@@ -30,8 +30,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             return await DownloadFile(userId, filename);
         }
-
-        [HttpGet("/getimage/{userId}/{filename}")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [AllowAnonymous]
+#endif
+#endif
+        [HttpGet("/avatar/{userId}/{filename}")]
         public async Task<IActionResult> GetImage(string userId, string filename)
         {
             return await DownloadFile(userId, filename, true);
@@ -59,6 +63,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 {
                     return BadRequest("Invalid file");
                 }
+
                 var path = configuration.GetValue<string>("StorageFolder");
 
                 path = Path.Combine(path, userId, isImage?"images":"files");

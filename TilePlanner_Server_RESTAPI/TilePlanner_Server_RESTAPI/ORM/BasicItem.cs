@@ -13,6 +13,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
 
         [JsonConverter(typeof(StringEnumConverter))]
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
+        
         public Itemtype Itemtype { get; set; } = Itemtype.DEFAULT;
 
         public string Header { get; set; } = string.Empty;
@@ -38,10 +39,10 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public DateTime? TaskSetDate { get; set; } = null;
 
         [BsonIgnoreIfNull]
-        public List<Coordinate>? Coordinates { get; set; } = null;
+        public List<CoordinateDTO>? Coordinates { get; set; } = null;
 
         [BsonIgnoreIfNull]
-        public FileInfoShort? File { get; set; }
+        public FileInfoShortDTO? File { get; set; }
 
 
     }

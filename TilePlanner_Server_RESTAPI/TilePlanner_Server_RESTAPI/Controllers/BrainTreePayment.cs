@@ -40,7 +40,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
         [HttpPost("/checkout")]
-        public async Task<IActionResult> Checkout([FromForm]CheckoutModel checkout)
+        public async Task<IActionResult> Checkout([FromForm]CheckoutModelDTO checkout)
         {
             try
             {
@@ -63,7 +63,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 {
                     paymentStatus = "Your payment is Successful!";
                     transactionData.IsSuccessful = true;
-                    await mongoWork.addTransactionData(transactionData);
+                    await mongoWork.AddTransactionData(transactionData);
                 }
                 else
                 {
@@ -74,7 +74,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     }
                     transactionData.IsSuccessful = false;
                     transactionData.ErrorMSG = errorMsg;
-                    await mongoWork.addTransactionData(transactionData);
+                    await mongoWork.AddTransactionData(transactionData);
                     return Problem(errorMsg, null, 424);
                 }
 

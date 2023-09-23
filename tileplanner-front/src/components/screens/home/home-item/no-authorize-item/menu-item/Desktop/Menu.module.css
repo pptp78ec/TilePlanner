@@ -1,0 +1,113 @@
+@import url("https://fonts.googleapis.com/css?family=Nunito");
+
+
+
+.menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 60px;
+    height: 100px;
+    border-bottom: 1px solid #929292;
+    width: 100%;
+}
+
+.menu>div {
+    width: 50%;
+}
+
+.logo {
+    margin-top: 29px;
+}
+
+.logo>img {
+    width: 165px;
+    height: 34px;
+
+}
+
+.sub_group {
+    display: flex;
+
+}
+
+.sub_menu {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 300px;
+    margin-left: 68px;
+}
+.authorize_sub_menu {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    margin-right: 60px;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.sign_in {
+    margin: 23px;
+    padding: 6px 33px 6px 33px;
+    width: 138px;
+    height: 44px;
+    background-color: #E7E7E7;
+    border: 2px solid #F8ED6A;
+    border-radius: 21px;
+    cursor: pointer;
+    box-shadow:    5px 5px 10px 0px #161B1D3B;
+    transition: 0.25s ease-in-out;
+}
+.sign_in>a{
+    text-decoration: none;
+    color: #000000;
+}
+.sign_in:hover{
+    border: none;
+  }
+.sign_up{
+    background: linear-gradient(to right, #BED961, #57B551);
+    padding: 6px 35px 6px 35px;
+    border-radius: 30px;
+    color: #FFFFFF;
+    text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3); /* Горизонтальное смещение, вертикальное смещение, размытие, цвет */
+    box-shadow:    5px 5px 10px 0px #161B1D3B;
+    cursor: pointer;
+    transition: 0.25s;
+}
+.sign_up>a{
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.sign_up:hover{
+    text-shadow: none;
+}
+.sub_element {
+    font-size: 24px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s;
+}
+.sub_element:hover{
+    color: #52B350;
+}
+
+/* Стили для кастомного скроллера */
+/* Стили для кастомного скроллера */
+body::-webkit-scrollbar {
+    width: 10px;
+    /* Ширина скроллера */
+  background-color: #E7E7E7;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #E7E7E7;
+    border: 1px solid #F8ED6A;
+    /* Цвет скроллера */
+    border-radius: 10px;
+    /* Скругление углов скроллера */
+    box-shadow: -5px -5px 10px 0px #FAFBFF,
+    5px 5px 10px 0px #161B1D3B;
+
+}

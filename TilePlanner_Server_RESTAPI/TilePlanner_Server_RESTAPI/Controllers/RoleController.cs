@@ -60,7 +60,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [Authorize]
 #endif
 #endif
-        public async Task<IActionResult> UpdateRole(RoleUpdateFields roleUpdateFields)
+        public async Task<IActionResult> UpdateRole([FromBody] RoleUpdateFieldsDTO roleUpdateFields)
         {
             try
             {

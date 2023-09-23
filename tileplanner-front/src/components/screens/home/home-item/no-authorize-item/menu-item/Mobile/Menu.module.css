@@ -1,0 +1,90 @@
+.menu {
+    display: flex;
+    flex-direction: row;
+    height: 50;
+    border-bottom: 1px solid #929292;
+    width: 100%;
+    padding: 15px;
+    position: relative;
+}
+
+.menu>div {
+    width: 50%;
+}
+
+.logo {
+    /* margin-top: 29px; */
+}
+
+.sub_menu {
+    position: absolute;
+    top: 65px;
+    left: 0;
+    width: 100%;
+    background-color:#E7E7E7; 
+    /* background-color: #e16e6e; */
+    display: flex;
+    flex-direction: column;
+    padding-left: 45px;
+    padding-top: 25px;
+    border-radius: 0px 0px 21px 21px;
+    font-size: 18px;
+    font-weight: 700;
+    overflow: hidden;
+    box-shadow: -5px -5px 10px 0px #FAFBFF,
+    5px 5px 10px 0px #161B1D3B;
+
+
+}
+
+.sub_menu>div {
+    margin-bottom: 40px;
+}
+
+.sign_in {
+    color: #52B350;
+}
+.sign_in>a{
+    text-decoration: none;
+    color: #52B350;
+}
+
+.authorize_sub_menu {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+
+}
+
+.sign_up {
+    background: linear-gradient(to right, #BED961, #57B551);
+    padding: 5px 10px 6px 10px;
+    border-radius: 30px;
+    color: #FFFFFF;
+    text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3);
+    /* Горизонтальное смещение, вертикальное смещение, размытие, цвет */
+    box-shadow: 5px 5px 10px 0px #161B1D3B;
+    cursor: pointer;
+    transition: 0.25s;
+    width: 136px;
+    font-size: 14px;
+}
+.sign_up>a{
+    text-decoration: none;
+    color: #FFFFFF;
+}
+.sign_up:hover {
+    text-shadow: none;
+}
+
+.burger_button {
+    margin-left: 10px;
+    transition: transform 1s ease;
+}
+.active_button{
+    transform: rotate(-90deg);
+}
+
+

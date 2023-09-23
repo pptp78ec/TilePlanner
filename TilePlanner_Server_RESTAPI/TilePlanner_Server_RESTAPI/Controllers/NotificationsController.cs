@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TilePlanner_Server_RESTAPI.DBConnection;
@@ -8,6 +9,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+#if AUTHALT
+#if AUTHALT_ENABLED
+    [Authorize]
+#endif
+#endif
     public class NotificationsController : ControllerBase
     {
         private MongoWork mongoWork;
@@ -33,7 +39,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
         [HttpPost("/addOrUpdateNotification")]
         [Produces("application/json")]
-        public async Task<IActionResult> AddOrUpdateNotification(Notification notification)
+        public async Task<IActionResult> AddOrUpdateNotification([FromBody] Notification notification)
         {
             try
             {
@@ -46,7 +52,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         }
 
         [HttpDelete("/deleteNotification")]
-        public async Task<IActionResult> DeleteNotification(Notification notification)
+        public async Task<IActionResult> DeleteNotification([FromBody] Notification notification)
         {
             try
             {
@@ -60,7 +66,8 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         }
 
         [HttpDelete("/clearAllNotifications")]
-        public async Task<IActionResult> ClearAllNotifications(User user)
+
+        public async Task<IActionResult> ClearAllNotifications([FromBody] User user)
         {
             try
             {

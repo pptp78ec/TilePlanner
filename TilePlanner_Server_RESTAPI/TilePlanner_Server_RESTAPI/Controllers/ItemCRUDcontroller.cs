@@ -49,7 +49,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [Authorize(Roles = "ADVANCED,FULL")]
 #endif
 #endif
-        public async Task<ActionResult<BasicItem>> UploadFile(BasicItem item)
+        public async Task<ActionResult<BasicItem>> UploadFile([FromBody] BasicItem item)
         {
             var request = HttpContext.Request;
             var file = HttpContext.Request.Form.Files[0];
@@ -124,13 +124,42 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                return Ok(await MongoWork.getListOfScreensForUser(userId));
+                return Ok(await MongoWork.GetListOfScreensForUser(userId));
             }
             catch (Exception e)
             {
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
+
+        [HttpPost("/createproject")]
+        [Produces("application/json")]
+#if AUTHALT
+#if AUTHALT_ENABLED
+        [Authorize]
+#endif
+#endif
+        public async Task<IActionResult> CreateProjectScreen([FromBody] CreateScreenDTO screenDTO) 
+        {
+            try
+            {
+                var screen = new BasicItem() {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    Itemtype = Itemtype.SCREEN,
+                    CreatorId = screenDTO.UserId,
+                    Header = screenDTO.ScreenName
+                };
+
+                await MongoWork.AddOrUpdateItems((new BasicItem[] { screen }).ToList());
+
+                return Ok(screen);
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+
 
         /// <summary>
         /// Returns screen with it's children (tabs, tiles, tile items)
@@ -144,11 +173,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [Authorize]
 #endif
 #endif
-        public async Task<ActionResult<List<BasicItem>>> getScreen(BasicItem item)
+        public async Task<ActionResult<List<BasicItem>>> getScreen([FromBody] BasicItem item)
         {
             try
             {
-                return Ok(await MongoWork.getListOfScreenChildren(item.Id));
+                return Ok(await MongoWork.GetListOfScreenChildren(item.Id));
             }
             catch (Exception e)
             {
@@ -168,11 +197,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [Authorize]
 #endif
 #endif
-        public async Task<IActionResult> deleteItem(BasicItem item)
+        public async Task<IActionResult> deleteItem([FromBody] BasicItem item)
         {
             try
             {
-                await MongoWork.deleteListOfChildren(item.Id);
+                await MongoWork.DeleteListOfChildren(item.Id);
                 return Ok(item);
             }
             catch (Exception e)
@@ -193,7 +222,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [Authorize]
 #endif
 #endif
-        public async Task<IActionResult> updateItems(List<BasicItem> items)
+        public async Task<IActionResult> updateItems([FromBody] List<BasicItem> items)
         {
             try
             {
@@ -204,16 +233,17 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 {
                     var currentItemCount = await MongoWork.CountAllItemsForUserId(items[0].ParentId);
                     var role = await MongoWork.FindRoleByUserId(items[0].ParentId);
-                    if ((currentItemCount + items.Count) > 500 && role.AccessLevel == AccessLevel.BASIC)
+                    if ((currentItemCount + items.Count) > 1000 && role.AccessLevel == AccessLevel.BASIC)
                     {
                         return BadRequest("Exceeded number of items at this access level");
                     }
-#endif
-#endif
-                    await MongoWork.addOrUpdateItems(items);
-                }
 
-                return Ok();
+                    
+                }
+#endif
+#endif
+                await MongoWork.AddOrUpdateItems(items);
+            return Ok();
             }
             catch (Exception e)
             {

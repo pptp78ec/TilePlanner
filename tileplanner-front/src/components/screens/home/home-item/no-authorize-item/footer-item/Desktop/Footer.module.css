@@ -1,0 +1,38 @@
+.footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 140px;
+    background-color: #142E08;
+    padding-left: 87px;
+    padding-right: 60px;
+}
+.footer>div{
+    width: 50%;
+}
+.sub_menu{
+    display: flex;
+    flex-wrap: wrap;
+   font-size: 20px;
+   font-weight: 600;
+   color: #FFFFFF;
+}
+.sub_menu>div{
+    margin-right:60px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+.additional{
+    display: flex;
+    justify-content: right;
+    flex-wrap: wrap;
+}
+.additional>div{
+    margin-right: 56px;
+}
+.contact{
+    font-size: 20px;
+   font-weight: 600;
+   color: #FFFFFF;
+   cursor: pointer;
+}

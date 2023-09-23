@@ -1,0 +1,27 @@
+.auth_google {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 182px;
+    height: 45px;
+    border-radius: 21px;
+    padding-left: 44px;
+    padding-right: 44px;
+    background-color: #E7E7E7;
+    box-shadow: -5px -5px 10px 0px #FAFBFF,
+        5px 5px 10px 0px #161B1D3B;
+    cursor: pointer;
+    transition: box-shadow 0.25s ease;
+}
+
+.auth_google:hover {
+    box-shadow: none;
+}
+
+
+.google {
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+
+}

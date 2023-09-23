@@ -1,0 +1,116 @@
+.content {
+    margin-top: 61px;
+}
+.header {
+    font-weight: 900;
+    font-size: 24px;
+    text-align: center;
+}
+
+.sub_element:nth-child(1) {
+    margin-bottom: 40px;
+}
+
+.sub_element:nth-child(2) {
+    margin-bottom: 40px;
+}
+
+.sub_element:nth-child(3) {
+    margin-left: 25px;
+    margin-right: 25px;
+    margin-bottom: 60px;
+}
+
+
+
+.example {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.example>img {
+    width: 100%;
+    height: auto;
+}
+
+
+.text {
+    font-weight: 500;
+    font-size: 18px;
+    text-align: center;
+    width: 100%;
+}
+.sub_element:nth-child(4) {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.button_wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+    width: 100%;
+}
+
+.button {
+    display: flex;
+    height: 100%;
+    width: 282px;
+    background: linear-gradient(to right, #BED961, #57B551);
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    font-size: 20px;
+    color: white;
+    text-shadow: 3px 3px 4px rgba(0, 0, 0, 0.3);
+    /* Горизонтальное смещение, вертикальное смещение, размытие, цвет */
+    transition: 0.25s;
+    cursor: pointer;
+    box-shadow: 5px 5px 10px 0px #161B1D3B;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    padding-left: 35px;
+    padding-right: 35px;
+    text-align: center;
+}
+
+.button:hover {
+    text-shadow: none;
+}
+
+.content_element_2{
+    margin-top: 88px;
+
+}
+.abilities_wrap{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.ability_item {
+    width: 158px;
+    height: 144px;
+    border-radius: 21px;
+    background-color: #E7E7E7;
+    box-shadow:
+       -5px -5px 10px 0px #FFFFFF inset,
+       5px 5px 10px 0px #161B1D3B inset;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 10px;
+ }
+ .ability_info {
+    font-weight: 700;
+    font-size: 16px;
+    color: #474747;
+    text-align: center;
+ }
+.ability_icon>img{
+    height: 38px;
+}

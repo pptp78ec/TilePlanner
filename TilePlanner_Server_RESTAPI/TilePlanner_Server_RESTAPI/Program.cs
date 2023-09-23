@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Converters;
 using System.Text;
+using System.Text.Json.Serialization;
 using TilePlanner_Server_RESTAPI.Auth;
 using TilePlanner_Server_RESTAPI.BrainTreePayPalPayment;
 using TilePlanner_Server_RESTAPI.DBConnection;
+using TilePlanner_Server_RESTAPI.ORM;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,13 +22,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-    var builder = new ConfigurationBuilder();
-    builder.AddJsonFile("appsettings.json");
-    IConfiguration configuration = builder.Build();
-    var issuer = configuration.GetValue<string>("JWT:Issuer") ?? "Issuer";
-    var audience = configuration.GetValue<string>("JWT:Audience") ?? "Audience";
-    var key = configuration.GetValue<string>("JWT:Key") ?? "This is the key for this app";
-    var lifetime = configuration.GetValue<int>("JWT:Lifetime");
+    var issuer = builder.Configuration.GetValue<string>("JWT:Issuer") ?? "Issuer";
+    var audience = builder.Configuration.GetValue<string>("JWT:Audience") ?? "Audience";
+    var key = builder.Configuration.GetValue<string>("JWT:Key") ?? "This is the key for this app";
+    var lifetime = builder.Configuration.GetValue<int>("JWT:Lifetime");
 
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -38,16 +39,28 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 
 });
-
+builder.Services.AddAuthorization();
 builder.Services.AddSingleton<Authenticate>();
 
 #endif
 
 
+
+
+
+
 builder.Services.AddSingleton<MongoWork>();
 builder.Services.AddTransient<IBrainTreeService, BrainTreeService>();
+builder.Services.AddControllers(opts => opts.Filters.Add(new CorsFilter())).AddJsonOptions(x =>
+{
+    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+}); ;
+
 
 var app = builder.Build();
+
+
 
 //var mongoDBaccess = new MongoWork();
 
@@ -62,8 +75,8 @@ if (app.Environment.IsDevelopment())
 
 #if AUTHALT
 #if AUTHALT_ENABLED
-    app.UseAuthorization();
     app.UseAuthentication();
+    app.UseAuthorization();
 #endif
 #endif
 
@@ -74,8 +87,6 @@ app.UseCors(cors =>
     cors.AllowAnyMethod();
 });
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
