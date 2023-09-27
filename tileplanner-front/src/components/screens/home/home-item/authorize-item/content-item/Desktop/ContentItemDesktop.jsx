@@ -1,8 +1,11 @@
 import React from 'react'
 import styles from './Content.module.css'
 import ProfileChangeFormDesktop from '../../UI/profile-change-form-item/Desktop/ProfileChangeFormDesktop'
+import CreateProjectDesktop from '../../UI/create-project-item/Desktop/CreateProjectDesktop'
+import ProjectItemDesktop from '../../UI/project-item/ProjectItemDesktop'
 
-function ContentItemDesktop({showForm,setShowForm}) {
+function ContentItemDesktop({ showForm, setShowForm, showCRPForm, setShowCRPForm, projects }) {
+    // console.log(projects[0])
     return (
         <>
             <div className={styles.content}>
@@ -10,18 +13,13 @@ function ContentItemDesktop({showForm,setShowForm}) {
                     Мої проекти
                 </div>
                 <div className={styles.projects}>
-                    <div className={styles.project}>
-                        <div className={styles.project_preview}>
-                            <img src="" alt="" />
-                        </div>
-                        <div className={styles.project_name}>
-                            Проект 3
-                        </div>
-                    </div>
-
+                    {projects?.map((project) => {
+                      return  <ProjectItemDesktop key={project.id} name={project.header} />
+                    })}
                 </div>
             </div>
-            <ProfileChangeFormDesktop showForm={showForm} setShowForm={setShowForm}/>
+            <ProfileChangeFormDesktop showForm={showForm} setShowForm={setShowForm} />
+            <CreateProjectDesktop showCRPForm={showCRPForm} setShowCRPForm={setShowCRPForm} />
         </>
     )
 }

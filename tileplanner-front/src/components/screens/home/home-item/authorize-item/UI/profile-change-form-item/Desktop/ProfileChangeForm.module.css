@@ -51,6 +51,9 @@
 
 .avatar>img {
     height: 100px;
+    width: 100px;
+    overflow: hidden;
+    border-radius: 50px;
 }
 
 .avatar_change_button {
@@ -192,4 +195,14 @@
     justify-content: center;
     margin-bottom: 68px;
 }
+
+.error{
+    padding-left: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(255, 0, 0);
+    text-wrap: wrap;
+    width: 400px;
+}
+
 
