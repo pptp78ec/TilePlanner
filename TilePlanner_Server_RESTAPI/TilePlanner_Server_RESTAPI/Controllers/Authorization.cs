@@ -44,15 +44,15 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                if(await MongoWork.FindUserBySearchParams(user.Login, user.Password) != default)
+                if(await MongoWork.CheckIfUserAlreadyExists(user.Login) != default)
                 {
                     return BadRequest(new BadRequestErrorDTO() { ErrorClass = "Login", ErrorMsg = "User with such login already exists!" });
                 }
-                if (await MongoWork.FindUserBySearchParams(user.Email, user.Password) != default)
+                if (await MongoWork.CheckIfUserAlreadyExists(user.Email) != default)
                 {
                     return BadRequest(new BadRequestErrorDTO() { ErrorClass = "Email", ErrorMsg = "User with such email already exists!" });
                 }
-                if (await MongoWork.FindUserBySearchParams(user.Phone, user.Password) != default)
+                if (await MongoWork.CheckIfUserAlreadyExists(user.Phone) != default)
                 {
                     return BadRequest(new BadRequestErrorDTO() { ErrorClass = "Phone", ErrorMsg = "User with such phone already exists!" });
                 }
