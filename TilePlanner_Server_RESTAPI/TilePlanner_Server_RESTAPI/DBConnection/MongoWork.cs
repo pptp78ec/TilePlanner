@@ -408,7 +408,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
 
         public async Task<User> CheckIfUserAlreadyExists(string loginparam)
         {
-            return await (await database.GetCollection<User>("Users").FindAsync(_ => (_.Login == loginparam || _.Email == loginparam || _.Phone == loginparam) && _.IsDeleted == false)).FirstOrDefaultAsync();
+            return await (await database.GetCollection<User>("Users").FindAsync(_ => (_.Login == loginparam || (_.Email == loginparam && !String.IsNullOrEmpty(_.Email)) || (_.Phone == loginparam && !String.IsNullOrEmpty(_.Phone))) && _.IsDeleted == false)).FirstOrDefaultAsync();
         }
 
         /// <summary>
