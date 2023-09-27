@@ -1,12 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './ProfileChangeForm.module.css'
 import styless from './ProfileChangeForm.module.css';
 import Prices from './prices-item/Prices';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Validator } from '../../../../../../../../classes/validatior';
+import { useForm } from 'react-hook-form';
+import { UserService } from '../../../../../../../../services/user.service';
 function ProfileChangeFormDesktop({ showForm, setShowForm }) {
+  const serverUrl='https://localhost:7029/';
   const [currentPassword, setCurrentPassword] = useState(false);
   const [newPassword, setNewPassword] = useState(false);
   const [changedPassword, setChangedPassword] = useState(false);
-  const overlay = React.createRef();
+
+  const [currentImage, setCurrentImage] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+
+  const { register, handleSubmit, reset, formState, watch,setValue } = useForm({
+    mode: 'onChange'
+  })
+  const navigate = useNavigate(); // Получаем функцию для навигации
+  const location = useLocation();
+  const messageType = location.state?.type
+  const message = location.state?.errorMessage
+  const { errors } = formState
+  const overlay = useRef(null);
   const handleTogglePasswordVisibility = (event) => {
     const id = event.currentTarget.id;
 
@@ -17,6 +35,15 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
     }
   };
   useEffect(() => {
+    location.state=null
+    // console.log(userData)
+    if(userData==null){
+      UserService.getUserAllFileds(setUserData,setCurrentImage)
+    }else{
+      setValue('name',userData?.name) 
+      setValue('email',userData?.email) 
+      setValue('phone',userData?.phone) 
+    }
     const timer = setTimeout(() => {
       if (showForm == false) {
         overlay.current.style.display = 'none';
@@ -33,15 +60,52 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
     };
   }, [showForm]);
   const handleToggleCloseForm = () => {
+    reset();
     setShowForm(false);
 
   };
+
+  const validatePasswordMatch = (value) => {
+    const newPassword = watch('new_password'); // Получаем значение поля "Новий пароль"
+    return newPassword === value || 'Password mismatch';
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0]; // Получаем выбранный файл
+
+    if (file) {
+      // Здесь вы можете выполнить дополнительную обработку файла, если необходимо
+      setValue('userImageId', file);
+      setCurrentImage(URL.createObjectURL(file)); // Устанавливаем выбранный файл как аватар
+    }
+  };
+
+  const updateUser = async (data) => {
+    try {
+      location.state = null;
+      
+      const dataToSend = {};
+      dataToSend.name = data.name
+      dataToSend.email = data.email
+      dataToSend.phone = data.phone
+      dataToSend.password = data.new_password
+      dataToSend.userImageId = data.userImageId
+      console.log(data.userImageId)
+      UserService.setUserChangedData(navigate, dataToSend, data)
+
+
+
+    } catch (error) {
+      console.error("Ошибка изменения данних: ", error);
+    }
+  }
   return (
     <>
       <div ref={overlay} className={`${styles.overlay}`}>
 
         <form className={`${styles.profile_form} animated
-                     ${showForm ? 'zoomInUp' : 'zoomOutDown'}`}>
+                     ${showForm ? 'zoomInUp' : 'zoomOutDown'}`}
+          onSubmit={handleSubmit(updateUser)}>
           <div className={styles.close_profile_form_button}
             onClick={handleToggleCloseForm}>
             +
@@ -49,11 +113,21 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
           <div className={styles.profile_content}>
             <div className={styles.content_element}>
               <div className={styles.avatar}>
-                <img src="./default_profile_icon.svg" alt="" />
+                <img src={currentImage || './default_profile_icon.svg'} alt="Аватар" />
               </div>
-              <div className={styles.avatar_change_button}>
+              <label htmlFor="avatarInput" className={styles.avatar_change_button}>
                 Змінити аватар
-              </div>
+              </label>
+              <input
+                type="file"
+                id="avatarInput"
+                accept="image/*"
+                {...register('userImageId', {
+                 
+                })}
+                onChange={handleAvatarChange}
+                style={{ display: 'none' }}
+              />
             </div>
             <div className={styles.content_element}>
               <div className={styles.sub_element}>
@@ -65,7 +139,8 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                     Ім’я
                   </div>
                   <div className={styles.input_info}>
-                    <input type="text" />
+                    <input {...register('name', {
+                    })} defaultValue={userData?.name}/>
                   </div>
                 </div>
                 <div className={styles.user_input}>
@@ -73,7 +148,15 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                     Email
                   </div>
                   <div className={styles.input_info}>
-                    <input type="email" />
+                    <input
+                      {...register('email', {
+                       
+                        pattern: {
+                          value: Validator.getEmailRegExp(),
+                          message: "Incorrect email"
+                        }
+                      })}
+                      type='email'  defaultValue={userData?.email}/>
                   </div>
                 </div>
                 <div className={styles.user_input}>
@@ -81,7 +164,9 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                     Телефон
                   </div>
                   <div className={styles.input_info}>
-                    <input type="tel" />
+                    <input {...register('phone', {
+                     
+                    })}  defaultValue={userData?.phone}/>
                   </div>
                 </div>
 
@@ -95,38 +180,61 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                     Поточний пароль
                   </div>
                   <div className={styles.input_info}>
-                    <input type={currentPassword ? 'text' : 'password'} />
+                    <input
+                      {...register('password', {
+                       
+                        pattern: {
+                          value: Validator.getPasswordRegExp(),
+                          message: "minimum 6 characters, 1 big one small, number, special character"
+                        }
+                      })}
+                      type={currentPassword ? 'text' : 'password'} />
                     <a id='current_password'
                       className={`${styles.input_hidder} 
                      ${currentPassword ? styles.input_visible : styles.input_hidden}`}
                       onClick={handleTogglePasswordVisibility}></a>
                   </div>
+                  {errors.password && errors.password.message.length != 0 ? <div className={`${styles.error} animated fadeInDown`}>{errors.password?.message}</div> : ""}
                 </div>
                 <div className={styles.user_input}>
                   <div className={styles.input_header}>
                     Новий пароль
                   </div>
                   <div className={styles.input_info}>
-                    <input type={newPassword ? 'text' : 'password'} />
+                    <input
+                      {...register('new_password', {
+                       
+                        pattern: {
+                          value: Validator.getPasswordRegExp(),
+                          message: "minimum 6 characters, 1 big one small, number, special character"
+                        }
+                      })}
+                      type={newPassword ? 'text' : 'password'} />
                     <a id='new_password'
                       className={`${styles.input_hidder} 
                      ${newPassword ? styles.input_visible : styles.input_hidden}`}
                       onClick={handleTogglePasswordVisibility}></a>
 
                   </div>
+                  {errors.new_password && errors.new_password.message.length != 0 ? <div className={`${styles.error} animated fadeInDown`}>{errors.new_password?.message}</div> : ""}
                 </div>
                 <div className={styles.user_input}>
                   <div className={styles.input_header}>
                     Повторіть пароль
                   </div>
                   <div className={styles.input_info}>
-                    <input type={changedPassword ? 'text' : 'password'} />
+                    <input
+                      {...register('repeat_password', {
+                       
+                        validate: validatePasswordMatch,
+                      })}
+                      type={changedPassword ? 'text' : 'password'} />
                     <a id='changed_password'
                       className={`${styles.input_hidder} 
                      ${changedPassword ? styles.input_visible : styles.input_hidden}`}
                       onClick={handleTogglePasswordVisibility}></a>
-
                   </div>
+                  {errors.repeat_password && errors.repeat_password.message.length != 0 ? <div className={`${styles.error} animated fadeInDown`}>{errors.repeat_password?.message}</div> : ""}
                 </div>
               </div>
               <div className={styles.sub_element}>
@@ -150,12 +258,17 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
           </div>
           <Prices />
           <div className={styles.button}>
-            <div className={styles.save_changes_button}>
+            <button className={styles.save_changes_button}>
               Зберегти зміни
-            </div>
+            </button>
           </div>
 
         </form>
+        {messageType == "error" ? <div class="fadeInDown animated errors" id="error">
+          {message}
+        </div> : messageType == "succsess" ? <div class="fadeInDown animated errors succsess" id="error">
+          {message}
+        </div> : ""}
       </div>
 
 

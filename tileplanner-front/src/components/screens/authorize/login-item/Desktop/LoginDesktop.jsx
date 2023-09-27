@@ -6,21 +6,20 @@ import { useForm } from 'react-hook-form';
 import { Validator as validator } from '../../../../../classes/validatior';
 import { UserService } from '../../../../../services/user.service';
 export default function LoginDesktop() {
-  const errorMessageShowed=false;
+  const errorMessageShowed = false;
   const navigate = useNavigate(); // Получаем функцию для навигации
   const location = useLocation();
   const message = location.state?.errorMessage
-  const messageType=location.state?.type
+  const messageType = location.state?.type
   useEffect((message) => {
-    navigate('/login', { state: null })
-    message=""
+
   }, [])
 
   const [currentPassword, setCurrentPassword] = useState(false);
   const { register, handleSubmit, reset, formState } = useForm({
     mode: 'onChange'
   })
- 
+
   const { errors } = formState
   const handleTogglePasswordVisibility = (event) => {
     const id = event.currentTarget.id;
@@ -30,12 +29,9 @@ export default function LoginDesktop() {
     }
   };
   const loginUser = async (data) => {
-   location.state=null;
+    location.state = null;
     try {
-      const ok = await UserService.login(data, navigate);
-      if (ok) {
-        navigate('/')
-      }
+      await UserService.login(data, navigate);
     } catch (error) {
       console.error("Ошибка регистрации: ", error);
     }
@@ -94,18 +90,18 @@ export default function LoginDesktop() {
                 </div>
               </div>
               <div className={styles.any_methods}>
-                <CustomGoogleButtonDesktop />
+                <CustomGoogleButtonDesktop/>
               </div>
             </div>
           </div>
         </form>
       </div>
-      {messageType=="error"? <div class="fadeInDown animated errors" id="error">
+      {messageType == "error" ? <div class="fadeInDown animated errors" id="error">
         {message}
-      </div>:messageType=="succsess"? <div class="fadeInDown animated errors succsess" id="error">
+      </div> : messageType == "succsess" ? <div class="fadeInDown animated errors succsess" id="error">
         {message}
-      </div>:""}
-     
+      </div> : ""}
+
 
     </div >
 
