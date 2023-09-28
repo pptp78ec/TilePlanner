@@ -64,6 +64,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     paymentStatus = "Your payment is Successful!";
                     transactionData.IsSuccessful = true;
                     await mongoWork.AddTransactionData(transactionData);
+                    await mongoWork.UpdateRole(transactionData.UserId, transactionData.AccessLevel, 30);
                 }
                 else
                 {
