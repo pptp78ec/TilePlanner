@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Converters;
 using System.Text;
 using System.Text.Json.Serialization;
 using TilePlanner_Server_RESTAPI.Auth;
@@ -49,14 +47,16 @@ builder.Services.AddSingleton<Authenticate>();
 
 
 
-builder.Services.AddSingleton<MongoWork>();
+builder.Services.AddSingleton<MongoContext>();
 builder.Services.AddTransient<IBrainTreeService, BrainTreeService>();
+
+#if DEBUG
 builder.Services.AddControllers(opts => opts.Filters.Add(new CorsFilter())).AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 }); ;
-
+#endif
 
 var app = builder.Build();
 
@@ -75,8 +75,8 @@ if (app.Environment.IsDevelopment())
 
 #if AUTHALT
 #if AUTHALT_ENABLED
-    app.UseAuthentication();
-    app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 #endif
 #endif
 

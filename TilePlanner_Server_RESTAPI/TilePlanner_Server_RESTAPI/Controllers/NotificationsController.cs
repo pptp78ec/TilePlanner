@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
 {
-    [Route("api/[controller]")]
+    /// <summary>
+    /// Notifications API controller
+    /// </summary>
     [ApiController]
 #if AUTHALT
 #if AUTHALT_ENABLED
@@ -16,13 +16,18 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 #endif
     public class NotificationsController : ControllerBase
     {
-        private MongoWork mongoWork;
+        private MongoContext mongoWork;
 
-        public NotificationsController(MongoWork mongoWork)
+        public NotificationsController(MongoContext mongoWork)
         {
             this.mongoWork = mongoWork;
         }
 
+        /// <summary>
+        /// Get's user's all notifications from created tasks
+        /// </summary>
+        /// <param name="userId">User's Id</param>
+        /// <returns></returns>
         [HttpGet("/getNotificationsForUser")]
         [Produces("application/json")]
         public async Task<IActionResult> GetNotificationsForUser(string userId)
@@ -37,6 +42,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Adds or updates existing notification
+        /// </summary>
+        /// <param name="notification">Notification</param>
+        /// <returns></returns>
         [HttpPost("/addOrUpdateNotification")]
         [Produces("application/json")]
         public async Task<IActionResult> AddOrUpdateNotification([FromBody] Notification notification)
@@ -51,13 +61,18 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes
+        /// </summary>
+        /// <param name="notification"></param>
+        /// <returns></returns>
         [HttpDelete("/deleteNotification")]
-        public async Task<IActionResult> DeleteNotification([FromBody] Notification notification)
+        public async Task<IActionResult> DeleteNotification(string notificationId)
         {
             try
             {
-                await mongoWork.DeleteNotification(notification);
-                return Ok(notification);
+                await mongoWork.DeleteNotification(notificationId);
+                return Ok("Done");
             }
             catch (Exception e)
             {
@@ -65,14 +80,18 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes all current active notifications for User
+        /// </summary>
+        /// <param name="userId">User's Id</param>
+        /// <returns></returns>
         [HttpDelete("/clearAllNotifications")]
-
-        public async Task<IActionResult> ClearAllNotifications([FromBody] User user)
+        public async Task<IActionResult> ClearAllNotifications(string userId)
         {
             try
             {
-                await mongoWork.DeleteAllNotificationsForUser(user.Id);
-                return Ok("Done"); 
+                await mongoWork.DeleteAllNotificationsForUser(userId);
+                return Ok("Done");
             }
             catch (Exception e)
             {

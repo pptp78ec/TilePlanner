@@ -3,6 +3,10 @@ using TilePlanner_Server_RESTAPI.ORM.Roles;
 
 namespace TilePlanner_Server_RESTAPI.ORM
 {
+
+    /// <summary>
+    /// Model class to store transaction data
+    /// </summary>
     public class TransactionData
     {
         [BsonId]

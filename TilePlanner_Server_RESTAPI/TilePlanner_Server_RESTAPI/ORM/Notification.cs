@@ -2,6 +2,10 @@
 
 namespace TilePlanner_Server_RESTAPI.ORM
 {
+
+    /// <summary>
+    /// Notification model class, used for storing data about notifications, if user chooses to create it
+    /// </summary>
     public class Notification
     {
         [BsonId]

@@ -8,16 +8,26 @@ using TilePlanner_Server_RESTAPI.ORM;
 namespace TilePlanner_Server_RESTAPI.Auth
 {
 #if AUTHALT
+
+    /// <summary>
+    /// Class to authenticate users. Creates JWT token based on data from apsettings.json and user data from DB. Created as singleton
+    /// </summary>
     public class Authenticate
     {
         private readonly IConfiguration configuration;
-        private readonly MongoWork mongoWork;
+        private readonly MongoContext mongoWork;
 
-        public Authenticate(IConfiguration configuration, MongoWork mongoWork)
+        public Authenticate(IConfiguration configuration, MongoContext mongoWork)
         {
             this.configuration = configuration;
             this.mongoWork = mongoWork;
         }
+
+        /// <summary>
+        /// Authenticates user by creating JWT token.
+        /// </summary>
+        /// <param name="user">User object</param>
+        /// <returns></returns>
 
         public async Task<ReturnTokenDataDTO> AuthenticateThis(User user)
         {

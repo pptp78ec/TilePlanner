@@ -4,19 +4,35 @@ using TilePlanner_Server_RESTAPI.ORM.Roles;
 
 namespace TilePlanner_Server_RESTAPI.ORM
 {
-    public class CoordinateDTO
+    //------------------------------------------------------------------------------------------
+    //List of all DTO/DAO supplementary classes
+    //------------------------------------------------------------------------------------------
+
+
+    /// <summary>
+    /// Class for storing coordinate values in BasicItem class
+    /// </summary>
+    public class CoordinateDAO
     {
         public string Lat { get; set; } = string.Empty;
         public string Long { get; set; } = string.Empty;
     }
 
-    public class FileInfoShortDTO
+
+    /// <summary>
+    /// Class for storing short info about file in BasicItem class
+    /// </summary>
+    public class FileInfoShortDAO
     {
         public string FileId { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
     }
 
-    public class DBFileRetDTO
+    /// <summary>
+    /// Class to get file from database. Returns filename and file byte array
+    /// </summary>
+
+    public class DBFileRetDAO
     {
         public string FileName { get; set; } = string.Empty;
         public byte[]? FileContents { get; set; } = default;
@@ -29,12 +45,19 @@ namespace TilePlanner_Server_RESTAPI.ORM
         }
     }
 
+    /// <summary>
+    /// Class to accept login data (either login, email or phone number) and password from user during login
+    /// </summary>
+
     public class LoginDataDTO
     {
         public string Login { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
 
+    /// <summary>
+    /// Class to accept change of role level. Consists of Id of a user, number of days to add and access level
+    /// </summary>
 
     public class RoleUpdateFieldsDTO
     {
@@ -43,6 +66,9 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public AccessLevel AccessLevel { get; set; } = default(AccessLevel);
     }
 
+    /// <summary>
+    /// Class to accept Checkout data from Braintree frontend logic
+    /// </summary>
 
     public class CheckoutModelDTO
     {
@@ -53,11 +79,20 @@ namespace TilePlanner_Server_RESTAPI.ORM
 
     }
 
+    /// <summary>
+    /// Class to return JWT token to user
+    /// </summary>
+
     public class ReturnTokenDataDTO
     {
         public string Token { get; set; } = string.Empty;
         public string UserID { get; set; } = string.Empty;
     }
+
+#if DEBUG
+    /// <summary>
+    /// For developeing purposes. Filter to add CORS header to all outbound requests from this server.
+    /// </summary>
 
     class CorsFilter : ActionFilterAttribute
     {
@@ -67,12 +102,21 @@ namespace TilePlanner_Server_RESTAPI.ORM
             context.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
         }
     }
+#endif
+
+    /// <summary>
+    /// Class with minimum data necessary to create a Screen/Project
+    /// </summary>
 
     public class CreateScreenDTO
     {
         public string ScreenName { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty;
     }
+
+    /// <summary>
+    /// Class to classify and return error info. Asked by frontend devs
+    /// </summary>
 
     public class BadRequestErrorDTO
     {

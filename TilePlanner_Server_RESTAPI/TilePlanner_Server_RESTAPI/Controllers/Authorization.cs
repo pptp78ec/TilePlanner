@@ -6,21 +6,29 @@ using TilePlanner_Server_RESTAPI.ORM;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
 {
-    [Route("api/auth/tst")]
+    /// <summary>
+    /// Authorization API class
+    /// </summary>
     [ApiController]
     public class Authorization : ControllerBase
     {
-        private readonly MongoWork MongoWork;
+        private readonly MongoContext MongoWork;
 
 #if AUTHALT
         private readonly Authenticate authenticate;
 
-        public Authorization(MongoWork MongoWork, Authenticate authenticate)
+        public Authorization(MongoContext MongoWork, Authenticate authenticate)
         {
             this.authenticate = authenticate;
             this.MongoWork = MongoWork;
         }
 
+
+        /// <summary>
+        /// Login takes login data and attemts to login. If successful, returns a JWT token and User's Id
+        /// </summary>
+        /// <param name="logindata">either login, email or phone number and user's password</param>
+        /// <returns></returns>
         [HttpPost("/login")]
         [Produces("application/json")]
         [AllowAnonymous]
@@ -37,6 +45,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Registers a new user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpPost("/register")]
         [Produces("application/json")]
         [AllowAnonymous]

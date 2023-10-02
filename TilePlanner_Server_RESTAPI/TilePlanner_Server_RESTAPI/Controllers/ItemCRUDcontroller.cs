@@ -1,5 +1,4 @@
-﻿using Braintree;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using System.Collections;
@@ -9,19 +8,24 @@ using TilePlanner_Server_RESTAPI.ORM.Roles;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
 {
-    [Route("api")]
+    /// <summary>
+    /// Items API controller
+    /// </summary>
     [ApiController]
+    [Authorize]
     public class ItemCRUDcontroller : ControllerBase
     {
-        private MongoWork MongoWork;
+        private MongoContext MongoWork;
 
-        public ItemCRUDcontroller(MongoWork MongoWork)
+        public ItemCRUDcontroller(MongoContext MongoWork)
         {
             this.MongoWork = MongoWork;
         }
 
+
+#if DEBUG
         /// <summary>
-        /// FOR TESTING PURPOSES
+        /// FOR TESTING PURPOSES ONLY. CREATES 
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
@@ -34,80 +38,8 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
             return result;
         }
-
-        /// <summary>
-        /// Endpoint for saving file in gridFS
-        /// </summary>
-        /// <param name="item">Item</param>
-        /// <returns>Item with fileinfo</returns>
-
-#if GRIDFS      
-        [HttpPost("/uploadfile")]
-        [Produces("application/json")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize(Roles = "ADVANCED,FULL")]
 #endif
-#endif
-        public async Task<ActionResult<BasicItem>> UploadFile([FromBody] BasicItem item)
-        {
-            var request = HttpContext.Request;
-            var file = HttpContext.Request.Form.Files[0];
-            var fileinfoshort = await MongoWork.SaveFileToGridFS(file);
-            var fileitem = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), Itemtype = Itemtype.FILE, CreatorId = item.CreatorId, Header = item.Header, ParentId = item.ParentId, Tags = item.Tags, File = fileinfoshort, Description = item.Description };
-            await MongoWork.addOneitem(fileitem);
-            return fileitem;
-        }
 
-        /// <summary>
-        /// TEST for file save in DB
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("/uploadfile2")]
-        [Produces("application/json")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize(Roles = "ADVANCED,FULL")]
-#endif
-#endif
-        public async Task<ActionResult<FileInfoShort>> UploadFile2()
-        {
-            var testfile = new FileInfo("E:\\TEMP\\TEMP.rar");
-
-            return await MongoWork.SaveToGridFS_Test(testfile);
-        }
-
-
-        /// <summary>
-        /// Gets file from DB and returns it
-        /// </summary>
-        /// <param name="fileId">Id of a file</param>
-        /// <returns></returns>
-        [HttpPost("/getfile")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize(Roles = "ADVANCED,FULL")]
-#endif
-#endif
-        public async Task<IActionResult> getFile(string fileId)
-        {
-
-            try
-            {
-                var retFile = await MongoWork.LoadFromGridFs(ObjectId.Parse(fileId));
-                if (retFile != null)
-                {
-                    return Ok(File(retFile.FileContents, retFile.getContentType(), retFile.FileName));
-                }
-                return BadRequest();
-
-            }
-            catch (Exception e)
-            {
-                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
-            }
-        }
- #endif
         /// <summary>
         /// Gets all screens for a specific user
         /// </summary>
@@ -115,11 +47,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/getuserscreens")]
         [Produces("application/json")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize]
-#endif
-#endif
         public async Task<ActionResult<List<BasicItem>>> GetScreens(string userId)
         {
             try
@@ -132,18 +59,19 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Creates a screen/project and writes it in database
+        /// </summary>
+        /// <param name="screenDTO">Screen DTO. Consists of screen name and UserId that creates it</param>
+        /// <returns></returns>
         [HttpPost("/createproject")]
         [Produces("application/json")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize]
-#endif
-#endif
-        public async Task<IActionResult> CreateProjectScreen([FromBody] CreateScreenDTO screenDTO) 
+        public async Task<IActionResult> CreateProjectScreen([FromBody] CreateScreenDTO screenDTO)
         {
             try
             {
-                var screen = new BasicItem() {
+                var screen = new BasicItem()
+                {
                     Id = ObjectId.GenerateNewId().ToString(),
                     Itemtype = Itemtype.SCREEN,
                     CreatorId = screenDTO.UserId,
@@ -168,11 +96,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/gettiles")]
         [Produces("application/json")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize]
-#endif
-#endif
         public async Task<ActionResult<List<BasicItem>>> getScreen([FromBody] BasicItem item)
         {
             try
@@ -192,11 +115,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/deleteitem")]
         [Produces("application/json")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize]
-#endif
-#endif
         public async Task<IActionResult> deleteItem([FromBody] BasicItem item)
         {
             try
@@ -217,19 +135,14 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/updateitems")]
         [Produces("application/json")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize]
-#endif
-#endif
         public async Task<IActionResult> updateItems([FromBody] List<BasicItem> items)
         {
             try
             {
 #if AUTHALT
 #if AUTHALT_ENABLED
-                //check if limit of 500 is exceeded
-                if(items.Count > 0)
+                //check if limit of 1000 is exceeded
+                if (items.Count > 0)
                 {
                     var currentItemCount = await MongoWork.CountAllItemsForUserId(items[0].ParentId);
                     var role = await MongoWork.FindRoleByUserId(items[0].ParentId);
@@ -238,12 +151,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                         return BadRequest("Exceeded number of items at this access level");
                     }
 
-                    
+
                 }
 #endif
 #endif
                 await MongoWork.AddOrUpdateItems(items);
-            return Ok();
+                return Ok();
             }
             catch (Exception e)
             {

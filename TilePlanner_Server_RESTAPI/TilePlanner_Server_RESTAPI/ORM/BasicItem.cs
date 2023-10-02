@@ -5,6 +5,9 @@ using Newtonsoft.Json.Converters;
 namespace TilePlanner_Server_RESTAPI.ORM
 {
 
+    /// <summary>
+    /// Universal class model for item, be it Project(Screen), Tab, Tile etc
+    /// </summary>
     public class BasicItem
     {
         [BsonId]
@@ -13,7 +16,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
 
         [JsonConverter(typeof(StringEnumConverter))]
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        
+
         public Itemtype Itemtype { get; set; } = Itemtype.DEFAULT;
 
         public string Header { get; set; } = string.Empty;
@@ -39,10 +42,10 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public DateTime? TaskSetDate { get; set; } = null;
 
         [BsonIgnoreIfNull]
-        public List<CoordinateDTO>? Coordinates { get; set; } = null;
+        public List<CoordinateDAO>? Coordinates { get; set; } = null;
 
         [BsonIgnoreIfNull]
-        public FileInfoShortDTO? File { get; set; }
+        public FileInfoShortDAO? File { get; set; }
 
 
     }
