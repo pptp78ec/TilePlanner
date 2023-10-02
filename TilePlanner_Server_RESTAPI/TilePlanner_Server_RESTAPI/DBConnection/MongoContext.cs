@@ -350,7 +350,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return role;
         }
 
-        public async Task<Role?> UpdateRole(string userId, AccessLevel accesslevel, double daystoadd)
+        public async Task<Role?> UpdateSupbscription(string userId, AccessLevel accesslevel, double daystoadd)
         {
             var role = await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.UserId == userId)).FirstAsync();
             if (role != default(Role))

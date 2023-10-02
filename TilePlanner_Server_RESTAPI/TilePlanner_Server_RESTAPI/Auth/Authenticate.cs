@@ -38,6 +38,7 @@ namespace TilePlanner_Server_RESTAPI.Auth
                 {
                     role = await mongoWork.AddNewRole(user.Id);
                 }
+                await CheckIfCurrentRoleIsExpiredAndSetBasic(user.Id);
 
                 var claims = new List<Claim>
                 {
@@ -60,7 +61,19 @@ namespace TilePlanner_Server_RESTAPI.Auth
                 return default;
             }
         }
+        /// <summary>
+        /// Checks if current user's Role with paid access level is expired and if true sets access level to BASIC
+        /// </summary>
+        /// <returns></returns>
+        private async Task CheckIfCurrentRoleIsExpiredAndSetBasic(string userId)
+        {
+            var role = await mongoWork.FindRoleByUserId(userId);
+            if (role.EndTime < DateTime.Now && role.AccessLevel != ORM.Roles.AccessLevel.BASIC)
+                await mongoWork.UpdateSupbscription(userId, ORM.Roles.AccessLevel.BASIC, 0);
+        }
     }
+
+
 
 #endif
 }

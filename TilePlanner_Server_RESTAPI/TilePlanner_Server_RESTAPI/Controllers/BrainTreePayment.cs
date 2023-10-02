@@ -80,7 +80,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     newToken = "Your payment is Successful!";
                     transactionData.IsSuccessful = true;
                     await mongoWork.AddTransactionData(transactionData);
-                    await mongoWork.UpdateRole(transactionData.UserId, transactionData.AccessLevel, 30);
+                    await mongoWork.UpdateSupbscription(transactionData.UserId, transactionData.AccessLevel, 30);
 
                     newToken =  (await authenticate.AuthenticateThis(await mongoWork.FindUserById(transactionData.UserId))).Token;
 

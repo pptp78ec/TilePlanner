@@ -55,16 +55,6 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public string Password { get; set; } = string.Empty;
     }
 
-    /// <summary>
-    /// Class to accept change of role level. Consists of Id of a user, number of days to add and access level
-    /// </summary>
-
-    public class RoleUpdateFieldsDTO
-    {
-        public string UserId { get; set; } = string.Empty;
-        public double DaysToAdd { get; set; } = default;
-        public AccessLevel AccessLevel { get; set; } = default(AccessLevel);
-    }
 
     /// <summary>
     /// Class to accept Checkout data from Braintree frontend logic

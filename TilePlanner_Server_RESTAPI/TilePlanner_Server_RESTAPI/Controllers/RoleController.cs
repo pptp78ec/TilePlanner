@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TilePlanner_Server_RESTAPI.Auth;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
 
@@ -16,11 +17,14 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 #endif
     public class RoleController : ControllerBase
     {
-        private MongoContext MongoWork;
+        private readonly MongoContext MongoWork;
+        private readonly Authenticate authenticate;
 
-        public RoleController(MongoContext mongoWork)
+        public RoleController(MongoContext MongoWork, Authenticate authenticate)
         {
-            MongoWork = mongoWork;
+            this.MongoWork = MongoWork;
+            this.authenticate = authenticate;
+            
         }
 
         /// <summary>
@@ -62,17 +66,18 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         }
 
         /// <summary>
-        /// Updates a role
+        /// Sets user's current subscription method to BASIC and returns regenerated JWT token
         /// </summary>
-        /// <param name="roleUpdateFields">Role's fields</param>
+        /// <param name="userId">Id of a user</param>
         /// <returns></returns>
-        [HttpPost("/updateRole")]
+        [HttpGet("/setSubscriptionToBasic")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateRole([FromBody] RoleUpdateFieldsDTO roleUpdateFields)
+        public async Task<IActionResult> setSubscriptionToBasic(string userId)
         {
             try
             {
-                return Ok(await MongoWork.UpdateRole(roleUpdateFields.UserId, roleUpdateFields.AccessLevel, roleUpdateFields.DaysToAdd));
+                await MongoWork.UpdateSupbscription(userId, ORM.Roles.AccessLevel.BASIC, 0);
+                return Ok((await authenticate.AuthenticateThis(await MongoWork.FindUserById(userId))).Token);
             }
             catch (Exception e)
             {
