@@ -11,7 +11,8 @@
 
 <body>
     <div class="fields">
-        <input type="text" id="moneyamountinput" />
+        <input type="text" id="useridinput" placeholder="userId"/>
+        <input type="text" id="moneyamountinput" placeholder="moneyAmoount"/>
         <select id="level">
             <option>ADVANCED</option>
             <option>FULL</option>
@@ -34,13 +35,15 @@
         let paymentModel;
         let money;
         let levelSelect = document.getElementById("level");
+        let userId;
         function PaymentGateway() {
             money = Number(document.getElementById("moneyamountinput").value)
+            userId = document.getElementById("useridinput").value
             let level = levelSelect.options[levelSelect.selectedIndex].text
             paymentModel = {
                 MoneyAmount: money,
                 AccessLevel: level,
-                UserID: "testUserId"
+                UserID: userId
             }
             console.log(paymentModel)
             console.log(money)

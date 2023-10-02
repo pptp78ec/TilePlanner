@@ -1,6 +1,7 @@
 ﻿using Braintree;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TilePlanner_Server_RESTAPI.Auth;
 using TilePlanner_Server_RESTAPI.BrainTreePayPalPayment;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
@@ -22,10 +23,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
     {
         private readonly IBrainTreeService brainTreeService;
         private readonly MongoContext mongoWork;
-        public BrainTreePayment(IBrainTreeService brainTreeService, MongoContext mongoWork)
+        private readonly Authenticate authenticate;
+        public BrainTreePayment(IBrainTreeService brainTreeService, MongoContext mongoWork, Authenticate authenticate)
         {
             this.brainTreeService = brainTreeService;
             this.mongoWork = mongoWork;
+            this.authenticate = authenticate;
         }
 
         /// <summary>
@@ -57,7 +60,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                string paymentStatus = string.Empty;
+                string newToken = string.Empty;
                 var gateway = await brainTreeService.GetGatewayAsync();
 
                 var request = new TransactionRequest()
@@ -74,10 +77,13 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
                 if (result.IsSuccess())
                 {
-                    paymentStatus = "Your payment is Successful!";
+                    newToken = "Your payment is Successful!";
                     transactionData.IsSuccessful = true;
                     await mongoWork.AddTransactionData(transactionData);
                     await mongoWork.UpdateRole(transactionData.UserId, transactionData.AccessLevel, 30);
+
+                    newToken =  (await authenticate.AuthenticateThis(await mongoWork.FindUserById(transactionData.UserId))).Token;
+
                 }
                 else
                 {
@@ -93,7 +99,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     return Problem(errorMsg, null, 424);
                 }
 
-                return Ok(paymentStatus);
+                return Ok(newToken);
             }
             catch (Exception e)
             {
