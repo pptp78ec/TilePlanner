@@ -23,7 +23,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             this.MongoWork = MongoWork;
         }
 
-
         /// <summary>
         /// Login takes login data and attemts to login. If successful, returns a JWT token and User's Id
         /// </summary>

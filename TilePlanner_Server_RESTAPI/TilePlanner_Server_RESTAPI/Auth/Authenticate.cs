@@ -39,12 +39,10 @@ namespace TilePlanner_Server_RESTAPI.Auth
                     role = await mongoWork.AddNewRole(user.Id);
                 }
                 await CheckIfCurrentRoleIsExpiredAndSetBasic(user.Id);
-
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Role, role.AccessLevel.ToString())
                 };
-
                 var token = new JwtSecurityToken(
                     issuer: configuration.GetValue<string>("JWT:Issuer") ?? "Issuer",
                     audience: configuration.GetValue<string>("JWT:Audience") ?? "Audience",
@@ -53,7 +51,6 @@ namespace TilePlanner_Server_RESTAPI.Auth
                     expires: DateTime.Now.AddHours(configuration.GetValue<int>("JWT:Lifetime")),
                     signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetValue<string>("JWT:Key") ?? "This is the key for this app")), SecurityAlgorithms.HmacSha256));
                 var jwtstring = new JwtSecurityTokenHandler().WriteToken(token);
-
                 return new ReturnTokenDataDTO { Token = jwtstring, UserID = user.Id };
             }
             catch (Exception)

@@ -40,7 +40,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     return Ok(user);
                 }
                 return BadRequest("No user found!");
-
             }
             catch (Exception e)
             {
@@ -71,9 +70,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     await mongoWork.UpdateUserEmail(user);
                 if (!String.IsNullOrEmpty(user.Description))
                     await mongoWork.UpdateUserDescription(user);
-
                 await mongoWork.SetGoogleUser(user);
-
                 return Ok(user);
             }
             catch (Exception e)
@@ -133,9 +130,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-
                 await mongoWork.UpdateUserImageId(user);
-
                 return Ok(user);
             }
             catch (Exception e)
@@ -156,7 +151,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             try
             {
                 await mongoWork.UpdateUserEmail(user);
-
                 return Ok(user);
             }
             catch (Exception e)
@@ -177,7 +171,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             try
             {
                 await mongoWork.UpdateUserPhone(user);
-
                 return Ok(user);
             }
             catch (Exception e)
@@ -198,7 +191,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             try
             {
                 await mongoWork.UpdateUserDescription(user);
-
                 return Ok(user);
             }
             catch (Exception e)
@@ -225,7 +217,5 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
-
-
     }
 }

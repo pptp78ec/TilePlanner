@@ -41,6 +41,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 database.CreateCollection("Notifications");
         }
 
+#if DEBUG
         //------------------------------------------------------------------------------------------
         // FOR TESTING PURPOSES
         //------------------------------------------------------------------------------------------
@@ -59,7 +60,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             return coll;
         }
         //------------------------------------------------------------------------------------------
-
+#endif
         //------------------------------------------------------------------------------------------
         //GRIDFS FILE SAVE/FILE LOAD
         //------------------------------------------------------------------------------------------
@@ -76,7 +77,6 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 var fileId = ObjectId.GenerateNewId();
                 var options = new GridFSUploadOptions
                 {
-
                     Metadata = new BsonDocument { { "originalFileName", file.FileName } }
                 };
 
@@ -86,6 +86,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             }
         }
 
+#if DEBUG
         /// <summary>
         /// TEST for file saving form PC in MongoDB using GridFS
         /// </summary>
@@ -98,7 +99,6 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 var fileId = ObjectId.GenerateNewId();
                 var options = new GridFSUploadOptions
                 {
-
                     Metadata = new BsonDocument { { "originalFileName", file.Name } }
                 };
                 await gridFSBucket.UploadFromStreamAsync(fileId, file.Name, stream, options);
@@ -106,6 +106,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 return new FileInfoShortDAO() { FileId = fileId.ToString(), FileName = file.Name };
             }
         }
+#endif
 
         /// <summary>
         /// Provides downloading form MongoDB in gridFS
@@ -141,12 +142,10 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         public async Task AddOrUpdateItems(List<BasicItem> items)
         {
             var upsert = new UpdateOptions() { IsUpsert = true };
-
             foreach (var item in items)
             {
                 if (String.IsNullOrEmpty(item.Id))
                     item.Id = ObjectId.GenerateNewId().ToString();
-
                 var filter = Builders<BasicItem>.Filter.Eq(_ => _.Id, item.Id);
                 var update = Builders<BasicItem>.Update
                     .Set(_ => _.Header, item.Header)
@@ -163,7 +162,6 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                     .Set(_ => _.TaskSetDate, item.TaskSetDate)
                     .Set(_ => _.File, item.File)
                     .SetOnInsert(_ => _.Id, item.Id);
-
                 await database.GetCollection<BasicItem>("Items").UpdateOneAsync(filter, update, upsert);
             }
         }
@@ -211,12 +209,13 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             {
                 await RecursiveDelete(firstnode, collection);
             }
-
         }
 
         //------------------------------------------------------------------------------------------
         //Items subfunctionality
         //------------------------------------------------------------------------------------------
+
+        //Recursive tasks
 
         private async Task RecursiveDelete(BasicItem item, IMongoCollection<BasicItem> collection)
         {
@@ -302,7 +301,6 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 notification.Id = ObjectId.GenerateNewId().ToString();
             }
             var upsert = new UpdateOptions() { IsUpsert = true };
-
             var update = Builders<Notification>.Update
                 .Set(_ => _.Header, notification.Header)
                 .Set(_ => _.NotificationTime, notification.NotificationTime)
@@ -319,17 +317,26 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-
         public async Task<List<Notification>> GetNotificationsForUser(string userId)
         {
             return await (await database.GetCollection<Notification>("Notifications").FindAsync(_ => _.UserId == userId)).ToListAsync();
         }
 
+        /// <summary>
+        /// Deletes a notification
+        /// </summary>
+        /// <param name="notificationId">Id of notification</param>
+        /// <returns></returns>
         public async Task DeleteNotification(string notificationId)
         {
             await database.GetCollection<Notification>("Notifications").DeleteOneAsync(_ => _.Id == notificationId);
         }
 
+        /// <summary>
+        /// Deletes all notifications for user
+        /// </summary>
+        /// <param name="userId">User's Id</param>
+        /// <returns></returns>
         public async Task DeleteAllNotificationsForUser(string userId)
         {
             await database.GetCollection<Notification>("Notifications").DeleteManyAsync(_ => _.UserId == userId);
@@ -361,7 +368,6 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                     .Set(_ => _.AccessLevel, role.AccessLevel)
                     .Set(_ => _.EndTime, role.EndTime)
                     .Set(_ => _.UserId, role.UserId);
-
                 await database.GetCollection<Role>("Roles").UpdateOneAsync<Role>(_ => _.Id == role.Id, update);
                 return role;
             }

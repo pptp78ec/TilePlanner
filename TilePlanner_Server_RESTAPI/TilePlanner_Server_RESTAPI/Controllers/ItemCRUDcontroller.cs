@@ -22,7 +22,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             this.MongoWork = MongoWork;
         }
 
-
 #if DEBUG
         /// <summary>
         /// FOR TESTING PURPOSES ONLY. CREATES 
@@ -34,8 +33,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         public ICollection GetItems()
         {
             var result = MongoWork.Test();
-
-
             return result;
         }
 #endif
@@ -77,9 +74,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     CreatorId = screenDTO.UserId,
                     Header = screenDTO.ScreenName
                 };
-
                 await MongoWork.AddOrUpdateItems((new BasicItem[] { screen }).ToList());
-
                 return Ok(screen);
             }
             catch (Exception e)
@@ -87,7 +82,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
-
 
         /// <summary>
         /// Returns screen with it's children (tabs, tiles, tile items)

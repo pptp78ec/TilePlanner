@@ -17,7 +17,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 #if AUTHALT
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     var issuer = builder.Configuration.GetValue<string>("JWT:Issuer") ?? "Issuer";
@@ -35,17 +34,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateLifetime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key))
     };
-
 });
+
 builder.Services.AddAuthorization();
 builder.Services.AddSingleton<Authenticate>();
-
 #endif
-
-
-
-
-
 
 builder.Services.AddSingleton<MongoContext>();
 builder.Services.AddTransient<IBrainTreeService, BrainTreeService>();
@@ -59,8 +52,6 @@ builder.Services.AddControllers(opts => opts.Filters.Add(new CorsFilter())).AddJ
 #endif
 
 var app = builder.Build();
-
-
 
 //var mongoDBaccess = new MongoWork();
 

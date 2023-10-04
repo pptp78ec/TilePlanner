@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
+﻿using Microsoft.AspNetCore.Mvc;
 using TilePlanner_Server_RESTAPI.DBConnection;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
@@ -196,6 +194,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
 
         }
+
         /// <summary>
         ///  Downloads a file from specified in appsettings.json location. The path is {Your location}\{User's Id}\{Images|files}\{generated filename}
         /// </summary>
@@ -209,11 +208,8 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             try
             {
                 var path = configuration.GetValue<string>("StorageFolder");
-
                 var filePath = Path.Combine(path, userId, isImage ? "images" : "files", filename);
-
                 var filetype = filename.Split('.').Last();
-
                 var contentType = "application/octet-stream";
 
                 switch (filetype)
@@ -249,6 +245,5 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
-
     }
 }

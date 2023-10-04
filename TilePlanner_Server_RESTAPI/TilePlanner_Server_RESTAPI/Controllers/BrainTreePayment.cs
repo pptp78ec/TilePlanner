@@ -50,7 +50,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Checkot. Sends data to Braintree server to confirm transaction, adds info about transaction to database
         /// </summary>
         /// <param name="checkout">CheckoutDTO model. Consists of access level, amount of money to transfer, Payment nonce, User's Id.
         /// Raises User's Role level to proveided in CheckoutDTO access level, saves trasaction data in database</param>
@@ -62,7 +62,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             {
                 string newToken = string.Empty;
                 var gateway = await brainTreeService.GetGatewayAsync();
-
                 var request = new TransactionRequest()
                 {
                     Amount = checkout.MoneyAmount,
@@ -74,23 +73,19 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 };
                 var transactionData = new TransactionData() { MoneyAmount = checkout.MoneyAmount, UserId = checkout.UserID, AccessLevel = Enum.Parse<AccessLevel>(checkout.AccessLevel) };
                 Result<Transaction> result = await gateway.Transaction.SaleAsync(request);
-
                 if (result.IsSuccess())
                 {
                     newToken = "Your payment is Successful!";
                     transactionData.IsSuccessful = true;
                     await mongoWork.AddTransactionData(transactionData);
                     await mongoWork.UpdateSupbscription(transactionData.UserId, transactionData.AccessLevel, 30);
-
                     newToken =  (await authenticate.AuthenticateThis(await mongoWork.FindUserById(transactionData.UserId))).Token;
-
                 }
                 else
                 {
                     string errorMsg = string.Empty;
                     foreach (var error in result.Errors.DeepAll())
                     {
-
                         errorMsg += "Error: " + (int)error.Code + " - " + error.Message + "\n";
                     }
                     transactionData.IsSuccessful = false;
@@ -98,7 +93,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     await mongoWork.AddTransactionData(transactionData);
                     return Problem(errorMsg, null, 424);
                 }
-
                 return Ok(newToken);
             }
             catch (Exception e)
@@ -106,7 +100,5 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
-
-
     }
 }
