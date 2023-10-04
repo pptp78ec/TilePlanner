@@ -22,8 +22,10 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public string CreatorId { get; set; } = string.Empty;
         [BsonIgnoreIfNull]
         public List<string>? Tags { get; set; } = null;
-        public int TileSizeX { get; set; } = 0;
-        public int TileSizeY { get; set; } = 0;
+        public double TileSizeX { get; set; } = 0;
+        public double TileSizeY { get; set; } = 0;
+        public double TilePosX { get; set; } = 0;
+        public double TilePosY { get; set; } = 0;
         public string BackgroundColor { get; set; } = string.Empty;
         public string BackgroundImageId { get; set; } = string.Empty;
         [BsonIgnoreIfNull]
