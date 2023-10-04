@@ -73,19 +73,6 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public string UserID { get; set; } = string.Empty;
     }
 
-#if DEBUG
-    /// <summary>
-    /// For developeing purposes. Filter to add CORS header to all outbound requests from this server.
-    /// </summary>
-    class CorsFilter : ActionFilterAttribute
-    {
-        public override void OnActionExecuted(ActionExecutedContext context)
-        {
-            context.HttpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-        }
-    }
-#endif
-
     /// <summary>
     /// Class with minimum data necessary to create a Screen/Project
     /// </summary>
