@@ -101,6 +101,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
+
         /// <summary>
         /// Returns tiles (AND ONLY TILES, w/o records in these tiles) for a specified screen Id
         /// </summary>
@@ -123,7 +124,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         }
 
         /// <summary>
-        /// Re
+        /// Returns records for specified tile
         /// </summary>
         /// <param name="parentTileId">Id of a tile</param>
         /// <returns></returns>
