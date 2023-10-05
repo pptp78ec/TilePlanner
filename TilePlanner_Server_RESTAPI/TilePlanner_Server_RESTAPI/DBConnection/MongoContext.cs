@@ -186,14 +186,26 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         }
 
         /// <summary>
-        /// Returns an Item and it's children
+        /// Returns children for specified parent's Id
         /// </summary>
         /// <param name="parentId">Item's id</param>
         /// <returns>List of items</returns>
-        public async Task<List<BasicItem>> GetListOfScreenChildren(string parentId)
+        public async Task<List<BasicItem>> GetListOfChildren(string parentId)
         {
             var collection = database.GetCollection<BasicItem>("Items");
             return await ChildrenSearch(parentId, collection);
+        }
+
+        /// <summary>
+        /// Returns childern of specified type for specified parent's Id
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <param name="itemtype"></param>
+        /// <returns></returns>
+        public async Task<List<BasicItem>> GetListOfChildernOfSpecificType(string parentId, Itemtype itemtype)
+        {
+            var collection = database.GetCollection<BasicItem>("Items");
+            return await ChildrenSearchSpecificType(parentId, collection, itemtype);
         }
 
         /// <summary>
@@ -243,6 +255,22 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
 
                     results.Add(node);
                     results.AddRange(await ChildrenSearch(node.Id, collection));
+                }
+            }
+            return results;
+        }
+
+        private async Task<List<BasicItem>> ChildrenSearchSpecificType(string parentId, IMongoCollection<BasicItem> collection, Itemtype itemtype)
+        {
+            var results = new List<BasicItem>();
+            var nodes = await (await collection.FindAsync(_ => _.ParentId == parentId && _.Itemtype == itemtype)).ToListAsync();
+            foreach (var node in nodes)
+            {
+                if (node != null)
+                {
+
+                    results.Add(node);
+                    results.AddRange(await ChildrenSearchSpecificType(node.Id, collection, itemtype));
                 }
             }
             return results;

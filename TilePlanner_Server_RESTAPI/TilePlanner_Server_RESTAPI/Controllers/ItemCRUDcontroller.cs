@@ -84,17 +84,56 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         }
 
         /// <summary>
-        /// Returns screen with it's children (tabs, tiles, tile items)
+        /// Returns children for a screen (tabs, tiles, tile items)
         /// </summary>
         /// <param name="item">BasicItem item</param>
         /// <returns></returns>
-        [HttpPost("/gettiles")]
+        [HttpPost("/gettilesAndRecords")]
         [Produces("application/json")]
         public async Task<ActionResult<List<BasicItem>>> getScreen([FromBody] BasicItem item)
         {
             try
             {
-                return Ok(await MongoWork.GetListOfScreenChildren(item.Id));
+                return Ok(await MongoWork.GetListOfChildren(item.Id));
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+        /// <summary>
+        /// Returns tiles (AND ONLY TILES, w/o records in these tiles) for a specified screen Id
+        /// </summary>
+        /// <param name="parentScreenId">Id of a screen</param>
+        /// <returns></returns>
+        [HttpGet("/getTilesForScreen")]
+        [Produces("application/json")]
+        public async Task<IActionResult> getTilesForScreen(string parentScreenId)
+        {
+            try
+            {
+                var listOfTiles = await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.TILE);
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.COORDINATE));
+                return Ok(listOfTiles);
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+
+        /// <summary>
+        /// Re
+        /// </summary>
+        /// <param name="parentTileId">Id of a tile</param>
+        /// <returns></returns>
+        [HttpGet("/getRecordsForTile")]
+        [Produces("application/json")]
+        public async Task<IActionResult> getRecordsForTile(string parentTileId)
+        {
+            try
+            {
+                return Ok(await MongoWork.GetListOfChildren(parentTileId));
             }
             catch (Exception e)
             {
