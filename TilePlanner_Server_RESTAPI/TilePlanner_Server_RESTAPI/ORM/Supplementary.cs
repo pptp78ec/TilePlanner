@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.StaticFiles;
+using MongoDB.Bson.Serialization.Attributes;
 using TilePlanner_Server_RESTAPI.ORM.Roles;
 
 namespace TilePlanner_Server_RESTAPI.ORM
@@ -17,6 +18,9 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public string Lat { get; set; } = string.Empty;
         public string Long { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
+        public bool isVisited {  get; set; } = false;
+        [BsonIgnoreIfNull]
+        public DateTime? PlannedDate { get; set; } = null;
     }
 
 
