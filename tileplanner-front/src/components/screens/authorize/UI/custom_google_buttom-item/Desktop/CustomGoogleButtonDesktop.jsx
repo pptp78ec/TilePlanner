@@ -2,6 +2,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import React from 'react'
 import styles from './CustomGoogleButton.module.css'
 import axios from 'axios';
+import { UserService } from '../../../../../../services/user.service';
 export default function CustomGoogleButtonDesktop() {
     const googleLogin = useGoogleLogin({
         onSuccess: async tokenResponse => {
@@ -12,7 +13,8 @@ export default function CustomGoogleButtonDesktop() {
               headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
             })
             .then(res => res.data);
-        
+            let data={};
+            UserService.registrate(data);
           console.log(userInfo);
         },
         // flow: 'implicit', // implicit is the default

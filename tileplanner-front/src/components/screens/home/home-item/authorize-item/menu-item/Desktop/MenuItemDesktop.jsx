@@ -1,14 +1,26 @@
 import React from 'react'
 import styles from './Menu.module.css';
 import NotificationsDesktop from '../../UI/notifications-item/Desktop/NotificationsDesktop';
-function MenuItemDesktop({ setShowForm, setShowNtfiForm, showNtfiForm }) {
+const serverUrl = 'https://localhost:7029';
+function MenuItemDesktop({ setShowForm,
+    setShowNtfiForm,
+    showNtfiForm,
+    showCRPForm,
+    setShowCRPForm,
+    userData }) {
+        
+    const userImage=`${serverUrl}/avatar/${userData?.id}/${userData?.userImageId}`
     return (
         <div className={styles.menu}>
 
-            <div className={styles.logo}><img src="./logo.svg" /></div>
+            <div className={styles.logo}>
+               
+                <img src='./logo.svg'/>
+                
+                </div>
             <div className={styles.sub_menu}>
                 <div className={styles.sub_element}>
-                    <div className={styles.create_project_button}>
+                    <div className={styles.create_project_button} onClick={() => { setShowCRPForm(!showCRPForm); }}>
                         <span>+</span> Новий проект
                     </div>
                 </div>
@@ -23,7 +35,7 @@ function MenuItemDesktop({ setShowForm, setShowNtfiForm, showNtfiForm }) {
                 <div className={styles.sub_element}>
                     <div className={styles.profile}
                         onClick={() => { setShowForm(true); }}>
-                        <img src="./default_profile_icon.svg" alt="" />
+                        <img src={userImage || './default_profile_icon.svg'} alt="" />
                     </div>
                 </div>
             </div>

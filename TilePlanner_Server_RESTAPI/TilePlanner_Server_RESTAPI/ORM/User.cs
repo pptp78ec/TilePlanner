@@ -1,7 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace TilePlanner_Server_RESTAPI.ORM
+﻿namespace TilePlanner_Server_RESTAPI.ORM
 {
+
+    /// <summary>
+    /// Model class to store user data
+    /// </summary>
     public class User
     {
         [MongoDB.Bson.Serialization.Attributes.BsonId]

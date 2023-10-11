@@ -1,28 +1,39 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TilePlanner_Server_RESTAPI.Auth;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
 {
-    [Route("api")]
+    /// <summary>
+    /// Role API Controller
+    /// </summary>
     [ApiController]
-    public class RoleController : ControllerBase
-    {
-        private MongoWork MongoWork;
-
-        public RoleController(MongoWork mongoWork)
-        {
-            MongoWork = mongoWork;
-        }
-
-        [HttpGet("/geturole")]
-        [Produces("application/json")]
 #if AUTHALT
 #if AUTHALT_ENABLED
-        [Authorize]
+    [Authorize]
 #endif
 #endif
+    public class RoleController : ControllerBase
+    {
+        private readonly MongoContext MongoWork;
+        private readonly Authenticate authenticate;
+
+        public RoleController(MongoContext MongoWork, Authenticate authenticate)
+        {
+            this.MongoWork = MongoWork;
+            this.authenticate = authenticate;
+            
+        }
+
+        /// <summary>
+        /// Gets current role for specified user
+        /// </summary>
+        /// <param name="userId">User's Id</param>
+        /// <returns></returns>
+        [HttpGet("/geturole")]
+        [Produces("application/json")]
         public async Task<IActionResult> GetRoleUser(string userId)
         {
             try
@@ -34,13 +45,14 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
+
+        /// <summary>
+        /// Gets role by it's Id
+        /// </summary>
+        /// <param name="roleID">Role's id</param>
+        /// <returns></returns>
         [HttpGet("/getrolebyid")]
         [Produces("application/json")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize]
-#endif
-#endif
         public async Task<IActionResult> GetRoleById(string roleID)
         {
             try
@@ -53,18 +65,19 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
-        [HttpPost("/updateRole")]
+        /// <summary>
+        /// Sets user's current subscription method to BASIC and returns regenerated JWT token
+        /// </summary>
+        /// <param name="userId">Id of a user</param>
+        /// <returns></returns>
+        [HttpGet("/setSubscriptionToBasic")]
         [Produces("application/json")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize]
-#endif
-#endif
-        public async Task<IActionResult> UpdateRole([FromBody] RoleUpdateFieldsDTO roleUpdateFields)
+        public async Task<IActionResult> setSubscriptionToBasic(string userId)
         {
             try
             {
-                return Ok(await MongoWork.UpdateRole(roleUpdateFields.UserId, roleUpdateFields.AccessLevel, roleUpdateFields.DaysToAdd));
+                await MongoWork.UpdateSupbscription(userId, ORM.Roles.AccessLevel.BASIC, 0);
+                return Ok((await authenticate.AuthenticateThis(await MongoWork.FindUserById(userId))).Token);
             }
             catch (Exception e)
             {
