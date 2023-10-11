@@ -33,6 +33,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
         [BsonIgnoreIfNull]
         public List<CoordinateDAO>? Coordinates { get; set; } = null;
         [BsonIgnoreIfNull]
-        public FileInfoShortDAO? File { get; set; }
+        public FileInfoShortDAO? File { get; set; } = null;
+        public bool isDone { get; set; } = false;
     }
 }
