@@ -151,14 +151,14 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// </summary>
         /// <param name="item">BasicItem item</param>
         /// <returns></returns>
-        [HttpPost("/deleteitem")]
+        [HttpDelete("/deleteitem")]
         [Produces("application/json")]
-        public async Task<IActionResult> deleteItem([FromBody] BasicItem item)
+        public async Task<IActionResult> deleteItem(string itemId)
         {
             try
             {
-                await MongoWork.DeleteListOfChildren(item.Id);
-                return Ok(item);
+                await MongoWork.DeleteListOfChildren(itemId);
+                return Ok("Deleted!");
             }
             catch (Exception e)
             {
