@@ -12,7 +12,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
     /// Items API controller
     /// </summary>
     [ApiController]
+#if AUTHALT
+#if AUTHALT_ENABLED
     [Authorize]
+#endif
+#endif
     public class ItemCRUDcontroller : ControllerBase
     {
         private MongoContext MongoWork;

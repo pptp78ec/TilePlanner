@@ -15,7 +15,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
     /// </summary>
     public class CoordinateDAO
     {
-        public string Lat { get; set; } = string.Empty;
+        public string Lat { get; set; } = string.Empty; 
         public string Long { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public bool isVisited {  get; set; } = false;
