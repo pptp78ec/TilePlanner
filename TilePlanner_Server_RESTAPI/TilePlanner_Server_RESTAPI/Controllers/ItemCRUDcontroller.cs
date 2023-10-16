@@ -78,7 +78,15 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     CreatorId = screenDTO.UserId,
                     Header = screenDTO.ScreenName
                 };
-                await MongoWork.AddOrUpdateItems((new BasicItem[] { screen }).ToList());
+                var coordinateTile = new BasicItem()
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    Itemtype = Itemtype.COORDINATE,
+                    CreatorId = screenDTO.UserId,
+                    Coordinates = new List<CoordinateDAO>(),
+                    ParentId = screen.Id
+                };
+                await MongoWork.AddOrUpdateItems((new BasicItem[] { screen, coordinateTile }).ToList());
                 return Ok(screen);
             }
             catch (Exception e)
@@ -94,7 +102,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/gettilesAndRecords")]
         [Produces("application/json")]
-        public async Task<ActionResult<List<BasicItem>>> getScreen([FromBody] BasicItem item)
+        public async Task<ActionResult<List<BasicItem>>> getTilesAndRecords([FromBody] BasicItem item)
         {
             try
             {
@@ -118,7 +126,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             try
             {
                 var listOfTiles = await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.TILE);
-                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.COORDINATE));
                 return Ok(listOfTiles);
             }
             catch (Exception e)
@@ -126,6 +133,27 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
+
+        /// <summary>
+        /// Returns coordinate tile for specified SCREEN (project)
+        /// </summary>
+        /// <param name="parentScreenId">Id of a screen</param>
+        /// <returns></returns>
+        [HttpGet("/getCoordinateTile")]
+        [Produces("application/json")]
+        public async Task<IActionResult> getCoordinateTile(string parentScreenId)
+        {
+            try
+            {
+                return Ok(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.COORDINATE));
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+
+
 
         /// <summary>
         /// Returns records for specified tile
