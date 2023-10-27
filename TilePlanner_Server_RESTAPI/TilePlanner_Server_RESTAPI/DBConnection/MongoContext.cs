@@ -216,7 +216,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         public async Task DeleteListOfChildren(string parentId)
         {
             var collection = database.GetCollection<BasicItem>("Items");
-            var firstnode = await (await collection.FindAsync(_ => _.Id == parentId)).FirstOrDefaultAsync();
+            var firstnode = await (await collection.FindAsync(_ => _.Id == parentId)).FirstAsync();
             if (firstnode != null)
             {
                 await RecursiveDelete(firstnode, collection);

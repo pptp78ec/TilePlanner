@@ -19,8 +19,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public string Long { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
         public bool isVisited {  get; set; } = false;
-        [BsonIgnoreIfNull]
-        public DateTime? PlannedDate { get; set; } = null;
+        public DateTime PlannedDate { get; set; } = DateTime.Now;
     }
 
 
