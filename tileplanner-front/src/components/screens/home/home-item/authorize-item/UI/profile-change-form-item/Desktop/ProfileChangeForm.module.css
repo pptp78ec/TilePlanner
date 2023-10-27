@@ -79,7 +79,16 @@
 .avatar_change_button:hover {
     box-shadow: none;
 }
-
+.logout{
+    margin-top: 15px;
+    font-size: 1.5em;
+    color: green;
+    cursor: pointer;
+    transition: color 0.25s ease;
+}
+.logout:hover{
+    color: rgb(79, 255, 79);
+}
 .content_element:nth-child(2) {
     display: flex;
     flex-direction: column;
@@ -162,6 +171,7 @@
     color: white;
     cursor: pointer;
     transition: box-shadow 0.25s ease;
+    border: none;
 }
 
 .save_changes_button:hover {

@@ -18,12 +18,16 @@ function Authorize() {
   //Create project form
   const [showCRPForm, setShowCRPForm] = useState(false);
   const [projectsData, setProjectsData] = useState([]);
+  const [isUpdatedProjects, setIsUpdatedProjects] = useState(null);
   const [userData, setUserData] = useState(null);
-
+  window.scrollTo(0, 0);
   useEffect(() => {
     const fetchData = async () => {
       UserService.cookiesUpdate();
       ItemService.cookiesUpdate();
+      if(setIsUpdatedProjects!=null){
+        setIsUpdatedProjects(null);
+      }
       const data = await ItemService.get_projects();
       const userData = await UserService.getOnlyUserAllFileds();
      
@@ -33,7 +37,7 @@ function Authorize() {
     };
 
     fetchData();
-  }, [showCRPForm,showForm]);
+  }, [showCRPForm,showForm,isUpdatedProjects]);
   return (
     <>
       {isDesktop ? <MenuItemDesktop
@@ -51,7 +55,8 @@ function Authorize() {
         setShowForm={setShowForm}
         showCRPForm={showCRPForm}
         setShowCRPForm={setShowCRPForm}
-        projects={projectsData} /> :
+        projects={projectsData}
+        setIsUpdatedProjects={setIsUpdatedProjects} /> :
         <ContentItemMobile
           showForm={showForm}
           setShowForm={setShowForm} />}

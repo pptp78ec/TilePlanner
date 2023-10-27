@@ -7,7 +7,7 @@ import { Validator } from '../../../../../../../../classes/validatior';
 import { useForm } from 'react-hook-form';
 import { UserService } from '../../../../../../../../services/user.service';
 function ProfileChangeFormDesktop({ showForm, setShowForm }) {
-  const serverUrl='https://localhost:7029/';
+  const serverUrl = 'https://localhost:7029/';
   const [currentPassword, setCurrentPassword] = useState(false);
   const [newPassword, setNewPassword] = useState(false);
   const [changedPassword, setChangedPassword] = useState(false);
@@ -16,7 +16,7 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
   const [userData, setUserData] = useState(null);
 
 
-  const { register, handleSubmit, reset, formState, watch,setValue } = useForm({
+  const { register, handleSubmit, reset, formState, watch, setValue } = useForm({
     mode: 'onChange'
   })
   const navigate = useNavigate(); // Получаем функцию для навигации
@@ -35,14 +35,15 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
     }
   };
   useEffect(() => {
-    location.state=null
+    location.state = null
     // console.log(userData)
-    if(userData==null){
-      UserService.getUserAllFileds(setUserData,setCurrentImage)
-    }else{
-      setValue('name',userData?.name) 
-      setValue('email',userData?.email) 
-      setValue('phone',userData?.phone) 
+    if (userData == null) {
+      UserService.getUserAllFileds(setUserData, setCurrentImage)
+    } else {
+      setValue('name', userData?.name)
+      setValue('email', userData?.email)
+      setValue('phone', userData?.phone)
+      setUserData(null);
     }
     const timer = setTimeout(() => {
       if (showForm == false) {
@@ -79,11 +80,15 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
       setCurrentImage(URL.createObjectURL(file)); // Устанавливаем выбранный файл как аватар
     }
   };
-
+  const logout = async () => {
+    await UserService.logout(navigate);
+    window.location.reload();
+  }
   const updateUser = async (data) => {
+    window.scrollTo(0, 0);
     try {
       location.state = null;
-      
+
       const dataToSend = {};
       dataToSend.name = data.name
       dataToSend.email = data.email
@@ -118,12 +123,13 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
               <label htmlFor="avatarInput" className={styles.avatar_change_button}>
                 Змінити аватар
               </label>
+              <div className={styles.logout} onClick={logout}>Logout</div>
               <input
                 type="file"
                 id="avatarInput"
                 accept="image/*"
                 {...register('userImageId', {
-                 
+
                 })}
                 onChange={handleAvatarChange}
                 style={{ display: 'none' }}
@@ -140,7 +146,7 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                   </div>
                   <div className={styles.input_info}>
                     <input {...register('name', {
-                    })} defaultValue={userData?.name}/>
+                    })} defaultValue={userData?.name} />
                   </div>
                 </div>
                 <div className={styles.user_input}>
@@ -150,13 +156,13 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                   <div className={styles.input_info}>
                     <input
                       {...register('email', {
-                       
+
                         pattern: {
                           value: Validator.getEmailRegExp(),
                           message: "Incorrect email"
                         }
                       })}
-                      type='email'  defaultValue={userData?.email}/>
+                      type='email' defaultValue={userData?.email} />
                   </div>
                 </div>
                 <div className={styles.user_input}>
@@ -165,8 +171,8 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                   </div>
                   <div className={styles.input_info}>
                     <input {...register('phone', {
-                     
-                    })}  defaultValue={userData?.phone}/>
+
+                    })} defaultValue={userData?.phone} />
                   </div>
                 </div>
 
@@ -182,7 +188,7 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                   <div className={styles.input_info}>
                     <input
                       {...register('password', {
-                       
+
                         pattern: {
                           value: Validator.getPasswordRegExp(),
                           message: "minimum 6 characters, 1 big one small, number, special character"
@@ -203,7 +209,7 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                   <div className={styles.input_info}>
                     <input
                       {...register('new_password', {
-                       
+
                         pattern: {
                           value: Validator.getPasswordRegExp(),
                           message: "minimum 6 characters, 1 big one small, number, special character"
@@ -225,7 +231,7 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
                   <div className={styles.input_info}>
                     <input
                       {...register('repeat_password', {
-                       
+
                         validate: validatePasswordMatch,
                       })}
                       type={changedPassword ? 'text' : 'password'} />
@@ -256,7 +262,7 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
               </div>
             </div>
           </div>
-          <Prices />
+          <Prices showForm={showForm} />
           <div className={styles.button}>
             <button className={styles.save_changes_button}>
               Зберегти зміни

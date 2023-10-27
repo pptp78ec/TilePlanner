@@ -4,7 +4,7 @@ import ProfileChangeFormDesktop from '../../UI/profile-change-form-item/Desktop/
 import CreateProjectDesktop from '../../UI/create-project-item/Desktop/CreateProjectDesktop'
 import ProjectItemDesktop from '../../UI/project-item/ProjectItemDesktop'
 
-function ContentItemDesktop({ showForm, setShowForm, showCRPForm, setShowCRPForm, projects }) {
+function ContentItemDesktop({ showForm, setShowForm, showCRPForm, setShowCRPForm, projects,setIsUpdatedProjects }) {
     // console.log(projects[0])
     return (
         <>
@@ -14,7 +14,10 @@ function ContentItemDesktop({ showForm, setShowForm, showCRPForm, setShowCRPForm
                 </div>
                 <div className={styles.projects}>
                     {projects?.map((project) => {
-                      return  <ProjectItemDesktop key={project.id} name={project.header} />
+                      return  <ProjectItemDesktop
+                       key={project.id} 
+                       project={project} 
+                       setIsUpdatedProjects={setIsUpdatedProjects}/>
                     })}
                 </div>
             </div>

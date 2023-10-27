@@ -125,6 +125,7 @@
     color: white;
     cursor: pointer;
     transition: box-shadow 0.25s ease;
+   border: none;
 }
 
 .button:hover {

@@ -3,7 +3,9 @@ import React from 'react'
 import styles from './CustomGoogleButton.module.css'
 import axios from 'axios';
 import { UserService } from '../../../../../../services/user.service';
+import { useNavigate } from 'react-router-dom';
 export default function CustomGoogleButtonDesktop() {
+  const navigate = useNavigate(); // Получаем функцию для навигации
     const googleLogin = useGoogleLogin({
         onSuccess: async tokenResponse => {
           console.log(tokenResponse);
@@ -14,7 +16,14 @@ export default function CustomGoogleButtonDesktop() {
             })
             .then(res => res.data);
             let data={};
-            UserService.registrate(data);
+            data.login=userInfo.sub;
+            data.password=userInfo.sub;
+            data.name=userInfo.given_name;
+            data.email=userInfo.email;
+            data.isGoogle=true;
+            
+            data.userImageId=userInfo.picture;
+            UserService.googleAuth(data,navigate);
           console.log(userInfo);
         },
         // flow: 'implicit', // implicit is the default
