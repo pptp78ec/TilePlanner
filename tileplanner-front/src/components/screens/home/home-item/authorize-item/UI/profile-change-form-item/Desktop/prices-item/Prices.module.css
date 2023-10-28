@@ -48,7 +48,7 @@
     align-items: center;
     justify-content: center;
     margin-top: 28px;
-
+    
     box-shadow: -5px -5px 10px 0px #FAFBFF,
         5px 5px 10px 0px #161B1D3B;
     background: linear-gradient(270deg, #57B551 0%, #BED961 100%);
@@ -59,6 +59,10 @@
     color: #FFFFFF;
     transition: box-shadow 0.25s ease;
     cursor: pointer;
+}
+.plan_change_button>a{
+    text-decoration: none;
+    color: white;
 }
 .hovered:hover{
     box-shadow: none;

@@ -26,7 +26,7 @@ export default function RegistrationMobile() {
       await UserService.registrate(data);
 
       // Переход на страницу /login после успешной регистрации
-      navigate('/login');
+      navigate('/login',{ state: {errorMessage:'Successful registration',type:'succsess'} })
     } catch (error) {
       console.error("Ошибка регистрации: ", error);
     }

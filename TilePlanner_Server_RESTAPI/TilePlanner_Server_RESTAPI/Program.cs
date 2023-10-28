@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Converters;
 using System.Text;
 using System.Text.Json.Serialization;
+using TilePlanner_Server_RESTAPI;
 using TilePlanner_Server_RESTAPI.Auth;
 using TilePlanner_Server_RESTAPI.BrainTreePayPalPayment;
 using TilePlanner_Server_RESTAPI.DBConnection;
-using TilePlanner_Server_RESTAPI.ORM;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +17,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 #if AUTHALT
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     var issuer = builder.Configuration.GetValue<string>("JWT:Issuer") ?? "Issuer";
@@ -37,30 +34,24 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateLifetime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key))
     };
-
 });
+
 builder.Services.AddAuthorization();
 builder.Services.AddSingleton<Authenticate>();
-
 #endif
 
-
-
-
-
-
-builder.Services.AddSingleton<MongoWork>();
+builder.Services.AddSingleton<MongoContext>();
 builder.Services.AddTransient<IBrainTreeService, BrainTreeService>();
+
+#if DEBUG
 builder.Services.AddControllers(opts => opts.Filters.Add(new CorsFilter())).AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 }); ;
-
+#endif
 
 var app = builder.Build();
-
-
 
 //var mongoDBaccess = new MongoWork();
 
@@ -75,8 +66,8 @@ if (app.Environment.IsDevelopment())
 
 #if AUTHALT
 #if AUTHALT_ENABLED
-    app.UseAuthentication();
-    app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 #endif
 #endif
 

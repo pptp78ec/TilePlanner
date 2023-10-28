@@ -51,6 +51,9 @@
 
 .avatar>img {
     height: 100px;
+    width: 100px;
+    overflow: hidden;
+    border-radius: 50px;
 }
 
 .avatar_change_button {
@@ -76,7 +79,16 @@
 .avatar_change_button:hover {
     box-shadow: none;
 }
-
+.logout{
+    margin-top: 15px;
+    font-size: 1.5em;
+    color: green;
+    cursor: pointer;
+    transition: color 0.25s ease;
+}
+.logout:hover{
+    color: rgb(79, 255, 79);
+}
 .content_element:nth-child(2) {
     display: flex;
     flex-direction: column;
@@ -159,6 +171,7 @@
     color: white;
     cursor: pointer;
     transition: box-shadow 0.25s ease;
+    border: none;
 }
 
 .save_changes_button:hover {
@@ -192,4 +205,14 @@
     justify-content: center;
     margin-bottom: 68px;
 }
+
+.error{
+    padding-left: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    color: rgb(255, 0, 0);
+    text-wrap: wrap;
+    width: 400px;
+}
+
 

@@ -1,9 +1,26 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import styles from './Notifications.module.css'
 export default function NotificationsDesktop({ showNtfiForm }) {
+    const overlay =useRef(null)
+    useEffect(()=>{
+        const timer = setTimeout(() => {
+            if (showNtfiForm == false) {
+              overlay.current.style.display = 'none';
+            } else {
+              overlay.current.style.display = 'flex';
+            }
+      
+            console.log("Таймер завершен!");
+          }, 1000); // 3000 миллисекунд (3 секунды)
+      
+          // Здесь можно вернуть функцию, которая выполнится при размонтировании компонента
+          return () => {
+            clearTimeout(timer); // Очищаем таймер при размонтировании компонента
+          };
+    },[showNtfiForm])
     return (
 
-        <form className={`${styles.notifications_form} animated
+        <form ref={overlay} className={`${styles.notifications_form} animated
                      ${showNtfiForm ? 'zoomIn' : 'zoomOut'}`}>
             <div className={styles.notifications}>
                 <div className={styles.notification}>

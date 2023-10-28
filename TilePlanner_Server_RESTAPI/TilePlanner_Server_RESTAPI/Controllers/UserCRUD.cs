@@ -5,7 +5,9 @@ using TilePlanner_Server_RESTAPI.ORM;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
 {
-    [Route("api")]
+    /// <summary>
+    /// User CRUD operations API controller
+    /// </summary>
     [ApiController]
 #if AUTHALT
 #if AUTHALT_ENABLED
@@ -14,16 +16,20 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 #endif
     public class UserCRUD : ControllerBase
     {
-        private readonly MongoWork mongoWork;
+        private readonly MongoContext mongoWork;
 
         public UserCRUD()
         {
-            mongoWork = new MongoWork();
+            mongoWork = new MongoContext();
         }
 
+        /// <summary>
+        /// Gets user by specified Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("/getuserById")]
         [Produces("application/json")]
-
         public async Task<IActionResult> getUserInfoById(string id)
         {
             try
@@ -34,7 +40,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     return Ok(user);
                 }
                 return BadRequest("No user found!");
-
             }
             catch (Exception e)
             {
@@ -42,6 +47,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates all fields for user.
+        /// </summary>
+        /// <param name="user">User object</param>
+        /// <returns></returns>
         [HttpPost("/updateUserAllFields")]
         [Produces("application/json")]
         public async Task<IActionResult> updateUserAllFields([FromBody] User user)
@@ -60,9 +70,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     await mongoWork.UpdateUserEmail(user);
                 if (!String.IsNullOrEmpty(user.Description))
                     await mongoWork.UpdateUserDescription(user);
-
                 await mongoWork.SetGoogleUser(user);
-
                 return Ok(user);
             }
             catch (Exception e)
@@ -71,7 +79,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Updates only username
+        /// </summary>
+        /// <param name="user">User object</param>
+        /// <returns></returns>
         [HttpPost("/updateUserName")]
         [Produces("application/json")]
         public async Task<IActionResult> updateUserName([FromBody] User user)
@@ -87,7 +99,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Updates only password
+        /// </summary>
+        /// <param name="user">User object</param>
+        /// <returns></returns>
         [HttpPost("/updateUserPassword")]
         [Produces("application/json")]
         public async Task<IActionResult> updateUserPassword([FromBody] User user)
@@ -103,15 +119,18 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates user's image id/name. 
+        /// </summary>
+        /// <param name="user">User object</param>
+        /// <returns></returns>
         [HttpPost("/updateUserImage")]
         [Produces("application/json")]
         public async Task<IActionResult> updateUserImage([FromBody] User user)
         {
             try
             {
-
                 await mongoWork.UpdateUserImageId(user);
-
                 return Ok(user);
             }
             catch (Exception e)
@@ -120,6 +139,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates user's email
+        /// </summary>
+        /// <param name="user">User object</param>
+        /// <returns></returns>
         [HttpPost("/updateUserEmail")]
         [Produces("application/json")]
         public async Task<IActionResult> updateUserEmail([FromBody] User user)
@@ -127,7 +151,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             try
             {
                 await mongoWork.UpdateUserEmail(user);
-
                 return Ok(user);
             }
             catch (Exception e)
@@ -136,6 +159,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates user's phone
+        /// </summary>
+        /// <param name="user">User object</param>
+        /// <returns></returns>
         [HttpPost("/updateUserPhone")]
         [Produces("application/json")]
         public async Task<IActionResult> updateUserPhone([FromBody] User user)
@@ -143,7 +171,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             try
             {
                 await mongoWork.UpdateUserPhone(user);
-
                 return Ok(user);
             }
             catch (Exception e)
@@ -151,6 +178,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
+
+        /// <summary>
+        /// Updates user's description
+        /// </summary>
+        /// <param name="user">User's object</param>
+        /// <returns></returns>
         [HttpPost("/updateUserDescription")]
         [Produces("application/json")]
         public async Task<IActionResult> updateUserDescription([FromBody] User user)
@@ -158,7 +191,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             try
             {
                 await mongoWork.UpdateUserDescription(user);
-
                 return Ok(user);
             }
             catch (Exception e)
@@ -166,6 +198,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
+
+        /// <summary>
+        /// Get all transactions for specified user
+        /// </summary>
+        /// <param name="userId">User's Id</param>
+        /// <returns></returns>
         [HttpGet("/getUserTransactions")]
         [Produces("application/json")]
         public async Task<IActionResult> getUserTransactions(string userId)
@@ -179,7 +217,5 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
         }
-
-
     }
 }

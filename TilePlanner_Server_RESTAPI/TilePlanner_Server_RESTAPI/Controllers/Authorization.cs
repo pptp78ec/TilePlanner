@@ -6,21 +6,28 @@ using TilePlanner_Server_RESTAPI.ORM;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
 {
-    [Route("api/auth/tst")]
+    /// <summary>
+    /// Authorization API class
+    /// </summary>
     [ApiController]
     public class Authorization : ControllerBase
     {
-        private readonly MongoWork MongoWork;
+        private readonly MongoContext MongoWork;
 
 #if AUTHALT
         private readonly Authenticate authenticate;
 
-        public Authorization(MongoWork MongoWork, Authenticate authenticate)
+        public Authorization(MongoContext MongoWork, Authenticate authenticate)
         {
             this.authenticate = authenticate;
             this.MongoWork = MongoWork;
         }
 
+        /// <summary>
+        /// Login takes login data and attemts to login. If successful, returns a JWT token and User's Id
+        /// </summary>
+        /// <param name="logindata">either login, email or phone number and user's password</param>
+        /// <returns></returns>
         [HttpPost("/login")]
         [Produces("application/json")]
         [AllowAnonymous]
@@ -37,6 +44,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Registers a new user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpPost("/register")]
         [Produces("application/json")]
         [AllowAnonymous]
@@ -44,15 +56,15 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                if(await MongoWork.FindUserBySearchParams(user.Login, user.Password) != default)
+                if(await MongoWork.CheckIfUserAlreadyExists(user.Login) != default)
                 {
                     return BadRequest(new BadRequestErrorDTO() { ErrorClass = "Login", ErrorMsg = "User with such login already exists!" });
                 }
-                if (await MongoWork.FindUserBySearchParams(user.Email, user.Password) != default)
+                if (await MongoWork.CheckIfUserAlreadyExists(user.Email) != default)
                 {
                     return BadRequest(new BadRequestErrorDTO() { ErrorClass = "Email", ErrorMsg = "User with such email already exists!" });
                 }
-                if (await MongoWork.FindUserBySearchParams(user.Phone, user.Password) != default)
+                if (await MongoWork.CheckIfUserAlreadyExists(user.Phone) != default)
                 {
                     return BadRequest(new BadRequestErrorDTO() { ErrorClass = "Phone", ErrorMsg = "User with such phone already exists!" });
                 }
