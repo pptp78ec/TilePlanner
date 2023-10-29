@@ -161,6 +161,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                     .Set(_ => _.Tags, item.Tags)
                     .Set(_ => _.TaskSetDate, item.TaskSetDate)
                     .Set(_ => _.File, item.File)
+                    .Set(_ => _.BudgetItems, item.BudgetItems)
                     .SetOnInsert(_ => _.Id, item.Id);
                 await database.GetCollection<BasicItem>("Items").UpdateOneAsync(filter, update, upsert);
             }

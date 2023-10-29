@@ -17,7 +17,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
         [BsonRepresentation(MongoDB.Bson.BsonType.String)]
         public Itemtype Itemtype { get; set; } = Itemtype.DEFAULT; //* ALL
         public string Header { get; set; } = string.Empty; //* for ITEMTYPE.SCREEN, ITEMTYPE.TILE, ITEMTYPE.TEXT
-        public string Description { get; set; } = string.Empty; 
+        public string Description { get; set; } = string.Empty; //* FOR DESCRIPTION, ALSO TO SAVE ITEMTYPE.NOTES TEXT
         public string ParentId { get; set; } = string.Empty; //* ALL but SCREEN
         public string CreatorId { get; set; } = string.Empty; //* ALL
         [BsonIgnoreIfNull]
@@ -35,5 +35,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
         [BsonIgnoreIfNull]
         public FileInfoShortDAO? File { get; set; } = null; //* FOR ITEMTYPE.IMAGE FOR ITEMTYPE.FILE
         public bool isDone { get; set; } = false; //* FOR ITEMTYPE.TASK
+        [BsonIgnoreIfNull]
+        public List<BudgetItem>? BudgetItems { get; set; } = null; //FOR a ITEMTYPE.BUDGET TILE
     }
 }

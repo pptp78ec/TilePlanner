@@ -94,4 +94,14 @@ namespace TilePlanner_Server_RESTAPI.ORM
         public string ErrorClass { set; get; } = string.Empty;
         public string ErrorMsg { set; get; } = string.Empty;
     }
+
+    /// <summary>
+    /// Class to hold data of a budget item
+    /// </summary>
+    public class  BudgetItem
+    {
+        public string Purpose { set; get; } = string.Empty;
+        public string Place { set; get; } = string.Empty;
+        public double Price {  set; get; } = .0;
+    }
 }
