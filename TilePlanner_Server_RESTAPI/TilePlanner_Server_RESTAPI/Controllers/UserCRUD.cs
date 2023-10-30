@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
 
@@ -58,6 +59,8 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
+                checkIfUserIsValidToEdit(user.Id);
+
                 if (!String.IsNullOrEmpty(user.Password))
                     await mongoWork.UpdateUserPassword(user);
                 if (!String.IsNullOrEmpty(user.Name))
@@ -90,6 +93,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
+                checkIfUserIsValidToEdit(user.Id);
                 await mongoWork.UpdateUserName(user);
                 return Ok(user);
             }
@@ -110,6 +114,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
+                checkIfUserIsValidToEdit(user.Id);
                 await mongoWork.UpdateUserPassword(user);
                 return Ok(user);
             }
@@ -130,6 +135,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
+                checkIfUserIsValidToEdit(user.Id);
                 await mongoWork.UpdateUserImageId(user);
                 return Ok(user);
             }
@@ -150,6 +156,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
+                checkIfUserIsValidToEdit(user.Id);
                 await mongoWork.UpdateUserEmail(user);
                 return Ok(user);
             }
@@ -170,6 +177,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
+                checkIfUserIsValidToEdit(user.Id);
                 await mongoWork.UpdateUserPhone(user);
                 return Ok(user);
             }
@@ -190,6 +198,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
+                checkIfUserIsValidToEdit(user.Id);
                 await mongoWork.UpdateUserDescription(user);
                 return Ok(user);
             }
@@ -210,11 +219,33 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
+                checkIfUserIsValidToEdit(userId);
                 return Ok(await mongoWork.GetTransactionsForUserAsync(userId));
             }
             catch (Exception e)
             {
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+
+
+        [NonAction]
+        private bool checkIfUserIsValidToEdit(string userId)
+        {
+            try
+            {
+                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+                if (jsonToken == null || jsonToken.Claims.Count() == 0 || (jsonToken.Claims.Any(x=> x.Type == "Id") || jsonToken.Claims.First(x=>x.Type == "Id").Value != userId))
+                {
+                    return false;
+                }
+                return true;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message, e);
             }
         }
     }

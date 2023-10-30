@@ -41,7 +41,8 @@ namespace TilePlanner_Server_RESTAPI.Auth
                 await CheckIfCurrentRoleIsExpiredAndSetBasic(user.Id);
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Role, role.AccessLevel.ToString())
+                    new Claim(ClaimTypes.Role, role.AccessLevel.ToString()),
+                    new Claim("Id", user.Id)
                 };
                 var token = new JwtSecurityToken(
                     issuer: configuration.GetValue<string>("JWT:Issuer") ?? "Issuer",
