@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -69,8 +70,43 @@ namespace TilePlanner_Server_RESTAPI.Auth
             if (role.EndTime < DateTime.Now && role.AccessLevel != ORM.Roles.AccessLevel.BASIC)
                 await mongoWork.UpdateSupbscription(userId, ORM.Roles.AccessLevel.BASIC, 0);
         }
+
+        /// <summary>
+        /// Checks if current user's id in token matches specified user's Id in request's body
+        /// </summary>
+        /// <param name="userId">User's ID in request body</param>
+        /// <param name="controller">Controller instance</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<bool> checkIfUserIsValidToEditAsync(string userId, ControllerBase controller)
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    var token = controller.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                    var handler = new JwtSecurityTokenHandler();
+                    var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+                    if (jsonToken != null)
+                    {
+                        var idClaimVal = jsonToken.Claims.First(x => x.Type == "Id").Value;
+                        if (idClaimVal != userId)
+                        {
+                            return false;
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message, e);
+                }
+            });
+        }
     }
 
+        
 
 
 #endif

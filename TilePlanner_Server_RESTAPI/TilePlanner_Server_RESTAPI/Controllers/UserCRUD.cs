@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using TilePlanner_Server_RESTAPI.Auth;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
 
@@ -18,10 +19,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
     public class UserCRUD : ControllerBase
     {
         private readonly MongoContext mongoWork;
+        private readonly Authenticate authenticate;
 
-        public UserCRUD()
+        public UserCRUD(MongoContext mongoContext, Authenticate authenticate)
         {
-            mongoWork = new MongoContext();
+            mongoWork = mongoContext;
+            this.authenticate = authenticate;
         }
 
         /// <summary>
@@ -59,7 +62,10 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                checkIfUserIsValidToEdit(user.Id);
+                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                {
+                    return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
+                }
 
                 if (!String.IsNullOrEmpty(user.Password))
                     await mongoWork.UpdateUserPassword(user);
@@ -93,7 +99,10 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                checkIfUserIsValidToEdit(user.Id);
+                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                {
+                    return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
+                }
                 await mongoWork.UpdateUserName(user);
                 return Ok(user);
             }
@@ -114,7 +123,10 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                checkIfUserIsValidToEdit(user.Id);
+                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                {
+                    return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
+                }
                 await mongoWork.UpdateUserPassword(user);
                 return Ok(user);
             }
@@ -135,7 +147,10 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                checkIfUserIsValidToEdit(user.Id);
+                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                {
+                    return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
+                }
                 await mongoWork.UpdateUserImageId(user);
                 return Ok(user);
             }
@@ -156,7 +171,10 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                checkIfUserIsValidToEdit(user.Id);
+                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                {
+                    return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
+                }
                 await mongoWork.UpdateUserEmail(user);
                 return Ok(user);
             }
@@ -177,7 +195,10 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                checkIfUserIsValidToEdit(user.Id);
+                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                {
+                    return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
+                }
                 await mongoWork.UpdateUserPhone(user);
                 return Ok(user);
             }
@@ -198,7 +219,10 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                checkIfUserIsValidToEdit(user.Id);
+                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                {
+                    return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
+                }
                 await mongoWork.UpdateUserDescription(user);
                 return Ok(user);
             }
@@ -219,7 +243,10 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                checkIfUserIsValidToEdit(userId);
+                if (!(await authenticate.checkIfUserIsValidToEditAsync(userId, this))) 
+                {
+                    return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
+                }
                 return Ok(await mongoWork.GetTransactionsForUserAsync(userId));
             }
             catch (Exception e)
@@ -228,25 +255,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
-
-        [NonAction]
-        private bool checkIfUserIsValidToEdit(string userId)
-        {
-            try
-            {
-                var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-                if (jsonToken == null || jsonToken.Claims.Count() == 0 || (jsonToken.Claims.Any(x=> x.Type == "Id") || jsonToken.Claims.First(x=>x.Type == "Id").Value != userId))
-                {
-                    return false;
-                }
-                return true;
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message, e);
-            }
-        }
+        
     }
 }
