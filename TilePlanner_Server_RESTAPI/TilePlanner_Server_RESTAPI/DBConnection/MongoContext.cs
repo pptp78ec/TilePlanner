@@ -70,7 +70,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="file">File from request</param>
         /// <returns>Short info about file</returns>
-        public async Task<FileInfoShortDAO> SaveFileToGridFS(IFormFile file)
+        public async Task<FileInfoShort> SaveFileToGridFS(IFormFile file)
         {
             using (var stream = file.OpenReadStream())
             {
@@ -82,7 +82,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
 
                 await gridFSBucket.UploadFromStreamAsync(fileId, file.FileName, stream, options);
 
-                return new FileInfoShortDAO() { FileId = fileId.ToString(), FileName = file.FileName };
+                return new FileInfoShort() { FileId = fileId.ToString(), FileName = file.FileName };
             }
         }
 
@@ -92,7 +92,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="file">FileInfo of a file</param>
         /// <returns>Short fileinfo about file: ObjectId and it's short name</returns>
-        public async Task<FileInfoShortDAO> SaveToGridFS_Test(FileInfo file)
+        public async Task<FileInfoShort> SaveToGridFS_Test(FileInfo file)
         {
             using (var stream = file.OpenRead())
             {
@@ -103,7 +103,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 };
                 await gridFSBucket.UploadFromStreamAsync(fileId, file.Name, stream, options);
 
-                return new FileInfoShortDAO() { FileId = fileId.ToString(), FileName = file.Name };
+                return new FileInfoShort() { FileId = fileId.ToString(), FileName = file.Name };
             }
         }
 #endif

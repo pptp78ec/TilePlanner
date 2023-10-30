@@ -16,12 +16,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
     [Authorize]
 #endif
 #endif
-    public class UserCRUD : ControllerBase
+    public class UserCRUDController : ControllerBase
     {
         private readonly MongoContext mongoWork;
         private readonly Authenticate authenticate;
 
-        public UserCRUD(MongoContext mongoContext, Authenticate authenticate)
+        public UserCRUDController(MongoContext mongoContext, Authenticate authenticate)
         {
             mongoWork = mongoContext;
             this.authenticate = authenticate;

@@ -31,9 +31,9 @@ namespace TilePlanner_Server_RESTAPI.ORM
         [BsonIgnoreIfNull]
         public DateTime? TaskSetDate { get; set; } = null; //* FOR ITEMTYPE.TASK
         [BsonIgnoreIfNull]
-        public List<CoordinateDAO>? Coordinates { get; set; } = null; //* FOR ITEMTYPE.COORDINATE
+        public List<Coordinate>? Coordinates { get; set; } = null; //* FOR ITEMTYPE.COORDINATE
         [BsonIgnoreIfNull]
-        public FileInfoShortDAO? File { get; set; } = null; //* FOR ITEMTYPE.IMAGE FOR ITEMTYPE.FILE
+        public FileInfoShort? File { get; set; } = null; //* FOR ITEMTYPE.IMAGE FOR ITEMTYPE.FILE
         public bool isDone { get; set; } = false; //* FOR ITEMTYPE.TASK
         [BsonIgnoreIfNull]
         public List<BudgetItem>? BudgetItems { get; set; } = null; //FOR a ITEMTYPE.BUDGET TILE

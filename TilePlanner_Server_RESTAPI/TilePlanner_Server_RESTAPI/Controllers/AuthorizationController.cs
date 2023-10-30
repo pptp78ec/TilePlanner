@@ -10,14 +10,14 @@ namespace TilePlanner_Server_RESTAPI.Controllers
     /// Authorization API class
     /// </summary>
     [ApiController]
-    public class Authorization : ControllerBase
+    public class AuthorizationController : ControllerBase
     {
         private readonly MongoContext MongoWork;
 
 #if AUTHALT
         private readonly Authenticate authenticate;
 
-        public Authorization(MongoContext MongoWork, Authenticate authenticate)
+        public AuthorizationController(MongoContext MongoWork, Authenticate authenticate)
         {
             this.authenticate = authenticate;
             this.MongoWork = MongoWork;

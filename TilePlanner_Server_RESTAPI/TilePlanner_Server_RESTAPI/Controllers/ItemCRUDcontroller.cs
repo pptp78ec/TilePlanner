@@ -83,7 +83,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     Id = ObjectId.GenerateNewId().ToString(),
                     Itemtype = Itemtype.COORDINATE,
                     CreatorId = screenDTO.UserId,
-                    Coordinates = new List<CoordinateDAO>(),
+                    Coordinates = new List<Coordinate>(),
                     ParentId = screen.Id
                 };
                 await MongoWork.AddOrUpdateItems((new BasicItem[] { screen, coordinateTile }).ToList());

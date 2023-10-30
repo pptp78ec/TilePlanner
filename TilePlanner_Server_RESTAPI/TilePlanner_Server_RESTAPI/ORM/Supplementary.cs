@@ -13,7 +13,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
     /// <summary>
     /// Class for storing coordinate values in BasicItem class
     /// </summary>
-    public class CoordinateDAO
+    public class Coordinate
     {
         public string Lat { get; set; } = string.Empty; 
         public string Long { get; set; } = string.Empty;
@@ -26,7 +26,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
     /// <summary>
     /// Class for storing short info about file in BasicItem class
     /// </summary>
-    public class FileInfoShortDAO
+    public class FileInfoShort
     {
         public string FileId { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;

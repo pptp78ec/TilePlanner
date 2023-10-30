@@ -19,12 +19,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
     [Authorize]
 #endif
 #endif
-    public class BrainTreePayment : ControllerBase
+    public class BrainTreePaymentController : ControllerBase
     {
         private readonly IBrainTreeService brainTreeService;
         private readonly MongoContext mongoWork;
         private readonly Authenticate authenticate;
-        public BrainTreePayment(IBrainTreeService brainTreeService, MongoContext mongoWork, Authenticate authenticate)
+        public BrainTreePaymentController(IBrainTreeService brainTreeService, MongoContext mongoWork, Authenticate authenticate)
         {
             this.brainTreeService = brainTreeService;
             this.mongoWork = mongoWork;

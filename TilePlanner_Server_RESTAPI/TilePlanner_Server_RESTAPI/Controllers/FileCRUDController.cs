@@ -14,12 +14,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 #endif
 #endif
 
-    public class FileCRUD : ControllerBase
+    public class FileCRUDController : ControllerBase
     {
         private readonly IConfiguration configuration;
         private readonly MongoContext MongoWork;
 
-        public FileCRUD(IConfiguration configuration, MongoContext MongoWork)
+        public FileCRUDController(IConfiguration configuration, MongoContext MongoWork)
         {
             this.configuration = configuration;
             this.MongoWork = MongoWork;
