@@ -1,0 +1,20 @@
+.resizeble_item {
+    box-shadow: -5px -5px 10px 0px #FAFBFF,
+        5px 5px 10px 0px #161B1D3B;
+        overflow: hidden;
+        border-radius: 21px;
+}
+
+.draggable {
+    width: 100%;
+    height: 20px;
+    background: transparent;
+    position: absolute;
+    cursor: move;
+    transition: background 0.25s ease;
+    z-index: 1000;
+}
+
+.draggable:hover {
+    background: rgba(128, 128, 128, 0.685);
+}

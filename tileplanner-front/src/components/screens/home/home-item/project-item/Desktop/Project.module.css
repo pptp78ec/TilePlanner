@@ -110,7 +110,7 @@
     background-size: 20px;
     border-top-right-radius: 21px;
     border-top-left-radius: 21px;
-    min-height: calc(100vh*2);
+    min-height: calc(100vh*100);
 }
 
 .map_container {
@@ -124,4 +124,10 @@
     border-radius: 21px;
     margin-top: 19px;
     overflow: hidden;
+}
+
+.tiles_container{
+    width: 100%;
+    position: relative;
+    min-height: calc(100vh*100);
 }

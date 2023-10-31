@@ -4,12 +4,16 @@ const apiCreateProject = 'https://localhost:7029/createproject';
 const apiUpdateItems = 'https://localhost:7029/updateitems';
 const apiGetCoordinate = 'https://localhost:7029/getCoordinateTile';
 const apiDeleteItems = 'https://localhost:7029/deleteitem';
+const apiGetAllTiles = 'https://localhost:7029/getTilesForScreen';
 let token
 let userID
 let apiGetProjects
+let apiLoadImage
 let config
 let configForMedia
+let inProcessDelete=false
 export const ItemService = {
+     
     async create_project(data) {
         try {
             const dataToSend = {
@@ -75,7 +79,7 @@ export const ItemService = {
         try {
             const response = await axios.get(`${apiGetCoordinate}?parentScreenId=${projectId}`, config);
             if (response.status == "200") {
-                // console.log('Get coordinate:', response.data);
+                console.log('Get coordinate:', response.data);
                 return response.data[0];
             }
 
@@ -136,17 +140,94 @@ export const ItemService = {
     },
     async delete_item(itemId) {
         try {
+            inProcessDelete=true;
             const response = await axios.delete(`${apiDeleteItems}?itemId=${itemId}`, config);
             // console.log(response)
+            inProcessDelete=false;
 
         } catch (error) {
             console.error('Ошибка при отправке данных:', error);
         }
     },
+    async get_all_tiles_by_projectId(projectId) {
+        try {
+            const response = await axios.get(`${apiGetAllTiles}?parentScreenId=${projectId}`, config);
+            return response.data;
+
+        } catch (error) {
+            console.error('Ошибка при отправке данных:', error);
+        }
+    },
+    async update_tiles(data,projectId){
+        try {
+            if(!inProcessDelete){
+                const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`,data, config);
+            }
+           
+        } catch (error) {
+            console.error('Ошибка при отправке данных:', error);
+        }
+    },
+    async create_image_tile(data,projectId){
+        // console.log(config)
+        try {
+            const imageTileData=[{
+                itemtype:'IMAGE',
+                parentId:projectId,
+                creatorId:userID,
+                tileSizeX:100,
+                tileSizeY:100,
+                tilePosX:data.left,
+                tilePosY:data.top
+            }]
+            const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`,imageTileData, config);
+        //    console.log(response);
+
+        } catch (error) {
+            console.error('Ошибка при отправке данных:', error);
+        }
+    },
+    async update_image_tile(image,tile,projectId){
+        try {
+            const form_data = new FormData()
+            form_data.append("file", image);
+            console.log(form_data);
+            const file_response = await axios.post(apiLoadImage, form_data, configForMedia)
+            tile.backgroundImageId=file_response.data;
+            const final_data=[tile]
+            const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`,final_data, config);
+
+        } catch (error) {
+            console.log('Ошибка при отправке данных:', error);
+
+        }
+    },
+    async create_notes_tile(data,projectId){
+        try {
+            const imageTileData=[{
+                itemtype:'NOTES',
+                parentId:projectId,
+                creatorId:userID,
+                tileSizeX:100,
+                tileSizeY:100,
+                tilePosX:data.left,
+                tilePosY:data.top
+            }]
+            const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`,imageTileData, config);
+        //    console.log(response);
+
+        } catch (error) {
+            console.error('Ошибка при отправке данных:', error);
+        }
+    },
+    getIsDeleteWork(){
+        return inProcessDelete;
+    },
     cookiesUpdate() {
         token = Cookies.get('token');
         userID = Cookies.get('userID');
         apiGetProjects = 'https://localhost:7029/getuserscreens?userId=' + userID
+        apiLoadImage = 'https://localhost:7029/loadimage/' + userID
         configForMedia = {
             headers: {
                 Authorization: `Bearer ${token}`, // Добавляем токен в заголовок
