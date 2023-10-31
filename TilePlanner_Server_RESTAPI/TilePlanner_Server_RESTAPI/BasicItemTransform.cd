@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.BasicItem" Collapsed="true">
+    <Position X="5" Y="1" Width="3" />
+    <TypeIdentifier>
+      <HashCode>JAACQCAAAAAhAAECIAAAAAABKgAEAEAAAgAAAAAAAAA=</HashCode>
+      <FileName>ORM\BasicItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.BasicItemTransform.CoordinateTile">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAACACAAAAABAAECAAAAAAAAIgAAAEAAAgAAAAAAAAA=</HashCode>
+      <FileName>BasicItemTransform\CoordinateTile.cs</FileName>
+      <NewMemberFileName>BasicItemTransform\Tile.cs</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.BasicItemTransform.ImageTile">
+    <Position X="9.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAACACAAAAABAAECIAAAAAAAAgAAAEAAAgAAAAAAAAA=</HashCode>
+      <FileName>BasicItemTransform\ImageTile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.BasicItemTransform.ProjectItem">
+    <Position X="5.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAACACAAAAABAAECAAAAAAAAAgAAAEAAAgAAAAAAAAA=</HashCode>
+      <FileName>BasicItemTransform\ProjectItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.BasicItemTransform.TaskRecord">
+    <Position X="2" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>JAACACAAAAABAAECAAAAAAABCgAAAEAAAgAAAAAAAAA=</HashCode>
+      <FileName>BasicItemTransform\TaskRecord.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.BasicItemTransform.TextRecord">
+    <Position X="2" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAACACAAAAABAAECAAAAAAAACgAAAEAAAgAAAAAAAAA=</HashCode>
+      <FileName>BasicItemTransform\TextRecord.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
