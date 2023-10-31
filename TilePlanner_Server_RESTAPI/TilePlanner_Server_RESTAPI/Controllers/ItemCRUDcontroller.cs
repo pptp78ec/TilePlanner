@@ -126,6 +126,10 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             try
             {
                 var listOfTiles = await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.TILE);
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.NOTES));
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.BUDGET));
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.IMAGE));
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.TASKLIST));
                 return Ok(listOfTiles);
             }
             catch (Exception e)
