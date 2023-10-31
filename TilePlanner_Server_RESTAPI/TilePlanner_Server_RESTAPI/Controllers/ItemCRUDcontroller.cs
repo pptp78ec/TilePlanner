@@ -126,6 +126,10 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             try
             {
                 var listOfTiles = await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.TILE);
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.NOTES));
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.BUDGET));
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.IMAGE));
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.TASKLIST));
                 return Ok(listOfTiles);
             }
             catch (Exception e)
@@ -211,7 +215,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 if (items.Count > 0)
                 {
                     var currentItemCount = await MongoWork.CountAllItemsForUserId(items[0].ParentId);
-                    var role = await MongoWork.FindRoleByUserId(items[0].ParentId);
+                    var role = await MongoWork.FindRoleByUserId(items[0].CreatorId);
                     if ((currentItemCount + items.Count) > 1000 && role.AccessLevel == AccessLevel.BASIC)
                     {
                         return BadRequest("Exceeded number of items at this access level");
