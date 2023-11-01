@@ -100,13 +100,13 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// </summary>
         /// <param name="item">BasicItem item</param>
         /// <returns></returns>
-        [HttpPost("/gettilesAndRecords")]
+        [HttpGet("/gettilesAndRecords")]
         [Produces("application/json")]
-        public async Task<ActionResult<List<BasicItem>>> getTilesAndRecords([FromBody] BasicItem item)
+        public async Task<ActionResult<List<BasicItem>>> getTilesAndRecords(string parentTileId)
         {
             try
             {
-                return Ok(await MongoWork.GetListOfChildren(item.Id));
+                return Ok(await MongoWork.GetListOfChildren(parentTileId));
             }
             catch (Exception e)
             {
