@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);AUTHALT;AUTHALT_ENABLED</DefineConstants>
+    <DefineConstants>$(DefineConstants);AUTHALT;AUTHALT_ENABLED;DELETION_ALT</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>$(DefineConstants);AUTHALT;AUTHALT_ENABLED</DefineConstants>
+    <DefineConstants>$(DefineConstants);AUTHALT;AUTHALT_ENABLED;DELETION_ALT</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

@@ -164,7 +164,10 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                     .Set(_ => _.TaskSetDate, item.TaskSetDate)
                     .Set(_ => _.File, item.File)
                     .Set(_ => _.BudgetItems, item.BudgetItems)
-                    .Set(_=>_.isDone, item.isDone)
+                    .Set(_ => _.isDone, item.isDone)
+#if DELETION_ALT
+                    .Set(_ => _.isDeleted, item.isDeleted)
+#endif
                     .SetOnInsert(_ => _.Id, item.Id);
                 await database.GetCollection<BasicItem>("Items").UpdateOneAsync(filter, update, upsert);
             }
@@ -186,7 +189,14 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// <returns></returns>
         public async Task<List<BasicItem>> GetListOfScreensForUser(string userId)
         {
-            return await (await database.GetCollection<BasicItem>("Items").FindAsync(_ => _.CreatorId == userId && _.Itemtype == Itemtype.SCREEN)).ToListAsync();
+            return await (await database.GetCollection<BasicItem>("Items")
+                .FindAsync(_ =>
+                _.CreatorId == userId
+                && _.Itemtype == Itemtype.SCREEN
+#if DELETION_ALT
+                && _.isDeleted == false
+#endif
+                )).ToListAsync();
         }
 
         /// <summary>
@@ -227,6 +237,33 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             }
         }
 
+#if DELETION_ALT
+        /// <summary>
+        /// Marks up item and all of it's children as deleted
+        /// </summary>
+        /// <param name="parentId">Id of a parent</param>
+        /// <returns></returns>
+        public async Task MarkAsDeletedListOfChildren(string parentId)
+        {
+            var collection = database.GetCollection<BasicItem>("Items");
+            var firstnode = await (await collection.FindAsync(_ => _.Id == parentId)).FirstAsync();
+            if (firstnode != null)
+            {
+                await MarkAsDeletedRecursively(firstnode, collection);
+            }
+        }
+        /// <summary>
+        /// Finds all items marked as deleted in DB and removes them
+        /// </summary>
+        /// <returns></returns>
+        public async Task FindAllMarkedForDeleteAndRemove()
+        {
+            var collection = database.GetCollection<BasicItem>("Items");
+            var filter = Builders<BasicItem>.Filter.Eq(_ => _.isDeleted, true);
+            await collection.DeleteManyAsync(filter);
+        }
+#endif
+
         //------------------------------------------------------------------------------------------
         //Items subfunctionality
         //------------------------------------------------------------------------------------------
@@ -241,7 +278,18 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 await RecursiveDelete(child, collection);
             }
         }
-
+#if DELETION_ALT
+        private async Task MarkAsDeletedRecursively(BasicItem item, IMongoCollection<BasicItem> collection)
+        {
+            var filter = Builders<BasicItem>.Filter.Eq(_ => _.Id, item.Id);
+            var update = Builders<BasicItem>.Update.Set(_ => _.isDeleted, true);
+            await collection.UpdateOneAsync(filter, update);
+            foreach (var child in await GetChildren(item.Id, collection))
+            {
+                await MarkAsDeletedRecursively(child, collection);
+            }
+        }
+#endif
 
         private async Task<List<BasicItem>> GetChildren(string parentId, IMongoCollection<BasicItem> collection)
         {
@@ -251,7 +299,12 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         private async Task<List<BasicItem>> ChildrenSearch(string parentId, IMongoCollection<BasicItem> collection)
         {
             var results = new List<BasicItem>();
-            var nodes = await (await collection.FindAsync(_ => _.ParentId == parentId)).ToListAsync();
+            var nodes = await (await collection.FindAsync(_ =>
+            _.ParentId == parentId
+#if DELETION_ALT
+            && _.isDeleted == false
+#endif
+            )).ToListAsync();
             foreach (var node in nodes)
             {
                 if (node != null)
@@ -267,7 +320,13 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         private async Task<List<BasicItem>> ChildrenSearchSpecificType(string parentId, IMongoCollection<BasicItem> collection, Itemtype itemtype)
         {
             var results = new List<BasicItem>();
-            var nodes = await (await collection.FindAsync(_ => _.ParentId == parentId && _.Itemtype == itemtype)).ToListAsync();
+            var nodes = await (await collection.FindAsync(_ =>
+            _.ParentId == parentId
+            && _.Itemtype == itemtype
+#if DELETION_ALT
+            && _.isDeleted == false
+#endif
+            )).ToListAsync();
             foreach (var node in nodes)
             {
                 if (node != null)
