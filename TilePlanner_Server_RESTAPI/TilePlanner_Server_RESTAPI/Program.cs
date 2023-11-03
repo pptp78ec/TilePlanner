@@ -43,13 +43,17 @@ builder.Services.AddSingleton<Authenticate>();
 builder.Services.AddSingleton<MongoContext>();
 builder.Services.AddTransient<IBrainTreeService, BrainTreeService>();
 
+
+builder.Services.
 #if DEBUG
-builder.Services.AddControllers(opts => opts.Filters.Add(new CorsFilter())).AddJsonOptions(x =>
+    AddControllers(opts => opts.Filters.Add(new CorsFilter()))
+#endif
+    .AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 }); ;
-#endif
+
 
 var app = builder.Build();
 
