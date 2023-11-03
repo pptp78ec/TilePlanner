@@ -44,9 +44,9 @@ builder.Services.AddSingleton<MongoContext>();
 builder.Services.AddTransient<IBrainTreeService, BrainTreeService>();
 
 
-builder.Services.
+builder.Services
 #if DEBUG
-    AddControllers(opts => opts.Filters.Add(new CorsFilter()))
+    .AddControllers(opts => opts.Filters.Add(new CorsFilter()))
 #endif
     .AddJsonOptions(x =>
 {
