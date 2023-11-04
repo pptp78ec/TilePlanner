@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic.FileIO;
+using System.Runtime.InteropServices;
 using TilePlanner_Server_RESTAPI.DBConnection;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
@@ -18,11 +20,27 @@ namespace TilePlanner_Server_RESTAPI.Controllers
     {
         private readonly IConfiguration configuration;
         private readonly MongoContext MongoWork;
+        private string standardpath;
 
         public FileCRUDController(IConfiguration configuration, MongoContext MongoWork)
         {
             this.configuration = configuration;
             this.MongoWork = MongoWork;
+
+            standardpath = this.configuration.GetValue<string>("StorageFolder");
+
+            if (String.IsNullOrEmpty(standardpath))
+            {
+                standardpath = "$HOME/Storage";
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    standardpath = "%APPDATA%\\Storage";
+                }
+                if (!Directory.Exists(standardpath))
+                {
+                    Directory.CreateDirectory(standardpath);
+                }
+            }
         }
 
 #if GRIDFS
@@ -169,9 +187,9 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     return BadRequest("Invalid file");
                 }
 
-                var path = configuration.GetValue<string>("StorageFolder");
 
-                path = Path.Combine(path, userId, isImage ? "images" : "files");
+                var path = Path.Combine(standardpath, userId, isImage ? "images" : "files");
+
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
@@ -208,21 +226,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                var path = configuration.GetValue<string>("StorageFolder");
-                var filePath = Path.Combine(path, userId, isImage ? "images" : "files", filename);
-                var filetype = filename.Split('.').Last();
-                var contentType = "application/octet-stream";
 
-                switch (filetype)
-                {
-                    case "webp": { contentType = "image/webp"; break; };
-                    case "jpg":
-                    case "jpeg": { contentType = "image/jpeg"; break; };
-                    case "png": { contentType = "image/png"; break; };
-                    case "svg": { contentType = "image/svg+xml"; break; }
-                    case "gif": { contentType = "image/gif"; break; }
-                    default: break;
-                }
+
+                var filePath = Path.Combine(standardpath, userId, isImage ? "images" : "files", filename);
+                
+                var contentType = GetContenTypeForFile(filePath);
 
 
                 if (!System.IO.File.Exists(filePath))
@@ -230,21 +238,40 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     return NotFound();
                 }
 
-                var filebyts = await System.IO.File.ReadAllBytesAsync(filePath);
+                var filebytes = await System.IO.File.ReadAllBytesAsync(filePath);
 
                 if (isImage)
                 {
                     Response.Headers.Add("Content-Type", contentType);
-                    return File(filebyts, contentType);
+                    return File(filebytes, contentType);
                 }
 
-                return File(filebyts, contentType, filename);
+                return File(filebytes, contentType, filename);
 
             }
             catch (Exception e)
             {
                 return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
             }
+        }
+
+        [NonAction]
+        private string GetContenTypeForFile(string filename)
+        {
+            var contentType = "application/octet-stream";
+            var filetype = filename.Split('.').Last();
+
+            switch (filetype)
+            {
+                case "webp": { contentType = "image/webp"; break; };
+                case "jpg":
+                case "jpeg": { contentType = "image/jpeg"; break; };
+                case "png": { contentType = "image/png"; break; };
+                case "svg": { contentType = "image/svg+xml"; break; }
+                case "gif": { contentType = "image/gif"; break; }
+                default: break;
+            }
+            return contentType;
         }
     }
 }
