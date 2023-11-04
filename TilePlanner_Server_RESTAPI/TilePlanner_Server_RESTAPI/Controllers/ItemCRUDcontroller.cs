@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using System.Collections;
-using System.Runtime.CompilerServices;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
 using TilePlanner_Server_RESTAPI.ORM.Roles;
@@ -39,7 +38,8 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [NonAction]
-        private async void removeDeletedFromDB(object? state) {
+        private async void removeDeletedFromDB(object? state)
+        {
             await MongoWork.FindAllMarkedForDeleteAndRemove();
         }
 

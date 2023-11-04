@@ -80,7 +80,17 @@ app.UseCors(cors =>
     cors.AllowAnyOrigin();
     cors.AllowAnyHeader();
     cors.AllowAnyMethod();
+    var origins = app.Configuration.GetValue<string[]>("CORS:Origin");
+    var headers = app.Configuration.GetValue<string[]>("CORS:Header");
+    var methods = app.Configuration.GetValue<string[]>("CORS:Method");
+    if (origins?.Length > 0 && !origins.Contains("any"))
+        cors.WithOrigins(origins);
+    if (headers?.Length > 0 && !headers.Contains("any"))
+        cors.WithHeaders(headers);
+    if (methods?.Length > 0 && !methods.Contains("any"))
+        cors.WithMethods(methods);
 });
+
 app.UseHttpsRedirection();
 
 app.MapControllers();

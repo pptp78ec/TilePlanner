@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
 using TilePlanner_Server_RESTAPI.Auth;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
@@ -243,7 +242,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                if (!(await authenticate.checkIfUserIsValidToEditAsync(userId, this))) 
+                if (!(await authenticate.checkIfUserIsValidToEditAsync(userId, this)))
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
@@ -255,6 +254,6 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
-        
+
     }
 }

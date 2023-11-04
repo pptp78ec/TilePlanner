@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.StaticFiles;
-using MongoDB.Bson.Serialization.Attributes;
-using TilePlanner_Server_RESTAPI.ORM.Roles;
 
 namespace TilePlanner_Server_RESTAPI.ORM
 {
@@ -15,10 +12,10 @@ namespace TilePlanner_Server_RESTAPI.ORM
     /// </summary>
     public class Coordinate
     {
-        public string Lat { get; set; } = string.Empty; 
+        public string Lat { get; set; } = string.Empty;
         public string Long { get; set; } = string.Empty;
         public string Location { get; set; } = string.Empty;
-        public bool isVisited {  get; set; } = false;
+        public bool isVisited { get; set; } = false;
         public DateTime PlannedDate { get; set; } = DateTime.Now;
     }
 
@@ -98,10 +95,10 @@ namespace TilePlanner_Server_RESTAPI.ORM
     /// <summary>
     /// Class to hold data of a budget item
     /// </summary>
-    public class  BudgetItem
+    public class BudgetItem
     {
         public string Purpose { set; get; } = string.Empty;
         public string Place { set; get; } = string.Empty;
-        public double Price {  set; get; } = .0;
+        public double Price { set; get; } = .0;
     }
 }

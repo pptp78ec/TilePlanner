@@ -56,7 +56,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                if(await MongoWork.CheckIfUserAlreadyExists(user.Login) != default)
+                if (await MongoWork.CheckIfUserAlreadyExists(user.Login) != default)
                 {
                     return BadRequest(new BadRequestErrorDTO() { ErrorClass = "Login", ErrorMsg = "User with such login already exists!" });
                 }

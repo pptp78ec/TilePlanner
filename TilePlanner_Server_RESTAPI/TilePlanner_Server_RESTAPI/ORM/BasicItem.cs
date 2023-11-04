@@ -38,7 +38,7 @@ namespace TilePlanner_Server_RESTAPI.ORM
         [BsonIgnoreIfNull]
         public List<BudgetItem>? BudgetItems { get; set; } = null; //FOR a ITEMTYPE.BUDGET TILE
 #if DELETION_ALT
-        public bool isDeleted {  get; set; } = false;
+        public bool isDeleted { get; set; } = false;
 #endif
     }
 }

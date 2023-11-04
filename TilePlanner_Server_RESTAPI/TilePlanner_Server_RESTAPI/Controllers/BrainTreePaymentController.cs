@@ -79,7 +79,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     transactionData.IsSuccessful = true;
                     await mongoWork.AddTransactionData(transactionData);
                     await mongoWork.UpdateSupbscription(transactionData.UserId, transactionData.AccessLevel, 30);
-                    newToken =  (await authenticate.AuthenticateThis(await mongoWork.FindUserById(transactionData.UserId))).Token;
+                    newToken = (await authenticate.AuthenticateThis(await mongoWork.FindUserById(transactionData.UserId))).Token;
                 }
                 else
                 {
