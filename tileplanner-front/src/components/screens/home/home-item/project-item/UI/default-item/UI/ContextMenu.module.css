@@ -1,0 +1,23 @@
+.contextMenu{
+    position: absolute;
+    user-select: none;
+    width: 150px;
+    height: 96px;
+    background-color:  #E7E7E7;
+    overflow: hidden;
+    border-radius: 21px;
+
+}
+.contextMenu>div{
+    font-size: 1.3em;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    transition: background  0.25s ease;
+}
+.contextMenu>div:hover{
+    background:  #bbbbbb;
+}

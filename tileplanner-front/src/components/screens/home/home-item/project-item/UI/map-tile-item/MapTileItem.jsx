@@ -19,7 +19,7 @@ export default function MapTileItem({ data, setData, coordinates, setIsUpdateCoo
     await ItemService.update_isVisited_point(id, dateId, isChecked);
     setIsUpdateCoordinates(true);
   };
-  window.scrollTo(0, 0);
+  // window.scrollTo(0, 0);
   useEffect(() => {
     // console.log(coordinates);
     if (coordinates?.coordinates) {

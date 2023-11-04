@@ -1,0 +1,27 @@
+.context_menu{
+    position: absolute;
+    user-select: none;
+    width: 200px;
+    height: 240px;
+    background-color:  #E7E7E7;
+    box-shadow: -5px -5px 10px 0px #FAFBFF,
+    5px 5px 10px 0px #161B1D3B;
+    overflow: hidden;
+    border-radius: 21px;
+
+}
+.context_menu>div{
+    
+    font-size: 1.3em;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    transition: background  0.25s ease;
+}
+.context_menu>div:hover{
+    background:  #bbbbbb;
+   
+}

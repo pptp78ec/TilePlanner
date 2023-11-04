@@ -7,7 +7,7 @@ import { MapService } from '../../../../../../../services/map.service';
 import { WheatherService } from '../../../../../../../services/wheather.service';
 import { UserService } from '../../../../../../../services/user.service';
 import { Link } from 'react-router-dom';
-export default function MapItem({ coordinates, setSelectedIndexPoint,isUpdatedCoordinates }) {
+export default function MapItem({ coordinates, setSelectedIndexPoint, isUpdatedCoordinates }) {
   const [bounds, setBounds] = useState(null);
   const [markers, setMarkers] = useState(null);
   const [weather, setWeather] = useState(null);
@@ -20,56 +20,71 @@ export default function MapItem({ coordinates, setSelectedIndexPoint,isUpdatedCo
       UserService.cookiesUpdate();
       const result = await UserService.getUserRole(setUserRole, true);
       const userPlan = result.accessLevel;
-      if (userPlan != "FULL") {
-        return;
-      }
-      setUserRole(userPlan);
-      const weatherBuffer = [];
-      const uniqueCoordinates = new Set();
-      console.log(coordinates)
-      for (let i = 0; i < coordinates.coordinates.length; i++) {
-        const coordinate = coordinates.coordinates[i];
-        const coordinateString = `${coordinate.lat}-${coordinate.long}`;
+      if (userPlan == "FULL") {
+        setUserRole(userPlan);
+        const weatherBuffer = [];
+        const uniqueCoordinates = new Set();
+        // console.log(coordinates)
+        for (let i = 0; i < coordinates.coordinates.length; i++) {
+          const coordinate = coordinates.coordinates[i];
+          const coordinateString = `${coordinate.lat}-${coordinate.long}`;
 
-        if (!uniqueCoordinates.has(coordinateString)) {
-          uniqueCoordinates.add(coordinateString);
-          const currentWeather = await WheatherService.get_wheather_current_by_coordinates(coordinate.lat, coordinate.long);
-          const fiveDaysWeather = await WheatherService.get_wheather_5days_by_coordinates(coordinate.lat, coordinate.long);
-          weatherBuffer.push(
-            {
-              index: i,
-              currentWeather: currentWeather,
-              fiveDaysWeather: fiveDaysWeather
+          if (!uniqueCoordinates.has(coordinateString)) {
+            uniqueCoordinates.add(coordinateString);
+            const currentWeather = await WheatherService.get_wheather_current_by_coordinates(coordinate.lat, coordinate.long);
+            const fiveDaysWeather = await WheatherService.get_wheather_5days_by_coordinates(coordinate.lat, coordinate.long);
+            weatherBuffer.push(
+              {
+                index: i,
+                currentWeather: currentWeather,
+                fiveDaysWeather: fiveDaysWeather
 
-            }
-          )
+              }
+            )
+          }
+        }
+        setWeather(weatherBuffer);
+        if (coordinates?.coordinates != undefined && coordinates?.coordinates.length != 0) {
+          const markers1 = coordinates?.coordinates.map((item) => [item.lat, item.long]);
+          let bounds = null;
+          // console.log(markers1);
+          if (markers1 != null) {
+            bounds = L.latLngBounds(markers1);
+          }
+          // Если у вас нет маркеров, не устанавливайте масштаб
+
+          setBounds(bounds)
+          // console.log(bounds);
+          setMarkers(markers1);
+
+        }
+      } else {
+        if (coordinates?.coordinates != undefined && coordinates?.coordinates.length != 0) {
+          const markers1 = coordinates?.coordinates.map((item) => [item.lat, item.long]);
+          let bounds = null;
+          // console.log(markers1);
+          if (markers1 != null) {
+            bounds = L.latLngBounds(markers1);
+          }
+          // Если у вас нет маркеров, не устанавливайте масштаб
+
+          setBounds(bounds)
+          // console.log(bounds);
+          setMarkers(markers1);
+
         }
       }
-      setWeather(weatherBuffer);
-      if (coordinates?.coordinates != undefined && coordinates?.coordinates.length != 0) {
-        const markers1 = coordinates?.coordinates.map((item) => [item.lat, item.long]);
-        let bounds=null;
-        // console.log(markers1);
-        if (markers1 != null) {
-           bounds = L.latLngBounds(markers1);
-        }
-        // Если у вас нет маркеров, не устанавливайте масштаб
-  
-        setBounds(bounds)
-        // console.log(bounds);
-        setMarkers(markers1);
-       
-      }
-     
+
+
     }
 
-    
+
     fetchData()
   }, [coordinates]);
 
   const handleDateChange = (event) => {
     setSelectedWeatherDate(event.target.value);
-    console.log(event.target.value);
+    // console.log(event.target.value);
   };
   // console.log(coordinates);
 
@@ -80,6 +95,7 @@ export default function MapItem({ coordinates, setSelectedIndexPoint,isUpdatedCo
     const handlePopUpClose = () => {
       setSelectedIndexPoint(null)
     }
+
     return (
       <MapContainer style={containerStyle} center={bounds.getCenter()} bounds={markers} >
         <TileLayer
@@ -89,7 +105,7 @@ export default function MapItem({ coordinates, setSelectedIndexPoint,isUpdatedCo
         {userRole == "FULL" ?
           markers && weather ?
             markers.map((position, index) => {
-              console.log(weather[index]);
+              // console.log(weather[index]);
               // if(!weather[index].fiveDaysWeather&&weather[index].currentWeather){return ""}
               // console.log(weather[index].fiveDaysWeather);
               let temp = null;

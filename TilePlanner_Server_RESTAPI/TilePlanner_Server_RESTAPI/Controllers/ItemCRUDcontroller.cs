@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using TilePlanner_Server_RESTAPI.DBConnection;
 using TilePlanner_Server_RESTAPI.ORM;
 using TilePlanner_Server_RESTAPI.ORM.Roles;
@@ -17,14 +18,33 @@ namespace TilePlanner_Server_RESTAPI.Controllers
     [Authorize]
 #endif
 #endif
-    public class ItemCRUDcontroller : ControllerBase
+    public class ItemCRUDcontroller : ControllerBase, IDisposable
     {
-        private MongoContext MongoWork;
+        private readonly MongoContext MongoWork;
+#if DELETION_ALT
+        private Timer _timer;
+#endif
 
         public ItemCRUDcontroller(MongoContext MongoWork)
         {
             this.MongoWork = MongoWork;
+#if DELETION_ALT
+            this._timer = new Timer(removeDeletedFromDB, null, 0, 10000);
+#endif
         }
+
+#if DELETION_ALT
+        /// <summary>
+        /// I didn't want to write this. Unfortunately front devs demanded it.
+        /// </summary>
+        /// <returns></returns>
+        [NonAction]
+        private async void removeDeletedFromDB(object? state) {
+            await MongoWork.FindAllMarkedForDeleteAndRemove();
+        }
+
+
+#endif
 
 #if DEBUG
         /// <summary>
@@ -100,13 +120,13 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// </summary>
         /// <param name="item">BasicItem item</param>
         /// <returns></returns>
-        [HttpPost("/gettilesAndRecords")]
+        [HttpGet("/gettilesAndRecords")]
         [Produces("application/json")]
-        public async Task<ActionResult<List<BasicItem>>> getTilesAndRecords([FromBody] BasicItem item)
+        public async Task<ActionResult<List<BasicItem>>> getTilesAndRecords(string parentTileId)
         {
             try
             {
-                return Ok(await MongoWork.GetListOfChildren(item.Id));
+                return Ok(await MongoWork.GetListOfChildren(parentTileId));
             }
             catch (Exception e)
             {
@@ -198,6 +218,29 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+#if DELETION_ALT
+
+        /// <summary>
+        /// Marks item and it's children as deleted
+        /// </summary>
+        /// <param name="itemId">Id of an item</param>
+        /// <returns></returns>
+        [HttpDelete("/markAsDeleted")]
+        [Produces("application/json")]
+        public async Task<IActionResult> markAsdeleted(string itemId)
+        {
+            try
+            {
+                await MongoWork.MarkAsDeletedListOfChildren(itemId);
+                return Ok("Marked as deleted!");
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
+        }
+#endif
+
         /// <summary>
         /// Updates items in DB
         /// </summary>
@@ -234,5 +277,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
             }
         }
 
+#if DELETION_ALT
+        [NonAction]
+        public void Dispose()
+        {
+            _timer.Dispose();
+        }
+#endif
     }
 }
