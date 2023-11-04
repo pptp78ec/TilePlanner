@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic.FileIO;
+using MongoDB.Bson;
 using System.Runtime.InteropServices;
 using TilePlanner_Server_RESTAPI.DBConnection;
 
@@ -49,40 +50,23 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// </summary>
         /// <param name="item">Item</param>
         /// <returns>Item with fileinfo</returns>
-        [HttpPost("/uploadfile")]
+        [HttpPost("/uploadfileGFS")]
         [Produces("application/json")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize(Roles = "ADVANCED,FULL")]
-#endif
-#endif
-        public async Task<ActionResult<BasicItem>> UploadFile([FromBody] BasicItem item)
+
+        public async Task<IActionResult> UploadFileGFS(IFormFile file)
         {
-            var request = HttpContext.Request;
-            var file = HttpContext.Request.Form.Files[0];
-            var fileinfoshort = await MongoWork.SaveFileToGridFS(file);
-            var fileitem = new BasicItem() { Id = ObjectId.GenerateNewId().ToString(), Itemtype = Itemtype.FILE, CreatorId = item.CreatorId, Header = item.Header, ParentId = item.ParentId, Tags = item.Tags, File = fileinfoshort, Description = item.Description };
-            await MongoWork.addOneitem(fileitem);
-            return fileitem;
+            try
+            {
+
+                return Ok(await MongoWork.SaveFileToGridFS(file));
+            }
+            catch (Exception e)
+            {
+                return Problem(detail: e.StackTrace, title: e.Message, statusCode: 500);
+            }
         }
 
-        /// <summary>
-        /// TEST for file save in DB
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet("/uploadfile2")]
-        [Produces("application/json")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize(Roles = "ADVANCED,FULL")]
-#endif
-#endif
-        public async Task<ActionResult<FileInfoShort>> UploadFile2()
-        {
-            var testfile = new FileInfo("E:\\TEMP\\TEMP.rar");
 
-            return await MongoWork.SaveToGridFS_Test(testfile);
-        }
 
 
         /// <summary>
@@ -90,21 +74,23 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// </summary>
         /// <param name="fileId">Id of a file</param>
         /// <returns></returns>
-        [HttpPost("/getfile")]
-#if AUTHALT
-#if AUTHALT_ENABLED
-        [Authorize(Roles = "ADVANCED,FULL")]
-#endif
-#endif
+        [HttpPost("/getfileGFS/{fileId}")]
+
         public async Task<IActionResult> getFile(string fileId)
         {
 
             try
             {
                 var retFile = await MongoWork.LoadFromGridFs(ObjectId.Parse(fileId));
-                if (retFile != null)
+                if (retFile != null && retFile.FileContents != null)
                 {
-                    return Ok(File(retFile.FileContents, retFile.getContentType(), retFile.FileName));
+                    var contentType = GetContenTypeForFile(retFile.getContentType());
+                    if (contentType != "application/octet-stream")
+                    {
+                        Response.Headers.Add("Content-Type", contentType);
+                        return File(retFile.FileContents, contentType);
+                    }
+                    return File(retFile.FileContents, contentType, retFile.FileName);
                 }
                 return BadRequest();
 
