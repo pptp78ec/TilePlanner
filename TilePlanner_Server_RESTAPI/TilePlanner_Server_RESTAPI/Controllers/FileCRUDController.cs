@@ -84,7 +84,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 var retFile = await MongoWork.LoadFromGridFs(ObjectId.Parse(fileId));
                 if (retFile != null && retFile.FileContents != null)
                 {
-                    var contentType = GetContenTypeForFile(retFile.getContentType());
+                    var contentType = GetContenTypeForFile(retFile.FileName);
                     if (contentType != "application/octet-stream")
                     {
                         Response.Headers.Add("Content-Type", contentType);
