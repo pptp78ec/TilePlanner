@@ -5,15 +5,16 @@ const apiUpdateItems = 'https://localhost:7029/updateitems';
 const apiGetCoordinate = 'https://localhost:7029/getCoordinateTile';
 const apiDeleteItems = 'https://localhost:7029/deleteitem';
 const apiGetAllTiles = 'https://localhost:7029/getTilesForScreen';
+const apiGetAllTilesAndRecords = 'https://localhost:7029/gettilesAndRecords';
 let token
 let userID
 let apiGetProjects
 let apiLoadImage
 let config
 let configForMedia
-let inProcessDelete=false
+let inProcessDelete = false
 export const ItemService = {
-     
+
     async create_project(data) {
         try {
             const dataToSend = {
@@ -140,10 +141,10 @@ export const ItemService = {
     },
     async delete_item(itemId) {
         try {
-            inProcessDelete=true;
+            inProcessDelete = true;
             const response = await axios.delete(`${apiDeleteItems}?itemId=${itemId}`, config);
             // console.log(response)
-            inProcessDelete=false;
+            inProcessDelete = false;
 
         } catch (error) {
             console.error('Ошибка при отправке данных:', error);
@@ -158,69 +159,117 @@ export const ItemService = {
             console.error('Ошибка при отправке данных:', error);
         }
     },
-    async update_tiles(data,projectId){
+    async get_all_tiles_and_records_by_projectId(projectId) {
         try {
-            if(!inProcessDelete){
-                const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`,data, config);
-            }
-           
-        } catch (error) {
-            console.error('Ошибка при отправке данных:', error);
-        }
-    },
-    async create_image_tile(data,projectId){
-        // console.log(config)
-        try {
-            const imageTileData=[{
-                itemtype:'IMAGE',
-                parentId:projectId,
-                creatorId:userID,
-                tileSizeX:100,
-                tileSizeY:100,
-                tilePosX:data.left,
-                tilePosY:data.top
-            }]
-            const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`,imageTileData, config);
-        //    console.log(response);
+            const response = await axios.get(`${apiGetAllTilesAndRecords}?parentTileId=${projectId}`, config);
+            return response.data;
 
         } catch (error) {
             console.error('Ошибка при отправке данных:', error);
         }
     },
-    async update_image_tile(image,tile,projectId){
+    async update_tiles(data, projectId) {
+        try {
+            if (!inProcessDelete) {
+                const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`, data, config);
+            }
+
+        } catch (error) {
+            console.error('Ошибка при отправке данных:', error);
+        }
+    },
+    async create_tile(data, projectId, tileType) {
+        try {
+            const imageTileData = [
+                {
+                  itemtype: tileType,
+                  parentId: projectId,
+                  creatorId: userID,
+                  tileSizeX: tileType == 'TASKLIST' ? 300 : 200,
+                  tileSizeY: tileType == 'TASKLIST' ? 300 : 200,
+                  tilePosX: data.left,
+                  tilePosY: data.top,
+                  header: tileType == 'TASKLIST' ? 'Список завданнь' :
+                    tileType == 'TASK' ? 'Завдання' : tileType == 'BUDGET' ? 'Бюджет' : "",
+                  budgetItems: tileType == "BUDGET" ? [
+                    {
+                      purpose: "",
+                      place: "",
+                      price: 0
+                    },
+                    {
+                      purpose: "",
+                      place: "",
+                      price: 0
+                    },
+                    {
+                      purpose: "",
+                      place: "",
+                      price: 0
+                    }
+                  ] : null, // По умолчанию, если не BUDGET, budgetItems будет null
+                },
+              ];
+            const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`, imageTileData, config);
+            //    console.log(response);
+
+        } catch (error) {
+            console.error('Ошибка при отправке данных:', error);
+        }
+    },
+    async create_image_tile(data, projectId) {
+        // console.log(config)
+        try {
+            const imageTileData = [{
+                itemtype: 'IMAGE',
+                parentId: projectId,
+                creatorId: userID,
+                tileSizeX: 200,
+                tileSizeY: 200,
+                tilePosX: data.left,
+                tilePosY: data.top
+            }]
+            const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`, imageTileData, config);
+            //    console.log(response);
+
+        } catch (error) {
+            console.error('Ошибка при отправке данных:', error);
+        }
+    },
+    async update_image_tile(image, tile, projectId) {
         try {
             const form_data = new FormData()
             form_data.append("file", image);
             console.log(form_data);
             const file_response = await axios.post(apiLoadImage, form_data, configForMedia)
-            tile.backgroundImageId=file_response.data;
-            const final_data=[tile]
-            const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`,final_data, config);
+            tile.backgroundImageId = file_response.data;
+            const final_data = [tile]
+            const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`, final_data, config);
 
         } catch (error) {
             console.log('Ошибка при отправке данных:', error);
 
         }
     },
-    async create_notes_tile(data,projectId){
+    async create_notes_tile(data, projectId) {
         try {
-            const imageTileData=[{
-                itemtype:'NOTES',
-                parentId:projectId,
-                creatorId:userID,
-                tileSizeX:100,
-                tileSizeY:100,
-                tilePosX:data.left,
-                tilePosY:data.top
+            const imageTileData = [{
+                itemtype: 'NOTES',
+                parentId: projectId,
+                creatorId: userID,
+                tileSizeX: 200,
+                tileSizeY: 200,
+                tilePosX: data.left,
+                tilePosY: data.top
             }]
-            const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`,imageTileData, config);
-        //    console.log(response);
+            const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`, imageTileData, config);
+            //    console.log(response);
 
         } catch (error) {
             console.error('Ошибка при отправке данных:', error);
         }
     },
-    getIsDeleteWork(){
+    getIsDeleteWork() {
         return inProcessDelete;
     },
     cookiesUpdate() {

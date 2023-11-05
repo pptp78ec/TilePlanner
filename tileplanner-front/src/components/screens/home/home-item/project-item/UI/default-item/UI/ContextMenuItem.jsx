@@ -13,12 +13,22 @@ export default function ContextMenuItem({
 
     async function handleMenuClick(choise) {
         if (choise == 'delete') {
-            const newTilesData = [...tilesData]
-            console.log(newTilesData);
-            newTilesData.pop(itemData);
-            setTilesData(newTilesData);
-            await ItemService.delete_item(itemData.id);
-            setIsUpdateTile(true);
+            const updatedData = tilesData.map((tile, i) => {
+                if (i === index) {
+                    // Если это элемент с выбранным индексом, устанавливаем isDelete в true
+                    return { ...tile, isDeleted: true };
+                }
+                return tile;
+            });
+    
+            // Устанавливаем новый массив данных с помощью setTilesData
+            setTilesData(updatedData);
+            
+            setTimeout(()=>{
+                setIsUpdateTile(true);
+            },3000)
+            // Устанавливаем флаг обновления
+           
         }
         setContextMenuPosition({
             left: 0,
