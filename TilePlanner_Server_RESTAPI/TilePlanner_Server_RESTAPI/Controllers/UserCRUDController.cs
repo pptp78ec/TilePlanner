@@ -61,7 +61,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                if (!await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
@@ -98,7 +98,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this, token))
+                if (!await authenticate.checkIfUserIsValidToEditAsync(user.Id, this, token))
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
@@ -122,7 +122,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this, token))
+                if (!await authenticate.checkIfUserIsValidToEditAsync(user.Id, this, token))
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
@@ -146,7 +146,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                if (!await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
@@ -170,7 +170,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                if (!await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
@@ -194,7 +194,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                if (!await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
@@ -218,7 +218,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             try
             {
-                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                if (!await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
