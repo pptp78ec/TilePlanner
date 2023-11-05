@@ -23,10 +23,6 @@ export default function ContextMenuItem({
     
             // Устанавливаем новый массив данных с помощью setTilesData
             setTilesData(updatedData);
-            
-            setTimeout(()=>{
-                setIsUpdateTile(true);
-            },3000)
             // Устанавливаем флаг обновления
            
         }
