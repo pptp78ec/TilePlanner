@@ -31,7 +31,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [HttpPost("/login")]
         [Produces("application/json")]
         [AllowAnonymous]
-        public async Task<IActionResult> LoginTest([FromBody] LoginDataDTO logindata)
+        public async Task<IActionResult> LoginTest([FromBody] LoginDataDTO logindata, CancellationToken token = default)
         {
             try
             {

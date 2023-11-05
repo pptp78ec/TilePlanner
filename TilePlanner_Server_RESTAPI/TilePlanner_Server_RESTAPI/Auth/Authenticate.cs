@@ -78,12 +78,10 @@ namespace TilePlanner_Server_RESTAPI.Auth
         /// <param name="controller">Controller instance</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<bool> checkIfUserIsValidToEditAsync(string userId, ControllerBase controller)
+        public async Task<bool> checkIfUserIsValidToEditAsync(string userId, ControllerBase controller, CancellationToken cancellationToken = default)
         {
             return await Task.Run(() =>
             {
-                try
-                {
                     var token = controller.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
                     var handler = new JwtSecurityTokenHandler();
                     var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
@@ -97,11 +95,7 @@ namespace TilePlanner_Server_RESTAPI.Auth
                         return true;
                     }
                     return false;
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(e.Message, e);
-                }
+
             });
         }
     }

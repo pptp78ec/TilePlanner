@@ -68,11 +68,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/getuserscreens")]
         [Produces("application/json")]
-        public async Task<ActionResult<List<BasicItem>>> GetScreens(string userId)
+        public async Task<ActionResult<List<BasicItem>>> GetScreens(string userId, CancellationToken token = default)
         {
             try
             {
-                return Ok(await MongoWork.GetListOfScreensForUser(userId));
+                return Ok(await MongoWork.GetListOfScreensForUser(userId, token));
             }
             catch (Exception e)
             {
@@ -87,7 +87,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/createproject")]
         [Produces("application/json")]
-        public async Task<IActionResult> CreateProjectScreen([FromBody] CreateScreenDTO screenDTO)
+        public async Task<IActionResult> CreateProjectScreen([FromBody] CreateScreenDTO screenDTO, CancellationToken token = default)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     Coordinates = new List<Coordinate>(),
                     ParentId = screen.Id
                 };
-                await MongoWork.AddOrUpdateItems((new BasicItem[] { screen, coordinateTile }).ToList());
+                await MongoWork.AddOrUpdateItems((new BasicItem[] { screen, coordinateTile }).ToList(), token);
                 return Ok(screen);
             }
             catch (Exception e)
@@ -122,11 +122,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpGet("/gettilesAndRecords")]
         [Produces("application/json")]
-        public async Task<ActionResult<List<BasicItem>>> getTilesAndRecords(string parentTileId)
+        public async Task<ActionResult<List<BasicItem>>> getTilesAndRecords(string parentTileId, CancellationToken token = default)
         {
             try
             {
-                return Ok(await MongoWork.GetListOfChildren(parentTileId));
+                return Ok(await MongoWork.GetListOfChildren(parentTileId, token));
             }
             catch (Exception e)
             {
@@ -141,15 +141,15 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpGet("/getTilesForScreen")]
         [Produces("application/json")]
-        public async Task<IActionResult> getTilesForScreen(string parentScreenId)
+        public async Task<IActionResult> getTilesForScreen(string parentScreenId, CancellationToken token = default)
         {
             try
             {
-                var listOfTiles = await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.TILE);
-                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.NOTES));
-                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.BUDGET));
-                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.IMAGE));
-                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.TASKLIST));
+                var listOfTiles = await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.TILE, token);
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.NOTES, token));
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.BUDGET, token));
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.IMAGE, token));
+                listOfTiles.AddRange(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.TASKLIST, token));
                 return Ok(listOfTiles);
             }
             catch (Exception e)
@@ -165,11 +165,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpGet("/getCoordinateTile")]
         [Produces("application/json")]
-        public async Task<IActionResult> getCoordinateTile(string parentScreenId)
+        public async Task<IActionResult> getCoordinateTile(string parentScreenId, CancellationToken token = default)
         {
             try
             {
-                return Ok(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.COORDINATE));
+                return Ok(await MongoWork.GetListOfChildernOfSpecificType(parentScreenId, Itemtype.COORDINATE, token));
             }
             catch (Exception e)
             {
@@ -186,11 +186,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpGet("/getRecordsForTile")]
         [Produces("application/json")]
-        public async Task<IActionResult> getRecordsForTile(string parentTileId)
+        public async Task<IActionResult> getRecordsForTile(string parentTileId, CancellationToken token = default)
         {
             try
             {
-                return Ok(await MongoWork.GetListOfChildren(parentTileId));
+                return Ok(await MongoWork.GetListOfChildren(parentTileId, token));
             }
             catch (Exception e)
             {
@@ -205,11 +205,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpDelete("/deleteitem")]
         [Produces("application/json")]
-        public async Task<IActionResult> deleteItem(string itemId)
+        public async Task<IActionResult> deleteItem(string itemId, CancellationToken token = default)
         {
             try
             {
-                await MongoWork.DeleteListOfChildren(itemId);
+                await MongoWork.DeleteListOfChildren(itemId, token);
                 return Ok("Deleted!");
             }
             catch (Exception e)
@@ -227,11 +227,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpDelete("/markAsDeleted")]
         [Produces("application/json")]
-        public async Task<IActionResult> markAsdeleted(string itemId)
+        public async Task<IActionResult> markAsdeleted(string itemId, CancellationToken token = default)
         {
             try
             {
-                await MongoWork.MarkAsDeletedListOfChildren(itemId);
+                await MongoWork.MarkAsDeletedListOfChildren(itemId, token);
                 return Ok("Marked as deleted!");
             }
             catch (Exception e)
@@ -248,7 +248,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/updateitems")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateItems([FromBody] List<BasicItem> items)
+        public async Task<IActionResult> updateItems([FromBody] List<BasicItem> items, CancellationToken token = default)
         {
             try
             {
@@ -257,8 +257,8 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 //check if limit of 1000 is exceeded
                 if (items.Count > 0)
                 {
-                    var currentItemCount = await MongoWork.CountAllItemsForUserId(items[0].ParentId);
-                    var role = await MongoWork.FindRoleByUserId(items[0].CreatorId);
+                    var currentItemCount = await MongoWork.CountAllItemsForUserId(items[0].ParentId, token);
+                    var role = await MongoWork.FindRoleByUserId(items[0].CreatorId, token);
                     if ((currentItemCount + items.Count) > 1000 && role.AccessLevel == AccessLevel.BASIC)
                     {
                         return BadRequest("Exceeded number of items at this access level");
@@ -268,7 +268,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 }
 #endif
 #endif
-                await MongoWork.AddOrUpdateItems(items);
+                await MongoWork.AddOrUpdateItems(items, token);
                 return Ok();
             }
             catch (Exception e)

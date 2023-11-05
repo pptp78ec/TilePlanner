@@ -53,12 +53,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         [HttpPost("/uploadfileGFS")]
         [Produces("application/json")]
 
-        public async Task<IActionResult> UploadFileGFS(IFormFile file)
+        public async Task<IActionResult> UploadFileGFS(IFormFile file, CancellationToken token = default)
         {
             try
             {
 
-                return Ok(await MongoWork.SaveFileToGridFS(file));
+                return Ok(await MongoWork.SaveFileToGridFS(file, token));
             }
             catch (Exception e)
             {
@@ -76,12 +76,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/getfileGFS/{fileId}")]
 
-        public async Task<IActionResult> getFile(string fileId)
+        public async Task<IActionResult> getFile(string fileId, CancellationToken token = default)
         {
 
             try
             {
-                var retFile = await MongoWork.LoadFromGridFs(ObjectId.Parse(fileId));
+                var retFile = await MongoWork.LoadFromGridFs(ObjectId.Parse(fileId), token);
                 if (retFile != null && retFile.FileContents != null)
                 {
                     var contentType = GetContenTypeForFile(retFile.FileName);
@@ -109,9 +109,9 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <param name="filename">Name of saved file</param>
         /// <returns></returns>
         [HttpGet("/getfile/{userId}/{filename}")]
-        public async Task<IActionResult> GetFile(string userId, string filename)
+        public async Task<IActionResult> GetFile(string userId, string filename, CancellationToken token = default)
         {
-            return await DownloadFile(userId, filename);
+            return await DownloadFile(userId, filename, token: token);
         }
 
         /// <summary>
@@ -126,9 +126,9 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 #endif
 #endif
         [HttpGet("/avatar/{userId}/{filename}")]
-        public async Task<IActionResult> GetImage(string userId, string filename)
+        public async Task<IActionResult> GetImage(string userId, string filename, CancellationToken token = default)
         {
-            return await DownloadFile(userId, filename, true);
+            return await DownloadFile(userId, filename, true, token: token);
         }
 
         /// <summary>
@@ -138,9 +138,9 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <param name="file">File to upload</param>
         /// <returns></returns>
         [HttpPost("/loadfile/{userId}")]
-        public async Task<IActionResult> UploadFile(string userId, IFormFile file)
+        public async Task<IActionResult> UploadFile(string userId, IFormFile file, CancellationToken token = default)
         {
-            return await SaveFile(userId, file);
+            return await SaveFile(userId, file, token: token);
         }
 
         /// <summary>
@@ -150,9 +150,9 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <param name="file">Image filename</param>
         /// <returns></returns>
         [HttpPost("/loadimage/{userId}")]
-        public async Task<IActionResult> UploadImage(string userId, IFormFile file)
+        public async Task<IActionResult> UploadImage(string userId, IFormFile file, CancellationToken token = default)
         {
-            return await SaveFile(userId, file, true);
+            return await SaveFile(userId, file, true, token: token);
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <param name="isImage">Image/file selector. Changes path</param>
         /// <returns>Saved file's name with Guid</returns>
         [NonAction]
-        public async Task<IActionResult> SaveFile(string userId, IFormFile file, bool isImage = false)
+        public async Task<IActionResult> SaveFile(string userId, IFormFile file, bool isImage = false, CancellationToken token = default)
         {
 
             try
@@ -186,7 +186,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await file.CopyToAsync(stream);
+                    await file.CopyToAsync(stream, token);
                 }
 
                 return Ok(filename);
@@ -208,7 +208,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <param name="isImage">Image/file selector. If set as Image, returns with necessary ContentType/</param>
         /// <returns>ActionResult with file</returns>
         [NonAction]
-        public async Task<IActionResult> DownloadFile(string userId, string filename, bool isImage = false)
+        public async Task<IActionResult> DownloadFile(string userId, string filename, bool isImage = false, CancellationToken token = default)
         {
             try
             {
@@ -224,7 +224,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     return NotFound();
                 }
 
-                var filebytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                var filebytes = await System.IO.File.ReadAllBytesAsync(filePath, token);
 
                 if (isImage)
                 {

@@ -36,7 +36,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// </summary>
         /// <returns>Transaction token</returns>
         [HttpGet("/generatetoken")]
-        public async Task<IActionResult> GenerateToken()
+        public async Task<IActionResult> GenerateToken(CancellationToken token = default)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// Raises User's Role level to proveided in CheckoutDTO access level, saves trasaction data in database</param>
         /// <returns></returns>
         [HttpPost("/checkout")]
-        public async Task<IActionResult> Checkout([FromForm] CheckoutModelDTO checkout)
+        public async Task<IActionResult> Checkout([FromForm] CheckoutModelDTO checkout, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -72,14 +72,18 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     }
                 };
                 var transactionData = new TransactionData() { MoneyAmount = checkout.MoneyAmount, UserId = checkout.UserID, AccessLevel = Enum.Parse<AccessLevel>(checkout.AccessLevel) };
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return BadRequest("Cancelled!");
+                }
                 Result<Transaction> result = await gateway.Transaction.SaleAsync(request);
                 if (result.IsSuccess())
                 {
                     newToken = "Your payment is Successful!";
                     transactionData.IsSuccessful = true;
-                    await mongoWork.AddTransactionData(transactionData);
-                    await mongoWork.UpdateSupbscription(transactionData.UserId, transactionData.AccessLevel, 30);
-                    newToken = (await authenticate.AuthenticateThis(await mongoWork.FindUserById(transactionData.UserId))).Token;
+                    await mongoWork.AddTransactionData(transactionData, token: cancellationToken);
+                    await mongoWork.UpdateSupbscription(transactionData.UserId, transactionData.AccessLevel, 30, token: cancellationToken);
+                    newToken = (await authenticate.AuthenticateThis(await mongoWork.FindUserById(transactionData.UserId, cancellationToken))).Token;
                 }
                 else
                 {
@@ -90,7 +94,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                     }
                     transactionData.IsSuccessful = false;
                     transactionData.ErrorMSG = errorMsg;
-                    await mongoWork.AddTransactionData(transactionData);
+                    await mongoWork.AddTransactionData(transactionData, cancellationToken);
                     return Problem(errorMsg, null, 424);
                 }
                 return Ok(newToken);

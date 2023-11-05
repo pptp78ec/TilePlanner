@@ -33,11 +33,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpGet("/getuserById")]
         [Produces("application/json")]
-        public async Task<IActionResult> getUserInfoById(string id)
+        public async Task<IActionResult> getUserInfoById(string id, CancellationToken token = default)
         {
             try
             {
-                var user = await mongoWork.FindUserById(id);
+                var user = await mongoWork.FindUserById(id, token);
                 if (user != default)
                 {
                     return Ok(user);
@@ -57,7 +57,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/updateUserAllFields")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserAllFields([FromBody] User user)
+        public async Task<IActionResult> updateUserAllFields([FromBody] User user, CancellationToken token = default)
         {
             try
             {
@@ -67,18 +67,18 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 }
 
                 if (!String.IsNullOrEmpty(user.Password))
-                    await mongoWork.UpdateUserPassword(user);
+                    await mongoWork.UpdateUserPassword(user, token);
                 if (!String.IsNullOrEmpty(user.Name))
-                    await mongoWork.UpdateUserName(user);
+                    await mongoWork.UpdateUserName(user, token);
                 if (!String.IsNullOrEmpty(user.Phone))
-                    await mongoWork.UpdateUserPhone(user);
+                    await mongoWork.UpdateUserPhone(user, token);
                 if (!String.IsNullOrEmpty(user.UserImageId))
-                    await mongoWork.UpdateUserImageId(user);
+                    await mongoWork.UpdateUserImageId(user, token);
                 if (!String.IsNullOrEmpty(user.Email))
-                    await mongoWork.UpdateUserEmail(user);
+                    await mongoWork.UpdateUserEmail(user, token);
                 if (!String.IsNullOrEmpty(user.Description))
-                    await mongoWork.UpdateUserDescription(user);
-                await mongoWork.SetGoogleUser(user);
+                    await mongoWork.UpdateUserDescription(user, token);
+                await mongoWork.SetGoogleUser(user, token);
                 return Ok(user);
             }
             catch (Exception e)
@@ -94,15 +94,15 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/updateUserName")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserName([FromBody] User user)
+        public async Task<IActionResult> updateUserName([FromBody] User user, CancellationToken token = default)
         {
             try
             {
-                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this, token))
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
-                await mongoWork.UpdateUserName(user);
+                await mongoWork.UpdateUserName(user, token);
                 return Ok(user);
             }
             catch (Exception e)
@@ -118,15 +118,15 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/updateUserPassword")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserPassword([FromBody] User user)
+        public async Task<IActionResult> updateUserPassword([FromBody] User user, CancellationToken token = default)
         {
             try
             {
-                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this))
+                if (await authenticate.checkIfUserIsValidToEditAsync(user.Id, this, token))
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
-                await mongoWork.UpdateUserPassword(user);
+                await mongoWork.UpdateUserPassword(user, token);
                 return Ok(user);
             }
             catch (Exception e)
@@ -142,7 +142,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/updateUserImage")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserImage([FromBody] User user)
+        public async Task<IActionResult> updateUserImage([FromBody] User user, CancellationToken token = default)
         {
             try
             {
@@ -150,7 +150,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
-                await mongoWork.UpdateUserImageId(user);
+                await mongoWork.UpdateUserImageId(user, token);
                 return Ok(user);
             }
             catch (Exception e)
@@ -166,7 +166,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/updateUserEmail")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserEmail([FromBody] User user)
+        public async Task<IActionResult> updateUserEmail([FromBody] User user, CancellationToken token = default)
         {
             try
             {
@@ -174,7 +174,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
-                await mongoWork.UpdateUserEmail(user);
+                await mongoWork.UpdateUserEmail(user, token);
                 return Ok(user);
             }
             catch (Exception e)
@@ -190,7 +190,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/updateUserPhone")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserPhone([FromBody] User user)
+        public async Task<IActionResult> updateUserPhone([FromBody] User user, CancellationToken token = default)
         {
             try
             {
@@ -198,7 +198,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
-                await mongoWork.UpdateUserPhone(user);
+                await mongoWork.UpdateUserPhone(user, token);
                 return Ok(user);
             }
             catch (Exception e)
@@ -214,7 +214,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/updateUserDescription")]
         [Produces("application/json")]
-        public async Task<IActionResult> updateUserDescription([FromBody] User user)
+        public async Task<IActionResult> updateUserDescription([FromBody] User user, CancellationToken token = default)
         {
             try
             {
@@ -222,7 +222,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
-                await mongoWork.UpdateUserDescription(user);
+                await mongoWork.UpdateUserDescription(user, token);
                 return Ok(user);
             }
             catch (Exception e)
@@ -238,7 +238,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpGet("/getUserTransactions")]
         [Produces("application/json")]
-        public async Task<IActionResult> getUserTransactions(string userId)
+        public async Task<IActionResult> getUserTransactions(string userId, CancellationToken token = default)
         {
             try
             {
@@ -246,7 +246,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
                 {
                     return BadRequest("User's own Id and specified id doesn't match! Users can't edit another's values!");
                 }
-                return Ok(await mongoWork.GetTransactionsForUserAsync(userId));
+                return Ok(await mongoWork.GetTransactionsForUserAsync(userId, token));
             }
             catch (Exception e)
             {
