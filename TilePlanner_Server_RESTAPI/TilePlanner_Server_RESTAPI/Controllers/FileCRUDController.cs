@@ -14,6 +14,8 @@ namespace TilePlanner_Server_RESTAPI.Controllers
 #if AUTHALT
 #if AUTHALT_ENABLED
     [Authorize]
+    [DisableRequestSizeLimit]
+    [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
 #endif
 #endif
 
@@ -52,12 +54,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns>Item with fileinfo</returns>
         [HttpPost("/uploadfileGFS")]
         [Produces("application/json")]
-
-        public async Task<IActionResult> UploadFileGFS(IFormFile file, CancellationToken token = default)
+        public async Task<IActionResult> UploadFileGFS(CancellationToken token = default)
         {
             try
             {
-
+                var file = Request.Form.Files[0];
                 return Ok(await MongoWork.SaveFileToGridFS(file, token));
             }
             catch (Exception e)
