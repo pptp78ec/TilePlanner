@@ -1,0 +1,23 @@
+.image_tile{
+    width: 100%;
+    height: 100%;
+    background: #E7E7E7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+.default{
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+.default:hover{
+    background: #fffefe;
+}
+
+.image_tile>img{
+    width: 40%;
+}
+.selected>img{
+    width: 100%;
+}

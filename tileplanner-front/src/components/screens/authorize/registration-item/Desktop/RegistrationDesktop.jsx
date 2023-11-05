@@ -25,6 +25,7 @@ export default function RegistrationDesktop() {
   };
   const registrateUser = async (data) => { // Обратите внимание, что здесь используется async
     try {
+      console.log(data.phone_number);
       const isValidPassword = validator.validatePassword(data.password);
       const isValidEmail = validator.validateEmail(data.email);
 
@@ -100,7 +101,7 @@ export default function RegistrationDesktop() {
                 </div>
                 <div className={styles.input_phone}>
                   <input
-                   {...register('phone_number',{required:true})}
+                   {...register('phone',{required:true})}
                   type="tel" placeholder='Телефон' />
                 </div>
               </div>

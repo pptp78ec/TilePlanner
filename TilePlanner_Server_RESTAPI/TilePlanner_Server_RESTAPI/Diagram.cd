@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TilePlanner_Server_RESTAPI.CorsFilter">
+    <Position X="13.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CorsFilter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.Auth.Authenticate">
+    <Position X="3" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAEAAAAAAQACAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Auth\Authenticate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.BrainTreePayPalPayment.BrainTreeService" BaseTypeListCollapsed="true">
+    <Position X="3" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>BrainTreePayPalPayment\BrainTreeService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.Controllers.AuthorizationController">
+    <Position X="6.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAECAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Controllers\AuthorizationController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.Controllers.BrainTreePaymentController">
+    <Position X="5" Y="3.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAABAAAAAAAAAAAAAACEAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Controllers\BrainTreePaymentController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.Controllers.FileCRUDController">
+    <Position X="3" Y="7.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAACAAAAgQAACAAAAABAAEAAAACAA=</HashCode>
+      <FileName>Controllers\FileCRUDController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.Controllers.ItemCRUDcontroller">
+    <Position X="11.25" Y="8.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACgAAQAAAAAAAYAAAAAAgAAAQAICAAACAA=</HashCode>
+      <FileName>Controllers\ItemCRUDcontroller.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.Controllers.NotificationsController">
+    <Position X="3" Y="13" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAAAAAQAAAAAAAAAAAAAAAAAIEIAAAAAAA=</HashCode>
+      <FileName>Controllers\NotificationsController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.Controllers.RoleController">
+    <Position X="11" Y="4.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAAAACAAAACAAACAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Controllers\RoleController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.Controllers.UserCRUDController">
+    <Position X="11" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAIAgABAAEAAAAgAAIAAAAAAAQCAIAAAAAIAAAAIAA=</HashCode>
+      <FileName>Controllers\UserCRUDController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.DBConnection.MongoContext">
+    <Position X="13.5" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>2gQAQgAKEECAAChAAbBCAAAQAAAiQAsABAEACEACEBg=</HashCode>
+      <FileName>DBConnection\MongoContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.Roles.Role">
+    <Position X="9.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABACAAAAAAAAAAAAAAAAAAgAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ORM\Roles\Role.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.BasicItem">
+    <Position X="9.25" Y="8.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>JAACQCAAAAAhAAECIAAAAAABKgAEAEAAAgAAAAAAAAA=</HashCode>
+      <FileName>ORM\BasicItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.Notification">
+    <Position X="3" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAACACAAAAAAAAAAAAAAAAgAAAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>ORM\Notification.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.Coordinate">
+    <Position X="16.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAEAACAAAAAAAAIAAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>ORM\Supplementary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.FileInfoShort">
+    <Position X="16.5" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJAAAA=</HashCode>
+      <FileName>ORM\Supplementary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.DBFileRetDAO">
+    <Position X="16.5" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAQAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>ORM\Supplementary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.LoginDataDTO">
+    <Position X="16.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAQAAAAAAA=</HashCode>
+      <FileName>ORM\Supplementary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.CheckoutModelDTO">
+    <Position X="16.5" Y="6.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAQAgAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ORM\Supplementary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.ReturnTokenDataDTO">
+    <Position X="16.5" Y="2.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>ORM\Supplementary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.CreateScreenDTO">
+    <Position X="16.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ORM\Supplementary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.BadRequestErrorDTO">
+    <Position X="16.5" Y="3.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>ORM\Supplementary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.BudgetItem">
+    <Position X="16.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAIEAAAAAAAAA=</HashCode>
+      <FileName>ORM\Supplementary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.TransactionData">
+    <Position X="6" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gBACAAAAAAAAAAAEAAQAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ORM\TransactionData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TilePlanner_Server_RESTAPI.ORM.User">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAACAAAAACAgAAAAAABAAAQAAAAAAAACAAAQIQAAAAA=</HashCode>
+      <FileName>ORM\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="TilePlanner_Server_RESTAPI.BrainTreePayPalPayment.IBrainTreeService">
+    <Position X="3" Y="5.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>BrainTreePayPalPayment\IBrainTreeService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="TilePlanner_Server_RESTAPI.ORM.Roles.AccessLevel">
+    <Position X="9.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAACAAAAAAAAAAgA=</HashCode>
+      <FileName>ORM\Roles\AccessLevel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TilePlanner_Server_RESTAPI.ORM.Itemtype">
+    <Position X="7.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAQAgAESAgACQAAAgAQAACQAA=</HashCode>
+      <FileName>ORM\ItemType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

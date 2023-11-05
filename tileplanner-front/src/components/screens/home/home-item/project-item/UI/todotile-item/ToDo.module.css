@@ -1,0 +1,75 @@
+.toDo_item {
+    font-size: 18px;
+    font-weight: 300;
+    text-align: left;
+    display: flex;
+    justify-content: left;
+    align-items: start;
+    width: 100%;
+    height: 100%;
+    transition: background-color 0.25s ease;
+    padding-left: 27px;
+    padding-right: 25px;
+    padding-top:10px ;
+    background-color: #E7E7E7;
+    border-radius: 21px;
+    overflow: hidden;
+    box-shadow: -5px -5px 10px 0px #FAFBFF,
+        5px 5px 10px 0px #161B1D3B;
+        
+
+}
+
+.toDo_item>div {
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
+}
+
+.toDo_header {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: left;
+    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    text-wrap: nowrap;
+}
+
+.header_submenu {
+    position: relative;
+    cursor: pointer;
+    color: #3D3D3D;
+    font-weight: bold;
+}
+
+.sub_menu {
+    position: absolute;
+    top: 30px;
+    left: -80px;
+    background-color: #AEAEAE;
+    padding: 10px;
+    z-index: 9999;
+    border-radius: 17px;
+    color: white;
+}
+
+.sub_element {
+    transition: color 0.25s ease;
+}
+
+.sub_element:hover {
+    color: rgb(245, 191, 191);
+}
+
+
+
+
+/* .resizable_element {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px;
+    border: 1px solid #2980b9;
+    cursor: col-resize;
+   
+} */

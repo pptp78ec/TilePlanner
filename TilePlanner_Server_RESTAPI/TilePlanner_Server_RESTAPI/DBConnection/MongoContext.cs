@@ -1,6 +1,8 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.GridFS;
+using Newtonsoft.Json.Linq;
+using System.Threading;
 using TilePlanner_Server_RESTAPI.ORM;
 using TilePlanner_Server_RESTAPI.ORM.Roles;
 
@@ -70,7 +72,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="file">File from request</param>
         /// <returns>Short info about file</returns>
-        public async Task<FileInfoShortDAO> SaveFileToGridFS(IFormFile file)
+        public async Task<FileInfoShort> SaveFileToGridFS(IFormFile file, CancellationToken token = default)
         {
             using (var stream = file.OpenReadStream())
             {
@@ -80,9 +82,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                     Metadata = new BsonDocument { { "originalFileName", file.FileName } }
                 };
 
-                await gridFSBucket.UploadFromStreamAsync(fileId, file.FileName, stream, options);
+                await gridFSBucket.UploadFromStreamAsync(fileId, file.FileName, stream, options, token);
 
-                return new FileInfoShortDAO() { FileId = fileId.ToString(), FileName = file.FileName };
+                return new FileInfoShort() { FileId = fileId.ToString(), FileName = file.FileName };
             }
         }
 
@@ -92,7 +94,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="file">FileInfo of a file</param>
         /// <returns>Short fileinfo about file: ObjectId and it's short name</returns>
-        public async Task<FileInfoShortDAO> SaveToGridFS_Test(FileInfo file)
+        public async Task<FileInfoShort> SaveToGridFS_Test(FileInfo file, CancellationToken token = default)
         {
             using (var stream = file.OpenRead())
             {
@@ -101,9 +103,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 {
                     Metadata = new BsonDocument { { "originalFileName", file.Name } }
                 };
-                await gridFSBucket.UploadFromStreamAsync(fileId, file.Name, stream, options);
+                await gridFSBucket.UploadFromStreamAsync(fileId, file.Name, stream, options, token);
 
-                return new FileInfoShortDAO() { FileId = fileId.ToString(), FileName = file.Name };
+                return new FileInfoShort() { FileId = fileId.ToString(), FileName = file.Name };
             }
         }
 #endif
@@ -113,7 +115,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="fileId">Id of the file</param>
         /// <returns>Stream</returns>
-        public async Task<DBFileRetDAO?> LoadFromGridFs(ObjectId fileId)
+        public async Task<DBFileRetDAO?> LoadFromGridFs(ObjectId fileId, CancellationToken token = default)
         {
             var filter = Builders<GridFSFileInfo>.Filter.Eq("_id", fileId);
             var result = await gridFSBucket.FindAsync(filter);
@@ -122,7 +124,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
             if (file != null)
             {
                 var stream = new MemoryStream();
-                await gridFSBucket.DownloadToStreamAsync(fileId, stream);
+                await gridFSBucket.DownloadToStreamAsync(fileId, stream, cancellationToken: token);
                 return new DBFileRetDAO() { FileName = file.Filename, FileContents = stream.ToArray() };
             }
             return null;
@@ -139,7 +141,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="items">List of Basic items</param>
         /// <returns></returns>
-        public async Task AddOrUpdateItems(List<BasicItem> items)
+        public async Task AddOrUpdateItems(List<BasicItem> items, CancellationToken token = default)
         {
             var upsert = new UpdateOptions() { IsUpsert = true };
             foreach (var item in items)
@@ -152,7 +154,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                     .Set(_ => _.Description, item.Description)
                     .Set(_ => _.Itemtype, item.Itemtype)
                     .Set(_ => _.TileSizeX, item.TileSizeX)
+                    .Set(_ => _.TilePosX, item.TilePosX)
                     .Set(_ => _.TileSizeY, item.TileSizeY)
+                    .Set(_ => _.TilePosY, item.TilePosY)
                     .Set(_ => _.CreatorId, item.CreatorId)
                     .Set(_ => _.ParentId, item.ParentId)
                     .Set(_ => _.BackgroundColor, item.BackgroundColor)
@@ -161,8 +165,13 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                     .Set(_ => _.Tags, item.Tags)
                     .Set(_ => _.TaskSetDate, item.TaskSetDate)
                     .Set(_ => _.File, item.File)
+                    .Set(_ => _.BudgetItems, item.BudgetItems)
+                    .Set(_ => _.isDone, item.isDone)
+#if DELETION_ALT
+                    .Set(_ => _.isDeleted, item.isDeleted)
+#endif
                     .SetOnInsert(_ => _.Id, item.Id);
-                await database.GetCollection<BasicItem>("Items").UpdateOneAsync(filter, update, upsert);
+                await database.GetCollection<BasicItem>("Items").UpdateOneAsync(filter, update, upsert, cancellationToken: token);
             }
         }
         /// <summary>
@@ -170,9 +179,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="item">Basicitem item</param>
         /// <returns></returns>
-        public async Task AddOneitem(BasicItem item)
+        public async Task AddOneitem(BasicItem item, CancellationToken token = default)
         {
-            await database.GetCollection<BasicItem>("Items").InsertOneAsync(item);
+            await database.GetCollection<BasicItem>("Items").InsertOneAsync(item, cancellationToken: token);
         }
 
         /// <summary>
@@ -180,9 +189,16 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="userId">Id of creator</param>
         /// <returns></returns>
-        public async Task<List<BasicItem>> GetListOfScreensForUser(string userId)
+        public async Task<List<BasicItem>> GetListOfScreensForUser(string userId, CancellationToken token = default)
         {
-            return await (await database.GetCollection<BasicItem>("Items").FindAsync(_ => _.CreatorId == userId && _.Itemtype == Itemtype.SCREEN)).ToListAsync();
+            return await (await database.GetCollection<BasicItem>("Items")
+                .FindAsync(_ =>
+                _.CreatorId == userId
+                && _.Itemtype == Itemtype.SCREEN
+#if DELETION_ALT
+                && _.isDeleted == false
+#endif
+                , cancellationToken: token)).ToListAsync(cancellationToken: token);
         }
 
         /// <summary>
@@ -190,10 +206,10 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="parentId">Item's id</param>
         /// <returns>List of items</returns>
-        public async Task<List<BasicItem>> GetListOfChildren(string parentId)
+        public async Task<List<BasicItem>> GetListOfChildren(string parentId, CancellationToken token = default)
         {
             var collection = database.GetCollection<BasicItem>("Items");
-            return await ChildrenSearch(parentId, collection);
+            return await ChildrenSearch(parentId, collection, token);
         }
 
         /// <summary>
@@ -202,10 +218,10 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// <param name="parentId"></param>
         /// <param name="itemtype"></param>
         /// <returns></returns>
-        public async Task<List<BasicItem>> GetListOfChildernOfSpecificType(string parentId, Itemtype itemtype)
+        public async Task<List<BasicItem>> GetListOfChildernOfSpecificType(string parentId, Itemtype itemtype, CancellationToken token = default)
         {
             var collection = database.GetCollection<BasicItem>("Items");
-            return await ChildrenSearchSpecificType(parentId, collection, itemtype);
+            return await ChildrenSearchSpecificType(parentId, collection, itemtype, token);
         }
 
         /// <summary>
@@ -213,15 +229,42 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="parentId">Item's id</param>
         /// <returns></returns>
-        public async Task DeleteListOfChildren(string parentId)
+        public async Task DeleteListOfChildren(string parentId, CancellationToken token = default)
         {
             var collection = database.GetCollection<BasicItem>("Items");
-            var firstnode = await (await collection.FindAsync(_ => _.Id == parentId)).FirstOrDefaultAsync();
+            var firstnode = await (await collection.FindAsync(_ => _.Id == parentId, cancellationToken: token)).FirstAsync(cancellationToken: token);
             if (firstnode != null)
             {
-                await RecursiveDelete(firstnode, collection);
+                await RecursiveDelete(firstnode, collection, token);
             }
         }
+
+#if DELETION_ALT
+        /// <summary>
+        /// Marks up item and all of it's children as deleted
+        /// </summary>
+        /// <param name="parentId">Id of a parent</param>
+        /// <returns></returns>
+        public async Task MarkAsDeletedListOfChildren(string parentId, CancellationToken token = default)
+        {
+            var collection = database.GetCollection<BasicItem>("Items");
+            var firstnode = await (await collection.FindAsync(_ => _.Id == parentId, cancellationToken: token)).FirstAsync(cancellationToken: token);
+            if (firstnode != null)
+            {
+                await MarkAsDeletedRecursively(firstnode, collection, token);
+            }
+        }
+        /// <summary>
+        /// Finds all items marked as deleted in DB and removes them
+        /// </summary>
+        /// <returns></returns>
+        public async Task FindAllMarkedForDeleteAndRemove()
+        {
+            var collection = database.GetCollection<BasicItem>("Items");
+            var filter = Builders<BasicItem>.Filter.Eq(_ => _.isDeleted, true);
+            await collection.DeleteManyAsync(filter);
+        }
+#endif
 
         //------------------------------------------------------------------------------------------
         //Items subfunctionality
@@ -229,48 +272,70 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
 
         //Recursive tasks
 
-        private async Task RecursiveDelete(BasicItem item, IMongoCollection<BasicItem> collection)
+        private async Task RecursiveDelete(BasicItem item, IMongoCollection<BasicItem> collection, CancellationToken token = default)
         {
-            await collection.DeleteOneAsync(_ => _.Id == item.Id);
+            await collection.DeleteOneAsync(_ => _.Id == item.Id, cancellationToken: token);
             foreach (var child in await GetChildren(item.Id, collection))
             {
-                await RecursiveDelete(child, collection);
+                await RecursiveDelete(child, collection, token);
             }
         }
-
-
-        private async Task<List<BasicItem>> GetChildren(string parentId, IMongoCollection<BasicItem> collection)
+#if DELETION_ALT
+        private async Task MarkAsDeletedRecursively(BasicItem item, IMongoCollection<BasicItem> collection, CancellationToken token = default)
         {
-            return await (await collection.FindAsync(_ => _.ParentId == parentId)).ToListAsync();
+            var filter = Builders<BasicItem>.Filter.Eq(_ => _.Id, item.Id);
+            var update = Builders<BasicItem>.Update.Set(_ => _.isDeleted, true);
+            await collection.UpdateOneAsync(filter, update, cancellationToken: token);
+            foreach (var child in await GetChildren(item.Id, collection, token))
+            {
+                await MarkAsDeletedRecursively(child, collection, token);
+            }
+        }
+#endif
+
+        private async Task<List<BasicItem>> GetChildren(string parentId, IMongoCollection<BasicItem> collection, CancellationToken token = default)
+        {
+            return await (await collection.FindAsync(_ => _.ParentId == parentId, cancellationToken: token)).ToListAsync(cancellationToken: token);
         }
 
-        private async Task<List<BasicItem>> ChildrenSearch(string parentId, IMongoCollection<BasicItem> collection)
+        private async Task<List<BasicItem>> ChildrenSearch(string parentId, IMongoCollection<BasicItem> collection, CancellationToken token = default)
         {
             var results = new List<BasicItem>();
-            var nodes = await (await collection.FindAsync(_ => _.ParentId == parentId)).ToListAsync();
+            var nodes = await (await collection.FindAsync(_ =>
+            _.ParentId == parentId
+#if DELETION_ALT
+            && _.isDeleted == false
+#endif
+            , cancellationToken: token)).ToListAsync(cancellationToken: token);
             foreach (var node in nodes)
             {
                 if (node != null)
                 {
 
                     results.Add(node);
-                    results.AddRange(await ChildrenSearch(node.Id, collection));
+                    results.AddRange(await ChildrenSearch(node.Id, collection, token));
                 }
             }
             return results;
         }
 
-        private async Task<List<BasicItem>> ChildrenSearchSpecificType(string parentId, IMongoCollection<BasicItem> collection, Itemtype itemtype)
+        private async Task<List<BasicItem>> ChildrenSearchSpecificType(string parentId, IMongoCollection<BasicItem> collection, Itemtype itemtype, CancellationToken token = default)
         {
             var results = new List<BasicItem>();
-            var nodes = await (await collection.FindAsync(_ => _.ParentId == parentId && _.Itemtype == itemtype)).ToListAsync();
+            var nodes = await (await collection.FindAsync(_ =>
+            _.ParentId == parentId
+            && _.Itemtype == itemtype
+#if DELETION_ALT
+            && _.isDeleted == false
+#endif
+            , cancellationToken: token)).ToListAsync(cancellationToken: token);
             foreach (var node in nodes)
             {
                 if (node != null)
                 {
 
                     results.Add(node);
-                    results.AddRange(await ChildrenSearchSpecificType(node.Id, collection, itemtype));
+                    results.AddRange(await ChildrenSearchSpecificType(node.Id, collection, itemtype, token));
                 }
             }
             return results;
@@ -289,13 +354,13 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// <param name="transactionData">Transaction data class instance</param>
         /// <returns>Added item</returns>
 
-        public async Task<TransactionData> AddTransactionData(TransactionData transactionData)
+        public async Task<TransactionData> AddTransactionData(TransactionData transactionData, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(transactionData.Id))
             {
                 transactionData.Id = ObjectId.GenerateNewId().ToString();
             }
-            await database.GetCollection<TransactionData>("Transactions").InsertOneAsync(transactionData);
+            await database.GetCollection<TransactionData>("Transactions").InsertOneAsync(transactionData, cancellationToken: token);
             return transactionData;
         }
 
@@ -305,9 +370,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// <param name="userId">User's Id</param>
         /// <returns>Collection</returns>
 
-        public async Task<List<TransactionData>> GetTransactionsForUserAsync(string userId)
+        public async Task<List<TransactionData>> GetTransactionsForUserAsync(string userId, CancellationToken token = default)
         {
-            return await (await database.GetCollection<TransactionData>("Transactions").FindAsync(_ => _.UserId == userId)).ToListAsync();
+            return await (await database.GetCollection<TransactionData>("Transactions").FindAsync(_ => _.UserId == userId, cancellationToken: token)).ToListAsync(cancellationToken: token);
         }
 
         //------------------------------------------------------------------------------------------
@@ -322,7 +387,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// <param name="notification">Notification class instance</param>
         /// <returns>Added item</returns>
 
-        public async Task<Notification> CreateUpdateNotification(Notification notification)
+        public async Task<Notification> CreateUpdateNotification(Notification notification, CancellationToken token = default)
         {
             if (String.IsNullOrEmpty(notification.Id))
             {
@@ -336,7 +401,7 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                 .Set(_ => _.UserId, notification.UserId)
                 .SetOnInsert(_ => _.Id, notification.Id); ;
 
-            await database.GetCollection<Notification>("Notifications").UpdateOneAsync(_ => _.Id == notification.Id, update, upsert);
+            await database.GetCollection<Notification>("Notifications").UpdateOneAsync(_ => _.Id == notification.Id, update, upsert, cancellationToken: token);
             return notification;
         }
 
@@ -345,9 +410,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<List<Notification>> GetNotificationsForUser(string userId)
+        public async Task<List<Notification>> GetNotificationsForUser(string userId, CancellationToken token = default)
         {
-            return await (await database.GetCollection<Notification>("Notifications").FindAsync(_ => _.UserId == userId)).ToListAsync();
+            return await (await database.GetCollection<Notification>("Notifications").FindAsync(_ => _.UserId == userId, cancellationToken: token)).ToListAsync(cancellationToken: token);
         }
 
         /// <summary>
@@ -355,9 +420,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="notificationId">Id of notification</param>
         /// <returns></returns>
-        public async Task DeleteNotification(string notificationId)
+        public async Task DeleteNotification(string notificationId, CancellationToken token = default)
         {
-            await database.GetCollection<Notification>("Notifications").DeleteOneAsync(_ => _.Id == notificationId);
+            await database.GetCollection<Notification>("Notifications").DeleteOneAsync(_ => _.Id == notificationId, cancellationToken: token);
         }
 
         /// <summary>
@@ -365,9 +430,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="userId">User's Id</param>
         /// <returns></returns>
-        public async Task DeleteAllNotificationsForUser(string userId)
+        public async Task DeleteAllNotificationsForUser(string userId, CancellationToken token = default)
         {
-            await database.GetCollection<Notification>("Notifications").DeleteManyAsync(_ => _.UserId == userId);
+            await database.GetCollection<Notification>("Notifications").DeleteManyAsync(_ => _.UserId == userId, cancellationToken: token);
         }
 
         //------------------------------------------------------------------------------------------
@@ -378,16 +443,16 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         //------------------------------------------------------------------------------------------
 
 
-        public async Task<Role> AddNewRole(string userId)
+        public async Task<Role> AddNewRole(string userId, CancellationToken token = default)
         {
             var role = new Role() { Id = ObjectId.GenerateNewId().ToString(), EndTime = null, UserId = userId, AccessLevel = AccessLevel.BASIC };
-            await database.GetCollection<Role>("Roles").InsertOneAsync(role);
+            await database.GetCollection<Role>("Roles").InsertOneAsync(role, cancellationToken: token);
             return role;
         }
 
-        public async Task<Role?> UpdateSupbscription(string userId, AccessLevel accesslevel, double daystoadd)
+        public async Task<Role?> UpdateSupbscription(string userId, AccessLevel accesslevel, double daystoadd, CancellationToken token = default)
         {
-            var role = await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.UserId == userId)).FirstAsync();
+            var role = await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.UserId == userId, cancellationToken: token)).FirstAsync(cancellationToken: token);
             if (role != default(Role))
             {
                 role.AccessLevel = accesslevel;
@@ -396,26 +461,26 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
                     .Set(_ => _.AccessLevel, role.AccessLevel)
                     .Set(_ => _.EndTime, role.EndTime)
                     .Set(_ => _.UserId, role.UserId);
-                await database.GetCollection<Role>("Roles").UpdateOneAsync<Role>(_ => _.Id == role.Id, update);
+                await database.GetCollection<Role>("Roles").UpdateOneAsync<Role>(_ => _.Id == role.Id, update, cancellationToken: token);
                 return role;
             }
             else return null;
         }
 
-        public async Task<Role> FindRoleByUserId(string userId)
+        public async Task<Role> FindRoleByUserId(string userId, CancellationToken token = default)
         {
-            return await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.UserId == userId)).FirstAsync();
+            return await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.UserId == userId, cancellationToken: token)).FirstAsync(cancellationToken: token);
         }
 
-        public async Task<Role> FindRoleById(string roleId)
+        public async Task<Role> FindRoleById(string roleId, CancellationToken token = default)
         {
-            return await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.Id == roleId)).FirstAsync();
+            return await (await database.GetCollection<Role>("Roles").FindAsync(_ => _.Id == roleId, cancellationToken: token)).FirstAsync(cancellationToken: token);
         }
 
-        public async Task<long> CountAllItemsForUserId(string userId)
+        public async Task<long> CountAllItemsForUserId(string userId, CancellationToken token = default)
         {
             var count = 0L;
-            count = await database.GetCollection<BasicItem>("Itmes").CountDocumentsAsync(_ => _.CreatorId == userId);
+            count = await database.GetCollection<BasicItem>("Items").CountDocumentsAsync(_ => _.CreatorId == userId, cancellationToken: token);
             return count;
         }
 
@@ -430,9 +495,9 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="Id">Id of a user</param>
         /// <returns>User</returns>
-        public async Task<User> FindUserById(string Id)
+        public async Task<User> FindUserById(string Id, CancellationToken token = default)
         {
-            return await (await database.GetCollection<User>("Users").FindAsync(_ => _.Id == Id && _.IsDeleted == false)).FirstOrDefaultAsync();
+            return await (await database.GetCollection<User>("Users").FindAsync(_ => _.Id == Id && _.IsDeleted == false, cancellationToken: token)).FirstOrDefaultAsync(cancellationToken: token);
         }
 
         /// <summary>
@@ -440,15 +505,15 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="user">User instance</param>
         /// <returns></returns>
-        public async Task<User> AddNewUser(User user)
+        public async Task<User> AddNewUser(User user, CancellationToken token = default)
         {
             if (String.IsNullOrEmpty(user.Id))
             {
                 user.Id = ObjectId.GenerateNewId().ToString();
             }
             user.RegisterDate = DateTime.Now;
-            await database.GetCollection<User>("Users").InsertOneAsync(user);
-            await AddNewRole(user.Id);
+            await database.GetCollection<User>("Users").InsertOneAsync(user, cancellationToken: token);
+            await AddNewRole(user.Id, token);
             return user;
         }
 
@@ -458,14 +523,14 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// <param name="loginparam">Login string. Could be login, email or phone number</param>
         /// <param name="password">User's password</param>
         /// <returns>User</returns>
-        public async Task<User> FindUserBySearchParams(string loginparam, string password)
+        public async Task<User> FindUserBySearchParams(string loginparam, string password, CancellationToken token = default)
         {
-            return await (await database.GetCollection<User>("Users").FindAsync(_ => (_.Login == loginparam || _.Email == loginparam || _.Phone == loginparam) && _.Password == password && _.IsDeleted == false)).FirstOrDefaultAsync();
+            return await (await database.GetCollection<User>("Users").FindAsync(_ => (_.Login == loginparam || _.Email == loginparam || _.Phone == loginparam) && _.Password == password && _.IsDeleted == false, cancellationToken: token)).FirstOrDefaultAsync(cancellationToken: token);
         }
 
-        public async Task<User> CheckIfUserAlreadyExists(string loginparam)
+        public async Task<User> CheckIfUserAlreadyExists(string loginparam, CancellationToken token = default)
         {
-            return await (await database.GetCollection<User>("Users").FindAsync(_ => (_.Login == loginparam || (_.Email == loginparam && !String.IsNullOrEmpty(_.Email)) || (_.Phone == loginparam && !String.IsNullOrEmpty(_.Phone))) && _.IsDeleted == false)).FirstOrDefaultAsync();
+            return await (await database.GetCollection<User>("Users").FindAsync(_ => (_.Login == loginparam || (_.Email == loginparam && !String.IsNullOrEmpty(_.Email)) || (_.Phone == loginparam && !String.IsNullOrEmpty(_.Phone))) && _.IsDeleted == false, cancellationToken: token)).FirstOrDefaultAsync(cancellationToken: token);
         }
 
         /// <summary>
@@ -473,11 +538,11 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="user">User instance</param>
         /// <returns></returns>
-        public async Task UpdateUserName(User user)
+        public async Task UpdateUserName(User user, CancellationToken token = default)
         {
             var update = Builders<User>.Update
                 .Set(_ => _.Name, user.Name);
-            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update, cancellationToken: token);
         }
 
         /// <summary>
@@ -485,11 +550,11 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="user">User instance</param>
         /// <returns></returns>
-        public async Task UpdateUserPassword(User user)
+        public async Task UpdateUserPassword(User user, CancellationToken token = default)
         {
             var update = Builders<User>.Update
                 .Set(_ => _.Password, user.Password);
-            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update, cancellationToken: token);
         }
 
         /// <summary>
@@ -497,11 +562,11 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="user">User instance</param>
         /// <returns></returns>
-        public async Task UpdateUserDescription(User user)
+        public async Task UpdateUserDescription(User user, CancellationToken token = default)
         {
             var update = Builders<User>.Update
                 .Set(_ => _.Description, user.Description);
-            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update, cancellationToken: token);
         }
 
         /// <summary>
@@ -509,11 +574,11 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="user">User instance</param>
         /// <returns></returns>
-        public async Task UpdateUserEmail(User user)
+        public async Task UpdateUserEmail(User user, CancellationToken token = default)
         {
             var update = Builders<User>.Update
                 .Set(_ => _.Email, user.Email);
-            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update, cancellationToken: token);
         }
 
         /// <summary>
@@ -521,11 +586,11 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="user">User instance</param>
         /// <returns></returns>
-        public async Task UpdateUserPhone(User user)
+        public async Task UpdateUserPhone(User user, CancellationToken token = default)
         {
             var update = Builders<User>.Update
                 .Set(_ => _.Phone, user.Phone);
-            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update, cancellationToken: token);
         }
 
         /// <summary>
@@ -533,18 +598,18 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="user">User's instance</param>
         /// <returns></returns>
-        public async Task UpdateUserImageId(User user)
+        public async Task UpdateUserImageId(User user, CancellationToken token = default)
         {
             var update = Builders<User>.Update
                 .Set(_ => _.UserImageId, user.UserImageId);
-            var result = await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+            var result = await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update, cancellationToken: token);
         }
 
-        public async Task SetGoogleUser(User user)
+        public async Task SetGoogleUser(User user, CancellationToken token = default)
         {
             var update = Builders<User>.Update
                 .Set(_ => _.IsGoogle, user.IsGoogle);
-            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == user.Id, update, cancellationToken: token);
         }
 
         /// <summary>
@@ -552,10 +617,10 @@ namespace TilePlanner_Server_RESTAPI.DBConnection
         /// </summary>
         /// <param name="userId">Id of a user</param>
         /// <returns></returns>
-        public async Task DeleteUserById(string userId)
+        public async Task DeleteUserById(string userId,CancellationToken token = default)
         {
             var update = Builders<User>.Update.Set(_ => _.IsDeleted, true);
-            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == userId, update);
+            await database.GetCollection<User>("Users").FindOneAndUpdateAsync(_ => _.Id == userId, update, cancellationToken: token);
         }
 
 

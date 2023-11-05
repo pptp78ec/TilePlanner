@@ -43,13 +43,17 @@ builder.Services.AddSingleton<Authenticate>();
 builder.Services.AddSingleton<MongoContext>();
 builder.Services.AddTransient<IBrainTreeService, BrainTreeService>();
 
+
+builder.Services
 #if DEBUG
-builder.Services.AddControllers(opts => opts.Filters.Add(new CorsFilter())).AddJsonOptions(x =>
+    .AddControllers(opts => opts.Filters.Add(new CorsFilter()))
+#endif
+    .AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     x.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 }); ;
-#endif
+
 
 var app = builder.Build();
 
@@ -76,7 +80,17 @@ app.UseCors(cors =>
     cors.AllowAnyOrigin();
     cors.AllowAnyHeader();
     cors.AllowAnyMethod();
+    var origins = app.Configuration.GetValue<string[]>("CORS:Origin");
+    var headers = app.Configuration.GetValue<string[]>("CORS:Header");
+    var methods = app.Configuration.GetValue<string[]>("CORS:Method");
+    if (origins?.Length > 0 && !origins.Contains("any"))
+        cors.WithOrigins(origins);
+    if (headers?.Length > 0 && !headers.Contains("any"))
+        cors.WithHeaders(headers);
+    if (methods?.Length > 0 && !methods.Contains("any"))
+        cors.WithMethods(methods);
 });
+
 app.UseHttpsRedirection();
 
 app.MapControllers();

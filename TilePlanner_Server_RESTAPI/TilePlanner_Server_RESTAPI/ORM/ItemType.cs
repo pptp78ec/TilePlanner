@@ -5,6 +5,7 @@
         DEFAULT,
         //MAIN
         SCREEN,
+        //unused as of yet
         TAB,
         TILE,
         //RECORDS
@@ -13,6 +14,10 @@
         IMAGE,
         FILE,
         TASK,
-        COORDINATE
+        //FIXED TILES
+        COORDINATE,
+        TASKLIST,
+        BUDGET,
+        NOTES
     }
 }

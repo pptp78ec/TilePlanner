@@ -1,0 +1,133 @@
+.main {
+    min-width: 100%;
+    min-height: 100vh;
+    background-color: #E7E7E7;
+}
+
+.content {
+    height: 100%;
+    width: 100%;
+    padding-top: 31px;
+    padding-left: 60px;
+}
+
+.projects {
+    display: flex;
+    align-items: center;
+    overflow-x:auto ;
+    overflow-y:hidden ;
+    height: 75px;
+    padding-left: 10px;
+    
+}
+
+.project {
+    width: 250px;
+    height: 35px;
+    border-radius: 21px;
+    box-shadow: -3px -3px 5px 0px #FAFBFF,
+        3px 3px 5px 0px #161B1D3B;
+    background: #E7E7E7;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 500;
+    text-align: left;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 4px;
+    padding-bottom: 3px;
+    cursor: pointer;
+    transition: box-shadow 0.25s ease;
+    color: #747474;
+
+}
+
+.project:hover {
+    box-shadow: -1px -1px 3px 0px #FAFBFF,
+        1px 1px 3px 0px #161B1D3B;
+}
+
+.active {
+    width: 250px;
+    height: 35px;
+    border-radius: 21px;
+    background: #E7E7E7;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 500;
+    text-align: left;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 4px;
+    padding-bottom: 3px;
+    cursor: pointer;
+    transition: box-shadow 0.25s ease;
+    box-shadow: -3px -3px 5px 0px #FAFBFF inset,
+        3px 3px 5px 0px #161B1D3B inset;
+    color: black;
+}
+
+.create_project {
+    width: 70px;
+    height: 35px;
+    border-radius: 21px;
+    background: hsl(0, 0%, 91%);
+    box-shadow: -5px -5px 10px 0px #FAFBFF,
+        5px 5px 10px 0px #161B1D3B;
+    color: #747474;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    cursor: pointer;
+    transition: box-shadow 0.25s ease;
+}
+
+.create_project:hover {
+    box-shadow: -1px -1px 3px 0px #FAFBFF,
+        1px 1px 3px 0px #161B1D3B;
+}
+
+.horizontal_line {
+    display: flex;
+    /* Делаем контейнер флекс-контейнером */
+    align-items: center;
+    /* Выравниваем содержимое по центру по вертикали */
+    border-bottom: 1px solid #92929280;
+    /* Создаем горизонтальную линию */
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 17.5px;
+
+}
+
+.workspace {
+    margin-right: 60px;
+    background-image: url('http://localhost:5173/point_background.svg');
+    background-repeat: repeat;
+    background-size: 20px;
+    border-top-right-radius: 21px;
+    border-top-left-radius: 21px;
+    min-height: calc(100vh*100);
+}
+
+.map_container {
+    width: 100%;
+    height: 446px;
+    position: relative;
+    /* overflow: hidden; */
+    box-shadow: 5px 5px 10px 0px #161B1D3B,
+        -5px -5px 10px 0px #FAFBFF;
+
+    border-radius: 21px;
+    margin-top: 19px;
+    overflow: hidden;
+}
+
+.tiles_container{
+    width: 100%;
+    position: relative;
+    min-height: calc(100vh*100);
+}

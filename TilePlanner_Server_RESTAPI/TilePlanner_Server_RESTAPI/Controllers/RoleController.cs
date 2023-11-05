@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TilePlanner_Server_RESTAPI.Auth;
 using TilePlanner_Server_RESTAPI.DBConnection;
-using TilePlanner_Server_RESTAPI.ORM;
 
 namespace TilePlanner_Server_RESTAPI.Controllers
 {
@@ -24,7 +23,7 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         {
             this.MongoWork = MongoWork;
             this.authenticate = authenticate;
-            
+
         }
 
         /// <summary>
@@ -34,11 +33,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpGet("/geturole")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetRoleUser(string userId)
+        public async Task<IActionResult> GetRoleUser(string userId, CancellationToken token = default)
         {
             try
             {
-                return Ok(await MongoWork.FindRoleByUserId(userId));
+                return Ok(await MongoWork.FindRoleByUserId(userId, token));
             }
             catch (Exception e)
             {
@@ -53,11 +52,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpGet("/getrolebyid")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetRoleById(string roleID)
+        public async Task<IActionResult> GetRoleById(string roleID, CancellationToken token = default)
         {
             try
             {
-                return Ok(await MongoWork.FindRoleById(roleID));
+                return Ok(await MongoWork.FindRoleById(roleID, token));
             }
             catch (Exception e)
             {
@@ -72,12 +71,12 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpGet("/setSubscriptionToBasic")]
         [Produces("application/json")]
-        public async Task<IActionResult> setSubscriptionToBasic(string userId)
+        public async Task<IActionResult> setSubscriptionToBasic(string userId, CancellationToken token = default)
         {
             try
             {
-                await MongoWork.UpdateSupbscription(userId, ORM.Roles.AccessLevel.BASIC, 0);
-                return Ok((await authenticate.AuthenticateThis(await MongoWork.FindUserById(userId))).Token);
+                await MongoWork.UpdateSupbscription(userId, ORM.Roles.AccessLevel.BASIC, 0, token);
+                return Ok((await authenticate.AuthenticateThis(await MongoWork.FindUserById(userId, token))).Token);
             }
             catch (Exception e)
             {

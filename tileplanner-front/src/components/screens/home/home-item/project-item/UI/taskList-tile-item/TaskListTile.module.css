@@ -1,0 +1,160 @@
+.taskList_tile {
+    background-color: #E7E7E7;
+    width: 100%;
+    height: 100%;
+    padding-top: 10px;
+}
+.toDo_header {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: left;
+    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 27px;
+    padding-right: 27px;
+    padding-bottom: 10px;
+    cursor: text;
+}
+.toDo_header>input{
+    font-size: 1em;
+    outline: none;
+    border: none;
+    font-weight: bold;
+    border-bottom: 2px solid green;
+    background-color:#E7E7E7;
+}
+.header_submenu{
+    position: relative;
+    cursor: pointer;
+}
+.sub_menu{
+    position: absolute;
+    top: 30px;
+    left: -80px;
+    background-color: #AEAEAE;
+    padding: 10px;
+    z-index: 9999;
+    border-radius: 17px;
+    color:white;
+}
+.sub_element{
+    transition: color 0.25s ease;
+}
+.sub_element:hover{
+    color: rgb(245, 191, 191);
+}
+.toDo_item {
+    font-size: 18px;
+    font-weight: 300;
+    text-align: left;
+    display: flex;
+    justify-content: left;
+    align-items: start;
+    width: 100%;
+    transition: background-color 0.25s ease;
+    padding-left: 27px;
+    min-height: 37px;
+    position: relative;
+}
+
+.toDo_item>div {
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
+}
+
+.custom_checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.custom_checkbox {
+    box-shadow: -2px -2px 5px 0px #FAFBFF inset,
+        2px 2px 5px 0px #161B1D3B inset;
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 22px;
+    height: 22px;
+
+}
+
+.item_checkbox {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin-right: 10px;
+}
+
+.isNotVisited {
+    background-color: #DFDFDF;
+}
+.isVisited{
+    background-color: #D6E5CE;
+}
+/* Стилизация контейнера чекбокса */
+.custom_checkbox .checkmark {
+    display: inline-block;
+    width: 16px;
+    height: 27px;
+    background-size: cover;
+    /* Подогнать изображение по размеру контейнера */
+    /* margin-right: 10px; */
+    position: relative;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+/* Стилизация галочки (если чекбокс отмечен) */
+.custom_checkbox input[type="checkbox"]:checked+.checkmark {
+    background-image: url('http://localhost:5173/checkbox_checked.svg');
+    /* Путь к изображению отмеченного чекбокса */
+    /* Другие стили для отмеченного чекбокса, если необходимо */
+}
+
+.calendar_icon {
+    background-image: url('http://localhost:5173/calendar_icon.svg');
+    width: 20px;
+    height: 22px;
+    position: absolute;
+    top: 25%;
+    right: 10%;
+    cursor: pointer;
+}
+
+.item_calendar {
+    position: absolute;
+    top: -60px;
+    right: 80px;
+    z-index: 9999;
+}
+
+.item_address {
+    width: 60%;
+    transition: color 1s ease;
+}
+.item_address>input{
+    font-size: 1em;
+    outline: none;
+    border: none;
+    /* font-weight: bold; */
+    border-bottom: 2px solid green;
+    background-color:transparent;
+    width: 100%;
+}
+.item_header_text{
+    cursor:text;
+}
+.selected_address{
+    color: rgb(1, 157, 37);
+   
+}
+.toDo_create {
+    font-size: 2em;
+    font-weight: bold;
+    color: #AEAEAE;
+    padding-left: 27px;
+    cursor: pointer;
+    height: 37px;
+    padding-bottom: 300px;
+}

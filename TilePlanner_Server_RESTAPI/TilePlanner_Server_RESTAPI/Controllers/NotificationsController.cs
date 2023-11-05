@@ -30,11 +30,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpGet("/getNotificationsForUser")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetNotificationsForUser(string userId)
+        public async Task<IActionResult> GetNotificationsForUser(string userId, CancellationToken token = default)
         {
             try
             {
-                return Ok(await mongoWork.GetNotificationsForUser(userId));
+                return Ok(await mongoWork.GetNotificationsForUser(userId, token));
             }
             catch (Exception e)
             {
@@ -49,11 +49,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <returns></returns>
         [HttpPost("/addOrUpdateNotification")]
         [Produces("application/json")]
-        public async Task<IActionResult> AddOrUpdateNotification([FromBody] Notification notification)
+        public async Task<IActionResult> AddOrUpdateNotification([FromBody] Notification notification, CancellationToken token = default)
         {
             try
             {
-                return Ok(await mongoWork.CreateUpdateNotification(notification));
+                return Ok(await mongoWork.CreateUpdateNotification(notification, token));
             }
             catch (Exception e)
             {
@@ -67,11 +67,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <param name="notification"></param>
         /// <returns></returns>
         [HttpDelete("/deleteNotification")]
-        public async Task<IActionResult> DeleteNotification(string notificationId)
+        public async Task<IActionResult> DeleteNotification(string notificationId, CancellationToken token = default)
         {
             try
             {
-                await mongoWork.DeleteNotification(notificationId);
+                await mongoWork.DeleteNotification(notificationId, token);
                 return Ok("Done");
             }
             catch (Exception e)
@@ -86,11 +86,11 @@ namespace TilePlanner_Server_RESTAPI.Controllers
         /// <param name="userId">User's Id</param>
         /// <returns></returns>
         [HttpDelete("/clearAllNotifications")]
-        public async Task<IActionResult> ClearAllNotifications(string userId)
+        public async Task<IActionResult> ClearAllNotifications(string userId, CancellationToken token = default)
         {
             try
             {
-                await mongoWork.DeleteAllNotificationsForUser(userId);
+                await mongoWork.DeleteAllNotificationsForUser(userId, token);
                 return Ok("Done");
             }
             catch (Exception e)

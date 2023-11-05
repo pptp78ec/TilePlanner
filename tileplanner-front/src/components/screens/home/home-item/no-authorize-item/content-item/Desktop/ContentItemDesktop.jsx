@@ -1,12 +1,13 @@
 import React from 'react'
 import styles from './Content.module.css'
 import Prices from '../../UI/prices-item/Prices';
+import { Link } from 'react-router-dom';
 
 //Футер, розделить на компоненты, и подумать о адаптации
 
 function ContentItem() {
-  
-  const mainPage=true;
+
+  const mainPage = true;
   return (
     <div className={styles.content}>
       <div className={styles.content_element_1}>
@@ -16,7 +17,8 @@ function ContentItem() {
             <div className={styles.text}>&emsp;&emsp;&emsp;Формуйте маршрути, працюйте з подіями та завданнями та відстежуйте бюджет в одному місці</div>
           </div>
           <div className={styles.button_wrap}>
-            <div className={styles.button}>Спланувати подорож</div>
+            <Link to={'registration'}><div className={styles.button}>Спланувати подорож</div></Link>
+
           </div>
 
         </div>
@@ -98,7 +100,7 @@ function ContentItem() {
         </div>
       </div>
       <div className={styles.content_element_4}>
-        <Prices/>
+        <Prices />
       </div>
     </div>
   )
