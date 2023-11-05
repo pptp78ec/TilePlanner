@@ -1,11 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './NotesTile.module.css';
-export default function NotesTileItem({ itemData, setIsUpdateTile, tilesData, setTilesData, index }) {
-    const [text, setText] = useState(itemData.description);
+export default function NotesTileItem({ 
+    itemData, 
+    setIsUpdateTile, 
+    tilesData, 
+    setTilesData, 
+    index 
+}) {
 
     useEffect(() => {
-      document.getElementsByClassName(styles.notes_text)[0].textContent=itemData.description
-    }, [itemData.description]);
+       
+      document.getElementById('notes_text_'+index).textContent=itemData?.description
+    }, [itemData?.description]);
 
     // Обработчик изменения текста
     const handleTextChange = (event) => {
@@ -24,6 +30,7 @@ export default function NotesTileItem({ itemData, setIsUpdateTile, tilesData, se
             <textarea
                 placeholder="Залиште тут свої нотатки"
                 className={styles.notes_text}
+                id={'notes_text_'+index}
                 onChange={handleTextChange}
                 // value={text}
             />

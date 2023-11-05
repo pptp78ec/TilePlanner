@@ -1,0 +1,134 @@
+.budget_tile {
+    background-color: #E7E7E7;
+    width: 100%;
+    height: 100%;
+    padding-top: 10px;
+}
+
+.toDo_header {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: left;
+    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 27px;
+    padding-right: 27px;
+    padding-bottom: 10px;
+    cursor: text;
+}
+
+.toDo_header>input {
+    font-size: 1em;
+    outline: none;
+    border: none;
+    font-weight: bold;
+    border-bottom: 2px solid green;
+    background-color: #E7E7E7;
+}
+
+.header_submenu {
+    position: relative;
+    cursor: pointer;
+}
+
+.sub_menu {
+    position: absolute;
+    top: 30px;
+    left: -80px;
+    background-color: #AEAEAE;
+    padding: 10px;
+    z-index: 9999;
+    border-radius: 17px;
+    color: white;
+}
+
+.sub_element {
+    transition: color 0.25s ease;
+}
+
+.sub_element:hover {
+    color: rgb(245, 191, 191);
+}
+
+.budget_list {
+    width: 100%;
+    padding-left: 27px;
+    padding-right: 27px;
+
+}
+
+.budget_list_items {
+    width: 100%;
+}
+
+.budget_item {
+    display: flex;
+    border-bottom: 1px solid #00000033;
+    font-family: Nunito;
+    font-size: 16px;
+    font-weight: 400;
+    
+}
+
+.budget_item>div {
+    width: calc(100%/3);
+    padding-top: 7px;
+}
+.budget_item>div>input{
+    width: 100%;
+    font-size: 1em;
+    outline: none;
+    border: none;
+    font-weight: bold;
+    background-color: #E7E7E7;
+}
+.isEdit{
+    border-bottom: 1px solid green;
+}
+.isEdit>.item_place{
+    border-left: 1px solid green;
+    border-right: 1px solid green;
+    padding-left: 3px;
+}
+.item_place {
+    border-left: 1px solid #00000033;
+    border-right: 1px solid#00000033;
+    padding-left: 3px;
+}
+
+.item_purpose {
+    padding-left: 3px;
+}
+
+.item_price {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.budget_list_result_item>div{
+    width: calc(100%/3);
+    border-bottom: 1px solid #00000033;
+    
+}
+.budget_list_result_item {
+    display: flex;
+    justify-content: space-between;
+   
+}
+
+.budget_list_result_price {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #F8ED6A7A;
+    font-weight: bold;
+    font-family: Nunito;
+    font-size: 18px;
+    border-left: 1px solid #00000033;
+  
+}
+.budget_list_result_header{
+    padding-left: 26px;
+    font-weight: 600;
+}

@@ -68,10 +68,10 @@ export default function ProjectItemDesktop() {
         ItemService.update_tiles(newUpdateTiles, id)
         newUpdateTiles = null;
         setIsWaitUpdate(false);
-      }, 1);
+      }, 1000);
     }
 
-  }, [tilesData,isWaitUpdate])
+  }, [tilesData, isWaitUpdate])
   useEffect(() => {
     ItemService.cookiesUpdate();
     // WheatherService.get_wheather_current_by_coordinates(52.4006235,16.7368566);
@@ -97,9 +97,25 @@ export default function ProjectItemDesktop() {
       }
       if (isUpdateTiles != null) {
         console.log("GETTILES")
-        const data = await ItemService.get_all_tiles_by_projectId(id);
 
-        const convertedData = data.map((item, index) => {
+        let data = await ItemService.get_all_tiles_by_projectId(id);
+        let moreData = await ItemService.get_all_tiles_and_records_by_projectId(id);
+        // Фильтруем элементы moreData
+        const filteredMoreData = moreData.filter((item) => {
+          // Проверяем, что id элемента moreData не совпадает с id элементов в data
+          const idIsUnique = !data.some((dataItem) => dataItem.id === item.id);
+
+          // Проверяем, что itemtype не равен "COORDINATE"
+          const itemTypeIsValid = item.itemtype !== "COORDINATE";
+
+          return idIsUnique && itemTypeIsValid;
+        });
+
+        // Объединяем data и filteredMoreData
+        const mergedData = [...data, ...filteredMoreData];
+        data=mergedData;
+
+        const convertedData = data?.map((item, index) => {
           return {
             id: index,  // Присваиваем уникальный идентификатор (можно использовать другую логику)
             startTop: item.tilePosY,  // Используем tilePosY как startTop
@@ -128,7 +144,6 @@ export default function ProjectItemDesktop() {
   }, [tilesContainerHeight, tilesContainerWidth, alreadyGetProjects, isFirstLoad, isUpdateCoordinates, isUpdateTiles])
 
   const handleContainerDoubleClick = (e) => {
-    console.log("OK")
     e.preventDefault();
     const container = document.querySelector(`.${styles.tiles_container}`);
     if (container) {
@@ -159,8 +174,10 @@ export default function ProjectItemDesktop() {
   const handleMenuItemClick = async (menuItem, clickPosition) => {
     // console.log(`Clicked on ${menuItem} at (${clickPosition.left}, ${clickPosition.top})`);
     switch (menuItem) {
-      case 'image': await ItemService.create_image_tile(clickPosition, id); break;
-      case 'notes': await ItemService.create_notes_tile(clickPosition, id); break;
+      case 'image': await ItemService.create_tile(clickPosition, id, 'IMAGE'); break;
+      case 'notes': await ItemService.create_tile(clickPosition, id, 'NOTES'); break;
+      case 'task_list': await ItemService.create_tile(clickPosition, id, 'TASKLIST'); break;
+      case 'budget': await ItemService.create_tile(clickPosition, id, 'BUDGET'); break;
     }
     setIsContextMenuVisible(false);
     setIsUpdateTiles({});
@@ -203,30 +220,35 @@ export default function ProjectItemDesktop() {
                 onDoubleClick={handleContainerDoubleClick}
               >
 
-                {tiles.map((item, index) => {
-                  return (
-                    <ResizableComponent key={index}
-                      parentHeight={tilesContainerHeight}
-                      parentWidth={tilesContainerWidth}
-                      data={tiles}
-                      setData={setTiles}
-                      index={index}
-                      minHeight={200}
-                      minWidth={200}
-                      setEdit={setIsEditTiles}
-                    >
-                      <DefaultItem
-                        setIsWaitUpdate={setIsWaitUpdate}
-                        setIsUpdateTile={setIsUpdateTiles}
-                        itemData={tilesData[index]}
-                        setTilesData={setTilesData}
-                        tilesData={tilesData}
-                        tilesIndex={index}
+                {tiles?.map((item, index) => {
+                  if (tilesData[index]?.parentId == id && tilesData[index]?.itemtype != 'COORDINATE') {
+                   if(tilesData[index].isDeleted==true){return null}
+                    return (
+                      <ResizableComponent key={index}
+                        parentHeight={tilesContainerHeight}
+                        parentWidth={tilesContainerWidth}
+                        data={tiles}
+                        setData={setTiles}
                         index={index}
-                      />
-                    </ResizableComponent>
+                        minHeight={200}
+                        minWidth= {tilesData[index]?.itemtype=="BUDGET"?320:200}
+                        setEdit={setIsEditTiles}
+                      >
+                        <DefaultItem
+                          setIsWaitUpdate={setIsWaitUpdate}
+                          setIsUpdateTile={setIsUpdateTiles}
+                          itemData={tilesData[index]}
+                          setTilesData={setTilesData}
+                          tilesData={tilesData}
+                          tilesIndex={index}
+                          index={index}
+                          setIsContextMenuVisible={setIsContextMenuVisible}
+                        />
+                      </ResizableComponent>
 
-                  )
+                    )
+                  }
+
                 })}
                 <ContextMenu
                   isVisible={isContextMenuVisible}

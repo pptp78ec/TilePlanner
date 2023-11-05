@@ -19,7 +19,7 @@ export default function ContextMenu({ isVisible, position, onMenuItemClick,setIs
       >
         <div onClick={() => handleMenuItemClick("image")}>Зображення</div>
         <div onClick={() => handleMenuItemClick("notes")}>Нотатник</div>
-        <div onClick={() => handleMenuItemClick("notifications")}>Список завдань</div>
+        <div onClick={() => handleMenuItemClick("task_list")}>Список завдань</div>
         <div onClick={() => handleMenuItemClick("budget")}>Бюджет</div>
         <div onClick={() => handleMenuItemClick("close")}>Закрити</div>
         {/* Добавьте другие пункты меню, если необходимо */}

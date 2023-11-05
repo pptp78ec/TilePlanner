@@ -15,6 +15,7 @@ let apiUpdateAvatar
 let configForMedia
 
 let config
+
 export const UserService = {
     async registrate(data) {
        
@@ -157,6 +158,9 @@ export const UserService = {
             console.log('Ошибка при отправке данных:', error);
 
         }
+    },
+    getUserId(){
+        return userID;
     },
     cookiesUpdate() {
         token = Cookies.get('token');
