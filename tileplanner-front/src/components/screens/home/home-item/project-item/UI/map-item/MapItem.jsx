@@ -243,8 +243,7 @@ export default function MapItem({ coordinates, setSelectedIndexPoint, isUpdatedC
                   <Popup maxWidth={403} closeOnEscapeKey={() => { setSelectedIndexPoint(null) }} closeOnClick={() => { setSelectedIndexPoint(null) }}>
                     <div className={styles.plan_message}>
                       <div>Тут повинна бути погода.</div>
-
-                      <div> Провірьте свій <Link to={'/'}>план</Link> у профілі</div>
+                      <div> Перегляньте свій <Link to={'/'}>план</Link> у профілі</div>
                     </div>
                   </Popup>
                 </Marker>

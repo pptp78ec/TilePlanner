@@ -10,7 +10,7 @@ export default function NotificationsDesktop({ showNtfiForm }) {
               overlay.current.style.display = 'flex';
             }
       
-            console.log("Таймер завершен!");
+            // console.log("Таймер завершен!");
           }, 1000); // 3000 миллисекунд (3 секунды)
       
           // Здесь можно вернуть функцию, которая выполнится при размонтировании компонента

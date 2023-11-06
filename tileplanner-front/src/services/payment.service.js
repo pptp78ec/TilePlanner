@@ -21,7 +21,7 @@ export const PaymentService = {
     },
     async buy(paymentModel,setUserPaymentDetails,navigate) {
         let response =await axios.post(apiPostCheckout,paymentModel,config);
-        console.log(response);
+        // console.log(response);
         if(response.status==200){
             Cookies.set("token",response.data);
             setTimeout(()=>{

@@ -33,6 +33,7 @@ export default function LoginDesktop() {
     try {
       await UserService.login(data, navigate);
     } catch (error) {
+      if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
       console.error("Ошибка регистрации: ", error);
     }
   };

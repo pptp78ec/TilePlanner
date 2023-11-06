@@ -12,7 +12,7 @@ export default function PaymentItem() {
     const location = useLocation();
     const amount = location.state?.amount
     const plan = location.state?.plan
-   console.log(amount)
+//    console.log(amount)
     useEffect(() => {
         PaymentService.cookiesUpdate();
         PaymentService.getUserToken(setUserToken);
@@ -29,7 +29,7 @@ export default function PaymentItem() {
             PaymentMethodNonce:nonce,
         };
        await PaymentService.buy(paymentModel,setUserPaymentDetails,navigate);
-       console.log(userPaymentDetails);
+    //    console.log(userPaymentDetails);
     }
     if(userToken==null){return<></>}
     return (

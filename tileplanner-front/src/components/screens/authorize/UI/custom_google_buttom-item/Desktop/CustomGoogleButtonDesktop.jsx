@@ -8,7 +8,7 @@ export default function CustomGoogleButtonDesktop() {
   const navigate = useNavigate(); // Получаем функцию для навигации
     const googleLogin = useGoogleLogin({
         onSuccess: async tokenResponse => {
-          console.log(tokenResponse);
+          // console.log(tokenResponse);
           // fetching userinfo can be done on the client or the server
           const userInfo = await axios
             .get('https://www.googleapis.com/oauth2/v3/userinfo', {
@@ -24,7 +24,7 @@ export default function CustomGoogleButtonDesktop() {
             
             data.userImageId=userInfo.picture;
             UserService.googleAuth(data,navigate);
-          console.log(userInfo);
+          // console.log(userInfo);
         },
         // flow: 'implicit', // implicit is the default
         });

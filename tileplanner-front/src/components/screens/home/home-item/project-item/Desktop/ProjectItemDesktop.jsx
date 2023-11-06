@@ -96,7 +96,7 @@ export default function ProjectItemDesktop() {
         setAlreadyGetProjects(true);
       }
       if (isUpdateTiles != null) {
-        console.log("GETTILES")
+        // console.log("GETTILES")
 
         let data = await ItemService.get_all_tiles_by_projectId(id);
         let moreData = await ItemService.get_all_tiles_and_records_by_projectId(id);

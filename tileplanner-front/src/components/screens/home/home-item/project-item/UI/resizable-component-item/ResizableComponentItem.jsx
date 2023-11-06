@@ -46,7 +46,7 @@ const ResizableComponent = ({
     };
     React.useEffect(() => {
 
-        console.log(data[index].startWidth)
+        // console.log(data[index].startWidth)
         // window.scrollTo=null
         const  handleMouseUp = async () => {
             isResizing.current = false;

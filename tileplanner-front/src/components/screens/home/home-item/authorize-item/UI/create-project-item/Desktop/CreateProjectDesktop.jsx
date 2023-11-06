@@ -33,6 +33,7 @@ export default function CreateProjectDesktop({showCRPForm, setShowCRPForm}) {
                 navigate('/')
             }
           } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error("Ошибка регистрации: ", error);
           }
     }
