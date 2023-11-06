@@ -60,7 +60,7 @@ export default function MapTileItem({ data, setData, coordinates, setIsUpdateCoo
   };
   const handleCalendarChange = async (itemId, newData) => {
     // В этой функции вы можете использовать dataId и newValue
-    console.log(`Calendar with data-id ${itemId} changed to ${newData.toLocaleString()}`);
+    // console.log(`Calendar with data-id ${itemId} changed to ${newData.toLocaleString()}`);
     await ItemService.update_date_point(id, itemId, newData);
     setIsUpdateCoordinates(true);
     let event = { target: { id: itemId } };

@@ -32,7 +32,7 @@ export default function TaskListTileItem({
             })
             // console.log(taskListBuffer)
             setTaskList(taskListBuffer);
-            console.log(taskListBuffer)
+            // console.log(taskListBuffer)
             if (taskListBuffer) {
                 let cald = [];
                 taskListBuffer.map((item, index) => {
@@ -82,7 +82,7 @@ export default function TaskListTileItem({
     
         // Обновляем tilesData с помощью setTilesData
         setTilesData(updatedTilesData);
-        console.log(tilesData);
+        // console.log(tilesData);
         setTimeout(()=>{
             setIsUpdateTile(true); // Устанавливаем флаг обновления
         },3000)
@@ -122,7 +122,7 @@ export default function TaskListTileItem({
         const dateId = event.currentTarget.getAttribute('dateId');
 
         const isChecked = event.target.checked;
-        console.log(isChecked)
+        // console.log(isChecked)
         setTilesData((prevTilesData) => {
             // Создаем новый массив, в котором обновляем элемент с соответствующим id
             return prevTilesData.map((tile) => {
@@ -136,7 +136,7 @@ export default function TaskListTileItem({
         //  setIsUpdateTile(true);
     };
     const handleCreateItem = async (event) => {
-        console.log("OK");
+        // console.log("OK");
         await ItemService.create_tile({ left: 0, top: 0 }, itemData.id, 'TASK')
         setTimeout(()=>{
             setIsUpdateTile(true);

@@ -71,14 +71,14 @@ export const WheatherService = {
         const [hour, minutes] = timePart.split(":");
         const timeObject = { hour, minutes };
 
-       return timeObject;
+        return timeObject;
     },
-     convertDate(dateString) {
+    convertDate(dateString) {
         const parts = dateString.split('.');
         if (parts.length === 3) {
-          return `${parts[0]}.${parts[1]}`;
+            return `${parts[0]}.${parts[1]}`;
         }
         return dateString; // Если формат не соответствует "дд.мм.гггг", возвращаем исходную строку
-      }
+    }
 
 }

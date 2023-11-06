@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './Prices.module.css'
-function Prices({mainPage}) {
+function Prices({ mainPage }) {
     return (
         <div className={styles.prices}>
             <div className={styles.plan}>
@@ -16,8 +16,8 @@ function Prices({mainPage}) {
                     </div>
                 </div>
                 <div className={`${styles.plan_change_button} 
-        ${styles.current}  `}>
-                    Поточний план
+                 ${styles.hovered}`}>
+                    Зарееструватися
                 </div>
                 <div className={styles.abilities}>
                     <div className={styles.ability}>
@@ -51,7 +51,7 @@ function Prices({mainPage}) {
                     </div>
                 </div>
                 <div className={`${styles.plan_change_button}   ${styles.hovered}`}>
-                    Змінити план
+                    Зарееструватися
                 </div>
                 <div className={styles.abilities}>
                     <div className={styles.ability}>
@@ -86,7 +86,7 @@ function Prices({mainPage}) {
                 </div>
                 <div className={`${styles.plan_change_button} 
        ${styles.hovered} `}>
-                   Змінити план
+                    Зарееструватися
                 </div>
                 <div className={styles.abilities}>
                     <div className={styles.ability}>

@@ -25,6 +25,7 @@ export const ItemService = {
             // console.log('Created project:', response.data);
             return true
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -36,10 +37,12 @@ export const ItemService = {
             return response.data;
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
     async add_coordinate(coordinates, projectId) {
+
         if (coordinates == null) { return }
         try {
             const dataToSend = {
@@ -73,6 +76,7 @@ export const ItemService = {
             // console.log('Created coordinate:', response.data);
             return true
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -80,12 +84,13 @@ export const ItemService = {
         try {
             const response = await axios.get(`${apiGetCoordinate}?parentScreenId=${projectId}`, config);
             if (response.status == "200") {
-                console.log('Get coordinate:', response.data);
+                // console.log('Get coordinate:', response.data);
                 return response.data[0];
             }
 
             return true
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -103,6 +108,7 @@ export const ItemService = {
 
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -120,6 +126,7 @@ export const ItemService = {
 
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -136,6 +143,7 @@ export const ItemService = {
             }
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -147,6 +155,7 @@ export const ItemService = {
             inProcessDelete = false;
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -156,6 +165,7 @@ export const ItemService = {
             return response.data;
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -165,6 +175,7 @@ export const ItemService = {
             return response.data;
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -175,6 +186,7 @@ export const ItemService = {
             }
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -214,6 +226,7 @@ export const ItemService = {
             //    console.log(response);
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -233,6 +246,7 @@ export const ItemService = {
             //    console.log(response);
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },
@@ -240,13 +254,14 @@ export const ItemService = {
         try {
             const form_data = new FormData()
             form_data.append("file", image);
-            console.log(form_data);
+            // console.log(form_data);
             const file_response = await axios.post(apiLoadImage, form_data, configForMedia)
             tile.backgroundImageId = file_response.data;
             const final_data = [tile]
             const response = await axios.post(`${apiUpdateItems}?parentScreenId=${projectId}`, final_data, config);
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.log('Ошибка при отправке данных:', error);
 
         }
@@ -266,6 +281,7 @@ export const ItemService = {
             //    console.log(response);
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
         }
     },

@@ -29,7 +29,6 @@ function NoAuthorize() {
   //     "isDeleted": true
   //   }
   useEffect(() => {
-    
     const callBack = (e) => {
       let coords=e.coords;
       // alert(caesarCipher(String(coords.latitude)+"+++"+String(coords.longitude),15));

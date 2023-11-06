@@ -17,7 +17,7 @@ export default function NotesTileItem({
     const handleTextChange = (event) => {
         const newText = event.target.value;
         const updatedTilesData = [...tilesData];
-        console.log(index)
+        // console.log(index)
         updatedTilesData[index].description = newText;
         
         setTilesData(updatedTilesData);

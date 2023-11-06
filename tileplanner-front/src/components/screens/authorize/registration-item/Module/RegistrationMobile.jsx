@@ -28,6 +28,7 @@ export default function RegistrationMobile() {
       // Переход на страницу /login после успешной регистрации
       navigate('/login',{ state: {errorMessage:'Successful registration',type:'succsess'} })
     } catch (error) {
+      if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
       console.error("Ошибка регистрации: ", error);
     }
   };

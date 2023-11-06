@@ -52,7 +52,7 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
         overlay.current.style.display = 'flex';
       }
 
-      console.log("Таймер завершен!");
+      // console.log("Таймер завершен!");
     }, 1000); // 3000 миллисекунд (3 секунды)
 
     // Здесь можно вернуть функцию, которая выполнится при размонтировании компонента
@@ -95,12 +95,13 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
       dataToSend.phone = data.phone
       dataToSend.password = data.new_password
       dataToSend.userImageId = data.userImageId
-      console.log(data.userImageId)
+      // console.log(data.userImageId)
       UserService.setUserChangedData(navigate, dataToSend, data)
 
 
 
     } catch (error) {
+      if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
       console.error("Ошибка изменения данних: ", error);
     }
   }
@@ -262,7 +263,7 @@ function ProfileChangeFormDesktop({ showForm, setShowForm }) {
               </div>
             </div>
           </div>
-          <Prices showForm={showForm} />
+          <Prices showForm={showForm} isMainPage={false} />
           <div className={styles.button}>
             <button className={styles.save_changes_button}>
               Зберегти зміни

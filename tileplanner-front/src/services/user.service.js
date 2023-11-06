@@ -27,9 +27,10 @@ export const UserService = {
             Cookies.set('userID', response.data.userID);
             token = response.data.token
             userID = response.data.userID
-            console.log(token)
+            // console.log(token)
             return true;
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.error('Ошибка при отправке данных:', error);
             return false;
         }
@@ -47,7 +48,8 @@ export const UserService = {
             navigate('/')
             return true;
         } catch (error) {
-            console.log('Ошибка при отправке данных:', error);
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
+            console.error('Ошибка при отправке данных:', error);
             navigate('/login', { state: { errorMessage: 'Invalid login or password', type: 'error' } })
             return false;
         }
@@ -74,7 +76,7 @@ export const UserService = {
 
         try {
             const response = await axios.get(apiGetAllFileds, config);
-            console.log('Успешно отправлено:', response.data);
+            // console.log('Успешно отправлено:', response.data);
             let data = response.data;
             let userImage;
             if (data.isGoogle == true) {
@@ -90,6 +92,7 @@ export const UserService = {
             // console.log(response.data)
             setUserData(response.data);
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.log('Ошибка при отправке данных:', error);
         }
     },
@@ -99,6 +102,7 @@ export const UserService = {
             const response = await axios.get(apiGetAllFileds, config);
             return response.data;
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.log('Ошибка при отправке данных:', error);
         }
     },
@@ -108,6 +112,7 @@ export const UserService = {
             const response = await axios.get(apiGetAllFileds, config);
             setUserData(response.data);
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.log('Ошибка при отправке данных:', error);
         }
     },
@@ -122,16 +127,16 @@ export const UserService = {
             if (!(data.userImageId instanceof FileList) && data.userImageId != '') {
                 const form_data = new FormData()
                 form_data.append("file", data.userImageId);
-                console.log(form_data);
+                // console.log(form_data);
                 const file_response = await axios.post(apiUpdateAvatar, form_data, configForMedia)
-                console.log(file_response.data)
+                // console.log(file_response.data)
                 data.userImageId = file_response.data;
                 data.isGoogle = false;
             } else {
                 data.userImageId = ''
             }
             const new_response = await axios.post(apiUpdateAllFileds, data, config)
-            console.log('Успешно отправлено:', new_response.data);
+            // console.log('Успешно отправлено:', new_response.data);
             navigate('/', { state: { errorMessage: 'Successfuly changed', type: 'succsess' } })
 
 
@@ -139,6 +144,7 @@ export const UserService = {
 
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.log('Ошибка при отправке данных:', error);
 
         }
@@ -155,6 +161,7 @@ export const UserService = {
            
 
         } catch (error) {
+            if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
             console.log('Ошибка при отправке данных:', error);
 
         }

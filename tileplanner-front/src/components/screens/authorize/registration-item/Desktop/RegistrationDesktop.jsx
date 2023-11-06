@@ -25,7 +25,7 @@ export default function RegistrationDesktop() {
   };
   const registrateUser = async (data) => { // Обратите внимание, что здесь используется async
     try {
-      console.log(data.phone_number);
+      // console.log(data.phone_number);
       const isValidPassword = validator.validatePassword(data.password);
       const isValidEmail = validator.validateEmail(data.email);
 
@@ -39,6 +39,7 @@ export default function RegistrationDesktop() {
       // Переход на страницу /login после успешной регистрации
       navigate('/login',{ state: {errorMessage:'Successful registration',type:'succsess'} })
     } catch (error) {
+      if(import.meta.env.VITE_APP_ISSHOW_LOGS=="false"){ return; }
       console.error("Ошибка регистрации: ", error);
     }
   };
