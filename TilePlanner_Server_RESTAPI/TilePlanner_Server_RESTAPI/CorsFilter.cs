@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using Microsoft.AspNetCore.Mvc.Filters;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace TilePlanner_Server_RESTAPI
 {
@@ -14,4 +13,3 @@ namespace TilePlanner_Server_RESTAPI
         }
     }
 }
-#endif
