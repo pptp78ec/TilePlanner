@@ -10,6 +10,7 @@ import ResizableComponent from '../UI/resizable-component-item/ResizableComponen
 import Draggable from 'react-draggable';
 import ContextMenu from '../UI/create-tile-menu/CreateTileMenu';
 import DefaultItem from '../UI/default-item/DefaultItem';
+import CreateProjectDesktop from '../UI/create-project-item/CreateProjectItem';
 export default function ProjectItemDesktop() {
   const [isContextMenuVisible, setIsContextMenuVisible] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({ left: 0, top: 0 });
@@ -27,6 +28,7 @@ export default function ProjectItemDesktop() {
   const [isEditTiles, setIsEditTiles] = useState(null);
   const [tilesData, setTilesData] = useState();
   const [tiles, setTiles] = useState();
+  const [showCRPForm, setShowCRPForm] = useState(false);
   const navigate = useNavigate();
   let { id } = useParams();
   function gotTo(event) {
@@ -113,7 +115,7 @@ export default function ProjectItemDesktop() {
 
         // Объединяем data и filteredMoreData
         const mergedData = [...data, ...filteredMoreData];
-        data=mergedData;
+        data = mergedData;
 
         const convertedData = data?.map((item, index) => {
           return {
@@ -189,6 +191,11 @@ export default function ProjectItemDesktop() {
       <>
         <div className={styles.main} style={isEditTiles ? { userSelect: 'none' } : {}} >
           <div className={styles.content}>
+            <CreateProjectDesktop
+              setShowCRPForm={setShowCRPForm}
+              showCRPForm={showCRPForm}
+              setAlreadyGetProjects={setAlreadyGetProjects}
+            />
             <div className={styles.projects}>
               {projectsData?.map((item, index) => {
 
@@ -207,7 +214,12 @@ export default function ProjectItemDesktop() {
 
                 )
               })}
-              <div className={styles.create_project}>+</div>
+              <div
+                className={styles.create_project}
+                onClick={() => { setShowCRPForm(!showCRPForm); }}
+              >
+                +
+              </div>
               <div className={styles.horizontal_line}></div>
             </div>
             <div className={styles.workspace}>
@@ -222,7 +234,7 @@ export default function ProjectItemDesktop() {
 
                 {tiles?.map((item, index) => {
                   if (tilesData[index]?.parentId == id && tilesData[index]?.itemtype != 'COORDINATE') {
-                   if(tilesData[index].isDeleted==true){return null}
+                    if (tilesData[index].isDeleted == true) { return null }
                     return (
                       <ResizableComponent key={index}
                         parentHeight={tilesContainerHeight}
@@ -231,7 +243,7 @@ export default function ProjectItemDesktop() {
                         setData={setTiles}
                         index={index}
                         minHeight={200}
-                        minWidth= {tilesData[index]?.itemtype=="BUDGET"?320:200}
+                        minWidth={tilesData[index]?.itemtype == "BUDGET" ? 320 : 200}
                         setEdit={setIsEditTiles}
                       >
                         <DefaultItem
