@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './Prices.module.css'
+import { Link } from 'react-router-dom'
 function Prices({ mainPage }) {
     return (
         <div className={styles.prices}>
@@ -17,7 +18,7 @@ function Prices({ mainPage }) {
                 </div>
                 <div className={`${styles.plan_change_button} 
                  ${styles.hovered}`}>
-                    Зарееструватися
+                   <Link to={"/registration"}>  Зареєструватися</Link> 
                 </div>
                 <div className={styles.abilities}>
                     <div className={styles.ability}>
@@ -51,7 +52,7 @@ function Prices({ mainPage }) {
                     </div>
                 </div>
                 <div className={`${styles.plan_change_button}   ${styles.hovered}`}>
-                    Зарееструватися
+                <Link to={"/registration"}>  Зареєструватися</Link> 
                 </div>
                 <div className={styles.abilities}>
                     <div className={styles.ability}>
@@ -86,7 +87,7 @@ function Prices({ mainPage }) {
                 </div>
                 <div className={`${styles.plan_change_button} 
        ${styles.hovered} `}>
-                    Зарееструватися
+                   <Link to={"/registration"}>  Зареєструватися</Link> 
                 </div>
                 <div className={styles.abilities}>
                     <div className={styles.ability}>
